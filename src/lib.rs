@@ -20,14 +20,18 @@ mod block;
 mod empty;
 mod error;
 mod horizontal;
+mod position;
+mod size;
 mod vertical;
 
-use agape_core::{Bounds, GlobalId};
-pub use agape_core::{Position, Size};
+use agape_core::GlobalId;
 pub use block::BlockLayout;
 pub use empty::EmptyLayout;
 pub use error::LayoutError;
 pub use horizontal::HorizontalLayout;
+pub use position::Bounds;
+pub use position::Position;
+pub use size::Size;
 use std::fmt::Debug;
 pub use vertical::VerticalLayout;
 
@@ -226,6 +230,7 @@ impl From<Size> for IntrinsicSize {
     }
 }
 
+/// The spacing between the edges of a [`Layout`] node and its content.
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug)]
 pub struct Padding {
     pub left: f32,

@@ -1,8 +1,8 @@
 use crate::{
     AxisAlignment, BoxConstraints, BoxSizing, IntrinsicSize, Layout, LayoutError, LayoutIter,
-    Padding, error::OverflowAxis,
+    Padding, Position, Size, error::OverflowAxis,
 };
-use agape_core::{GlobalId, Position, Size};
+use agape_core::GlobalId;
 
 // TODO maybe make some items private
 // TODO if min width is larger than max width then it's an overflow
