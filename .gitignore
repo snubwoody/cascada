@@ -1,0 +1,22 @@
+# Output
+target/
+dist/
+
+# IDE settings
+.idea/
+.vscode/
+
+# Secrets
+**/.env
+**/.env.*
+
+# Temporary stuff
+temp/
+tmp/
+temp-*
+
+# Profiling
+**/flamegraph.svg
+
+# Coverage output
+lcov.info

@@ -1,0 +1,39 @@
+name: Code Coverage
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "Main" ]
+concurrency:
+  group: code-cov-${{github.ref}}
+  cancel-in-progress: true
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          key: ${{runner.os}}-code-cov-${{hashFiles('Cargo.lock')}}
+          path: |
+            ~/.cargo
+            target
+          restore-keys: ${{runner.os}}-code-cov
+      - name: Install nightly toolchain with components
+        run: |
+          rustup install nightly
+          rustup default nightly
+      - uses: taiki-e/install-action@cargo-nextest
+      - uses: taiki-e/install-action@cargo-llvm-cov
+      - name: Generate code coverage
+        run: cargo llvm-cov nextest --workspace --codecov --output-path codecov.json
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{secrets.CODECOV_TOKEN}}
+          slug: snubwoody/cascada
+          files: codecov.json
+          fail_ci_if_error: true

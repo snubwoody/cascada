@@ -1,0 +1,11 @@
+root = true
+
+[*]
+indent_style = space
+end_of_line = lf
+
+[*.rs]
+indent_size = 4
+
+[*.{yml,yaml}]
+indent_size = 2
