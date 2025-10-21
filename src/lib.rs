@@ -22,10 +22,11 @@ mod error;
 mod horizontal;
 mod vertical;
 mod size;
+mod position;
 
+pub use position::Position;
 pub use size::Size;
-use agape_core::{Bounds, GlobalId};
-pub use agape_core::{Position};
+use agape_core::GlobalId;
 pub use block::BlockLayout;
 pub use empty::EmptyLayout;
 pub use error::LayoutError;

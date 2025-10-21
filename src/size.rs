@@ -63,15 +63,16 @@ impl Add for Size{
 impl Add<f32> for Size{
     type Output = Size;
 
-    /// Performs the `+` operation between two [`Size`]s.
+    /// Add a value to both the width and height.
     ///
     /// # Example
     /// ```
     /// use cascada::Size;
     ///
-    /// let total = Size::unit(20.0) + Size::unit(30.0);
+    /// let total = Size::new(20.0,70.0) + 30.0;
     ///
-    /// assert_eq!(total,Size::unit(50.0));
+    /// assert_eq!(total.width,50.0);
+    /// assert_eq!(total.height,100.0);
     /// ```
     fn add(self, rhs: f32) -> Self::Output {
         Self{
@@ -98,6 +99,28 @@ impl Sub for Size{
         Self{
             width: self.width - rhs.width,
             height: self.height - rhs.height,
+        }
+    }
+}
+
+impl Sub<f32> for Size{
+    type Output = Size;
+
+    /// Subtract a value from both the width and height.
+    ///
+    /// # Example
+    /// ```
+    /// use cascada::Size;
+    ///
+    /// let total = Size::new(50.0,100.0) - 50.0;
+    ///
+    /// assert_eq!(total.width,0.0);
+    /// assert_eq!(total.height,50.0);
+    /// ```
+    fn sub(self, rhs: f32) -> Self::Output {
+        Self{
+            width: self.width - rhs,
+            height: self.height - rhs,
         }
     }
 }

@@ -1,8 +1,8 @@
 use crate::{
-    AxisAlignment, BoxConstraints, BoxSizing, IntrinsicSize, Layout, LayoutError, LayoutIter,
-    Padding, error::OverflowAxis,Size
+    error::OverflowAxis, AxisAlignment, BoxConstraints, BoxSizing, IntrinsicSize, Layout, LayoutError,
+    LayoutIter, Padding, Size,Position
 };
-use agape_core::{GlobalId, Position};
+use agape_core::{GlobalId};
 
 // TODO maybe make some items private
 // TODO if min width is larger than max width then it's an overflow
@@ -425,7 +425,7 @@ impl Layout for VerticalLayout {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::{BlockLayout, EmptyLayout, Padding, solve_layout};
+    use crate::{solve_layout, BlockLayout, EmptyLayout, Padding};
 
     #[test]
     fn calculate_min_width() {

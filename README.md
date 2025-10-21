@@ -15,6 +15,10 @@ Add `cascada` to your project
 cascada = "0.1.0"
 ```
 
+## Layout
+This is a two pass layout algorithm, the minimum constraints flow up and the maximum constraints
+flow down.
+
 ## License
 
 Licensed under either of:
