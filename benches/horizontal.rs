@@ -30,28 +30,5 @@ pub fn benchmark(c: &mut Criterion){
     g.finish();
 }
 
-pub fn _10_000_nodes(c: &mut Criterion) -> &mut Criterion {
-    let child = EmptyLayout{
-        intrinsic_size: IntrinsicSize::flex(1),
-        ..EmptyLayout::default()
-    };
-
-
-    let mut layout = HorizontalLayout{
-        intrinsic_size: IntrinsicSize::fill(),
-        ..HorizontalLayout::default()
-    };
-
-    for _ in 0..10_000{
-        layout.add_child(child.clone());
-    }
-
-    c.bench_function("10000 nodes", |b| {
-        b.iter(|| {
-            solve_layout(&mut layout, Size::unit(1000.0))
-        })
-    })
-}
-
-criterion_group!(benches, benchmark,_10_000_nodes);
+criterion_group!(benches, benchmark);
 criterion_main!(benches);

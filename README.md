@@ -25,6 +25,25 @@ cascada = "0.1.0"
 This is a two pass layout algorithm, the minimum constraints flow up and the maximum constraints
 flow down.
 
+## Constraints
+Constraints define the minimum and maximum size a layout node can be.
+
+## Padding 
+Padding is the space between the edges of a layout node and its content, the padding struct
+has 4 sides: `left`, `right`, `top` and `bottom`.
+
+## Axes
+Each node has two axes: the main axis and the cross axis. The main axis is the axis which content
+flow along and the cross axis is the axis perpendicular to the cross axis.
+
+## Intrinsic size
+Intrinsic size is the size that a layout node wants to be
+
+For example to have two equally sized nodes in a horizontal node you would give them an intrinsic
+width of `Flex`.
+
+## Comparison to CSS
+- Justify between: There is no justify between, you may use nodes in between and set the flex to 1.
 ## License
 
 Licensed under either of:
