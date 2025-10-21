@@ -20,17 +20,18 @@ mod block;
 mod empty;
 mod error;
 mod horizontal;
-mod vertical;
-mod size;
 mod position;
+mod size;
+mod vertical;
 
-pub use position::Position;
-pub use size::Size;
 use agape_core::GlobalId;
 pub use block::BlockLayout;
 pub use empty::EmptyLayout;
 pub use error::LayoutError;
 pub use horizontal::HorizontalLayout;
+pub use position::Bounds;
+pub use position::Position;
+pub use size::Size;
 use std::fmt::Debug;
 pub use vertical::VerticalLayout;
 
@@ -85,10 +86,9 @@ pub trait Layout: Debug + Send + Sync {
     fn position(&self) -> Position;
 
     /// Get the `Bounds` of the [`Layout`]
-    // FIXME
-    // fn bounds(&self) -> Bounds {
-    //     Bounds::new(self.position(), self.size())
-    // }
+    fn bounds(&self) -> Bounds {
+        Bounds::new(self.position(), self.size())
+    }
 
     fn children(&self) -> &[Box<dyn Layout>];
 

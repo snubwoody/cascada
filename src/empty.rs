@@ -1,5 +1,5 @@
-use crate::{BoxConstraints, Position,BoxSizing, IntrinsicSize, Layout, LayoutIter,Size};
-use agape_core::{GlobalId};
+use crate::{BoxConstraints, BoxSizing, IntrinsicSize, Layout, LayoutIter, Position, Size};
+use agape_core::GlobalId;
 
 /// An empty [`Layout`] with no child notes.  
 #[derive(Debug, Default, Clone, PartialEq)]

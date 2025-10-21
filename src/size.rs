@@ -1,13 +1,13 @@
 use std::ops::{Add, AddAssign, Sub, SubAssign};
 
 /// The width and height of a layout node.
-#[derive(Clone,Copy,PartialEq,Debug,PartialOrd,Default)]
-pub struct Size{
+#[derive(Clone, Copy, PartialEq, Debug, PartialOrd, Default)]
+pub struct Size {
     pub width: f32,
     pub height: f32,
 }
 
-impl Size{
+impl Size {
     /// Create a new [`Size`].
     ///
     /// # Example
@@ -19,8 +19,8 @@ impl Size{
     /// assert_eq!(size.width,10.0);
     /// assert_eq!(size.height,24.0);
     /// ```
-    pub const fn new(width: f32,height: f32) -> Size{
-        Self{width, height}
+    pub const fn new(width: f32, height: f32) -> Size {
+        Self { width, height }
     }
 
     /// Create a [`Size`] with the same width and height.
@@ -34,12 +34,12 @@ impl Size{
     /// assert_eq!(size.width,20.0);
     /// assert_eq!(size.width,size.height);
     /// ```
-    pub const fn unit(value: f32) -> Size{
-        Self::new(value,value)
+    pub const fn unit(value: f32) -> Size {
+        Self::new(value, value)
     }
 }
 
-impl Add for Size{
+impl Add for Size {
     type Output = Size;
 
     /// Performs the `+` operation between two [`Size`]s.
@@ -53,14 +53,14 @@ impl Add for Size{
     /// assert_eq!(total,Size::unit(50.0));
     /// ```
     fn add(self, rhs: Self) -> Self::Output {
-        Self{
+        Self {
             width: self.width + rhs.width,
             height: self.height + rhs.height,
         }
     }
 }
 
-impl Add<f32> for Size{
+impl Add<f32> for Size {
     type Output = Size;
 
     /// Add a value to both the width and height.
@@ -75,14 +75,14 @@ impl Add<f32> for Size{
     /// assert_eq!(total.height,100.0);
     /// ```
     fn add(self, rhs: f32) -> Self::Output {
-        Self{
+        Self {
             width: self.width + rhs,
             height: self.height + rhs,
         }
     }
 }
 
-impl Sub for Size{
+impl Sub for Size {
     type Output = Size;
 
     /// Perform the `-` between two [`Size`]s.
@@ -96,14 +96,14 @@ impl Sub for Size{
     /// assert_eq!(diff,Size::unit(50.0));
     /// ```
     fn sub(self, rhs: Self) -> Self::Output {
-        Self{
+        Self {
             width: self.width - rhs.width,
             height: self.height - rhs.height,
         }
     }
 }
 
-impl Sub<f32> for Size{
+impl Sub<f32> for Size {
     type Output = Size;
 
     /// Subtract a value from both the width and height.
@@ -118,14 +118,14 @@ impl Sub<f32> for Size{
     /// assert_eq!(total.height,50.0);
     /// ```
     fn sub(self, rhs: f32) -> Self::Output {
-        Self{
+        Self {
             width: self.width - rhs,
             height: self.height - rhs,
         }
     }
 }
 
-impl AddAssign for Size{
+impl AddAssign for Size {
     /// Performs the `+=` operation on two [`Size`]s.
     ///
     /// # Example
@@ -137,13 +137,13 @@ impl AddAssign for Size{
     /// assert_eq!(size.width,220.0);
     /// assert_eq!(size.height,295.0);
     /// ```
-    fn add_assign(&mut self, other: Self){
+    fn add_assign(&mut self, other: Self) {
         self.width += other.width;
         self.height += other.height;
     }
 }
 
-impl AddAssign<f32> for Size{
+impl AddAssign<f32> for Size {
     /// Adds a value to both the width and height.
     ///
     /// # Example
@@ -155,13 +155,13 @@ impl AddAssign<f32> for Size{
     /// assert_eq!(size.width,250.0);
     /// assert_eq!(size.height,250.0);
     /// ```
-    fn add_assign(&mut self, other: f32){
+    fn add_assign(&mut self, other: f32) {
         self.width += other;
         self.height += other;
     }
 }
 
-impl SubAssign for Size{
+impl SubAssign for Size {
     /// Performs the `-=` operation on two [`Size`]s.
     ///
     /// # Example
@@ -173,13 +173,13 @@ impl SubAssign for Size{
     /// assert_eq!(size.width,50.0);
     /// assert_eq!(size.height,50.0);
     /// ```
-    fn sub_assign(&mut self, other: Self){
+    fn sub_assign(&mut self, other: Self) {
         self.width -= other.width;
         self.height -= other.height;
     }
 }
 
-impl SubAssign<f32> for Size{
+impl SubAssign<f32> for Size {
     /// Subtracts a value from both the width and height.
     ///
     /// # Example
@@ -191,13 +191,13 @@ impl SubAssign<f32> for Size{
     /// assert_eq!(size.width,150.0);
     /// assert_eq!(size.height,150.0);
     /// ```
-    fn sub_assign(&mut self, other: f32){
+    fn sub_assign(&mut self, other: f32) {
         self.width -= other;
         self.height -= other;
     }
 }
 
-impl From<(f32,f32)> for Size{
+impl From<(f32, f32)> for Size {
     /// Convert a tuple `(f32,f32)` into a [`Size`], with the
     /// first value being the width and the second being the height.
     ///
@@ -209,7 +209,7 @@ impl From<(f32,f32)> for Size{
     /// assert_eq!(size.width,20.0);
     /// assert_eq!(size.height,40.0);
     /// ```
-    fn from((width,height): (f32,f32)) -> Self {
-        Self{width, height}
+    fn from((width, height): (f32, f32)) -> Self {
+        Self { width, height }
     }
 }
