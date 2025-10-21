@@ -1,28 +1,50 @@
-//! Layout engine
+//! Cascada is a lightweight, high-performance layout engine for UI frameworks.
 //!
-//! This is a two pass layout engine that uses constraints to calculate size and
-//! position.
+//! # Example
 //!
-//! ## [`IntrinsicSize`]
-//! Intrinsic size is the size a [`Layout`] wants to be. Say there's three rects, and each
-//! want to fill the screen, none of them can fulfill this without leaving no space
-//! for the others. So the true final size will be for each layout will be `1/3` of the
-//! actual window size, thus splitting it equally.
+//! ```
+//! use cascada::{HorizontalLayout, EmptyLayout, solve_layout, IntrinsicSize, Size, Layout};
 //!
-//! ## Axes
-//! The main axis is the axis that content flows along, for the horizontal layout
-//! (and most layouts) this is the x-axis. The cross axis is the perpendicular axis
-//! to the main axis.
+//! let child = EmptyLayout{
+//!     intrinsic_size: IntrinsicSize::fill(),
+//!     ..Default::default()
+//! };
+//!
+//! let mut layout = HorizontalLayout{
+//!     intrinsic_size: IntrinsicSize::fill(),
+//!     ..Default::default()
+//! };
+//!
+//! // Add three equally sized nodes.
+//! layout.add_children([
+//!     child.clone(),
+//!     child.clone(),
+//!     child,
+//!  ]);
+//!
+//! solve_layout(&mut layout,Size::unit(3000.0));
+//!
+//! let size = &layout.children()[0].size();
+//! assert_eq!(size.width,1000.0);
+//! ```
+//!
+//! ## Layout engine
+//! `cascada` is a two pass layout engine that uses `contraints` to solve the layout tree. Minimum
+//! constraints flow up and maximum constraints flow down.
+//!
+//! The maximum size starts from the top, as it goes down the widget tree the nodes are given the
+//! maximum size they can take up, and similarly give their child nodes the maximum they can take
+//! up.
 #![warn(clippy::suboptimal_flops)]
 #![warn(clippy::suspicious_operation_groupings)]
 #![warn(clippy::imprecise_flops)]
-mod block;
-mod empty;
+pub mod block;
+pub mod empty;
 mod error;
-mod horizontal;
+pub mod horizontal;
 mod position;
 mod size;
-mod vertical;
+pub mod vertical;
 
 use agape_core::GlobalId;
 pub use block::BlockLayout;
@@ -35,25 +57,35 @@ pub use size::Size;
 use std::fmt::Debug;
 pub use vertical::VerticalLayout;
 
-/// Calculates the layout of all the layout nodes
+/// Solve the final size and position of all the layout nodes.
 pub fn solve_layout(root: &mut dyn Layout, window_size: Size) -> Vec<LayoutError> {
     root.set_max_width(window_size.width);
     root.set_max_height(window_size.height);
 
     // It's important that the min constraints are solved before the max constraints
-    // because the min constraints are used in calculating max constraints
+    // because the min constraints are used in calculating max constraints.
     let _ = root.solve_min_constraints();
     root.solve_max_constraints(window_size);
     root.update_size();
     root.position_children();
 
-    // TODO add a push error function that checks for equality so that we don't have duplicate errors
-    // or maybe just clear the error stack every frame
-    // root.collect_errors()
+    // FIXME
+    // root.collect_errors();
     vec![]
 }
 
-// TODO: add anchor layout and grid layout
+/// A layout node.
+///
+/// ## Details
+///
+/// Each layout node has minimum and maximum constraints, these describe the bounds
+/// of the layout node i.e. the max and min space it's allowed to take up.
+///
+/// ### Axes
+/// Each node has two axes: the main axis and the cross axis. The main axis is the
+/// axis along which content flows and the cross axis is the axis perpendicular
+/// to the cross axis. For most nodes the main axis is the x-axis while the
+/// cross axis is the y-axis.
 pub trait Layout: Debug + Send + Sync {
     /// Solve the minimum constraints of each [`Layout`] node recursively
     fn solve_min_constraints(&mut self) -> (f32, f32);
@@ -105,6 +137,7 @@ pub trait Layout: Debug + Send + Sync {
     fn set_x(&mut self, x: f32);
     fn set_y(&mut self, y: f32);
 
+    /// Iterate over the layout tree.
     fn iter(&self) -> LayoutIter<'_>;
 
     /// Get a [`Layout`] by it's `id`.
@@ -147,16 +180,19 @@ pub enum BoxSizing {
     Flex(u8),
 }
 
-/// Describes how a [`Layout`] should arrange its children
+/// Describes how a [`Layout`] should align its children.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, PartialOrd, Ord)]
 pub enum AxisAlignment {
+    /// Place content at the start.
     #[default]
     Start,
+    /// Place content in the center.
     Center,
+    /// Place content at the end.
     End,
 }
 
-/// Describes the maximum and minimum size of a [`Layout`]
+/// Describes the maximum and minimum size of a [`Layout`].
 #[derive(Debug, Clone, Copy, Default, PartialEq, PartialOrd)]
 pub struct BoxConstraints {
     pub max_width: f32,
@@ -166,7 +202,7 @@ pub struct BoxConstraints {
 }
 
 impl BoxConstraints {
-    /// Create new [`BoxConstraints`]
+    /// Create new [`BoxConstraints`].
     pub fn new() -> Self {
         Self::default()
     }
@@ -181,6 +217,17 @@ pub struct IntrinsicSize {
 }
 
 impl IntrinsicSize {
+    /// Create a flex intrinsic size.
+    ///
+    /// # Example
+    /// ```
+    /// use cascada::{BoxSizing,IntrinsicSize};
+    ///
+    /// let instrinsic_size = IntrinsicSize::fill();
+    ///
+    /// assert_eq!(instrinsic_size.width,BoxSizing::Flex(1));
+    /// assert_eq!(instrinsic_size.height,BoxSizing::Flex(1));
+    /// ```
     pub fn fill() -> Self {
         Self {
             width: BoxSizing::Flex(1),
@@ -188,6 +235,18 @@ impl IntrinsicSize {
         }
     }
 
+    /// Create a flex intrinsic size with a flex factor.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use cascada::{BoxSizing, IntrinsicSize};
+    ///
+    /// let intrinsic_size = IntrinsicSize::flex(8);
+    ///
+    /// assert_eq!(intrinsic_size.width,BoxSizing::Flex(8));
+    /// assert_eq!(intrinsic_size.height,BoxSizing::Flex(8));
+    /// ```
     pub fn flex(factor: u8) -> Self {
         Self {
             width: BoxSizing::Flex(factor),
@@ -195,6 +254,18 @@ impl IntrinsicSize {
         }
     }
 
+    /// Create a new shrink intrinsic size.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use cascada::{BoxSizing, IntrinsicSize};
+    ///
+    /// let intrinsic_size = IntrinsicSize::shrink();
+    ///
+    /// assert_eq!(intrinsic_size.width, BoxSizing::Shrink);
+    /// assert_eq!(intrinsic_size.height, BoxSizing::Shrink);
+    /// ```
     pub fn shrink() -> Self {
         Self {
             width: BoxSizing::Shrink,
@@ -230,7 +301,7 @@ impl From<Size> for IntrinsicSize {
     }
 }
 
-/// The spacing between the edges of a [`Layout`] node and its content.
+/// The space between the edges of a [`Layout`] node and its content.
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug)]
 pub struct Padding {
     pub left: f32,
@@ -245,7 +316,6 @@ impl Padding {
     /// # Panics
     /// Panics if sides are negative.
     pub const fn new(left: f32, right: f32, top: f32, bottom: f32) -> Self {
-        // TODO: test this
         assert!(
             left >= 0.0 && right >= 0.0 && top >= 0.0 && bottom >= 0.0,
             "Padding sides must be positive."
@@ -258,11 +328,36 @@ impl Padding {
         }
     }
 
+    /// Create padding with symmetric vertical and horizontal sides.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use cascada::Padding;
+    ///
+    /// let padding = Padding::symmetric(10.0,20.0);
+    ///
+    /// assert_eq!(padding.top,10.0);
+    /// assert_eq!(padding.left,20.0);
+    /// assert_eq!(padding.left,padding.right);
+    /// assert_eq!(padding.bottom,padding.top);
+    /// ```
     pub const fn symmetric(vertical: f32, horizontal: f32) -> Self {
         Self::new(horizontal, horizontal, vertical, vertical)
     }
 
-    /// Create a [`Padding`] with all sides equal.
+    /// Create a [`Padding`] with equal sides.
+    ///
+    /// # Example
+    /// ```
+    /// use cascada::Padding;
+    ///
+    /// let padding = Padding::all(20.0);
+    ///
+    /// assert_eq!(padding.left,20.0);
+    /// assert_eq!(padding.left,padding.right);
+    /// assert_eq!(padding.bottom,padding.top);
+    /// ```
     pub const fn all(padding: f32) -> Self {
         Self::new(padding, padding, padding, padding)
     }
@@ -297,7 +392,28 @@ impl Padding {
         self.left + self.right
     }
 
+    /// The sum of all the padding sides.
+    ///
+    /// # Example
+    /// ```
+    /// use cascada::Padding;
+    ///
+    /// let padding = Padding::all(24.0);
+    ///
+    /// assert_eq!(padding.sum(),24.0 * 4.0);
+    /// ```
     pub const fn sum(&self) -> f32 {
         self.horizontal_sum() + self.vertical_sum()
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    #[should_panic]
+    fn padding_no_negative() {
+        Padding::new(0.0, 0.0, 0.0, -35.0);
     }
 }
