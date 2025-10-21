@@ -7,6 +7,12 @@ A simple, high performance, general purpose UI layout engine.
     </a>
 </div>
 
+## Goals
+
+- Fast
+- Simple
+- Portable
+
 ## Installation
 Add `cascada` to your project
 
