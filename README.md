@@ -36,11 +36,27 @@ has 4 sides: `left`, `right`, `top` and `bottom`.
 Each node has two axes: the main axis and the cross axis. The main axis is the axis which content
 flow along and the cross axis is the axis perpendicular to the cross axis.
 
+## Layouts
+
+### Horizontal layout
+This is a layout node that arranges it's content along the x-axis.
+
 ## Intrinsic size
 Intrinsic size is the size that a layout node wants to be
 
 For example to have two equally sized nodes in a horizontal node you would give them an intrinsic
 width of `Flex`.
+
+### Fixed
+A fixed intrinsic size means that a layout node will be a fixed width or height. Fixed sizing is 
+respected by all layout nodes during constraint calculations so, for example, if a layout node
+has a fixed size of `500.0` then it will be `500.0` no matter what. This is useful but can often 
+lead to bugs if misused, in fact most of the errors you encounter will mostly be caused by some fixed
+node.
+
+Fixed sizing is most prominently used for text and icons.
+
+## Example layouts
 
 ## Comparison to CSS
 - Justify between: There is no justify between, you may use nodes in between and set the flex to 1.
