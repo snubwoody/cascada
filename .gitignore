@@ -1,14 +1,13 @@
-# Output
+# Rust stuff
 target/
-dist/
+Cargo.lock
 
 # IDE settings
 .idea/
 .vscode/
 
-# Secrets
-**/.env
-**/.env.*
+# Environment variables
+.env*
 
 # Temporary stuff
 temp/
@@ -16,7 +15,7 @@ tmp/
 temp-*
 
 # Profiling
-**/flamegraph.svg
+flamegraph.svg
 
 # Coverage output
 lcov.info
