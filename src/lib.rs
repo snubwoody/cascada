@@ -21,9 +21,11 @@ mod empty;
 mod error;
 mod horizontal;
 mod vertical;
+mod size;
 
+pub use size::Size;
 use agape_core::{Bounds, GlobalId};
-pub use agape_core::{Position, Size};
+pub use agape_core::{Position};
 pub use block::BlockLayout;
 pub use empty::EmptyLayout;
 pub use error::LayoutError;
@@ -82,9 +84,10 @@ pub trait Layout: Debug + Send + Sync {
     fn position(&self) -> Position;
 
     /// Get the `Bounds` of the [`Layout`]
-    fn bounds(&self) -> Bounds {
-        Bounds::new(self.position(), self.size())
-    }
+    // FIXME
+    // fn bounds(&self) -> Bounds {
+    //     Bounds::new(self.position(), self.size())
+    // }
 
     fn children(&self) -> &[Box<dyn Layout>];
 
@@ -226,6 +229,7 @@ impl From<Size> for IntrinsicSize {
     }
 }
 
+/// The spacing between the edges of a [`Layout`] node and its content.
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug)]
 pub struct Padding {
     pub left: f32,

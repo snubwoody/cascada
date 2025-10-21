@@ -1,8 +1,8 @@
 use crate::{
     AxisAlignment, BoxConstraints, BoxSizing, IntrinsicSize, Layout, LayoutError, LayoutIter,
-    Padding,
+    Padding,Size
 };
-use agape_core::{GlobalId, Position, Size};
+use agape_core::{GlobalId, Position};
 
 // TODO add example
 /// A [`Layout`] that arranges it's children horizontally.

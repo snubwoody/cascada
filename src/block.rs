@@ -1,8 +1,8 @@
 use crate::{
     AxisAlignment, BoxConstraints, BoxSizing, EmptyLayout, IntrinsicSize, Layout, LayoutError,
-    LayoutIter, Padding,
+    LayoutIter, Padding, Size
 };
-use agape_core::{GlobalId, Position, Size};
+use agape_core::{GlobalId, Position};
 
 // TODO make these private and add builder
 /// A [`Layout`] that only has one child.
