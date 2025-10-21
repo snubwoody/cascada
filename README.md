@@ -7,6 +7,12 @@ A simple, high performance, general purpose UI layout engine.
     </a>
 </div>
 
+## Contents
+- [Goals](#goals)
+- [Installation](#installation)
+- [Axes](#axes)
+  - [Alignment](#alignment)
+
 ## Goals
 
 - Fast
@@ -21,12 +27,20 @@ Add `cascada` to your project
 cascada = "0.1.0"
 ```
 
-## Layout
-This is a two pass layout algorithm, the minimum constraints flow up and the maximum constraints
-flow down.
+## Layout engine
+`cascada` is a two pass layout engine that uses `contraints` to solve the layout tree. Minimum
+constraints flow up and maximum constraints flow down.
+
+The maximum size starts from the top, as it goes down the widget tree the nodes are given the 
+maximum size they can take up, and similarly give their child nodes the maximum they can take
+up.
 
 ## Constraints
-Constraints define the minimum and maximum size a layout node can be.
+Constraints define the minimum and maximum bounds of a layout node, i.e. the minimum
+and maximum size it can take up. Maximum constraints are set by the parents and passed
+down the tree, while minimum constraints are set the node itself and passed up the tree.
+
+[TODO: diagram](#)
 
 ## Padding 
 Padding is the space between the edges of a layout node and its content, the padding struct
@@ -75,6 +89,11 @@ Intrinsic size is the size that a layout node wants to be
 For example to have two equally sized nodes in a horizontal node you would give them an intrinsic
 width of `Flex`.
 
+### Shrink
+Shrink sizing means a layout node wants to be as small as possible, for nodes with child nodes this 
+mean that they will fit their children. This is similar to 
+[`fit-content`](https://developer.mozilla.org/en-US/docs/Web/CSS/fit-content) in CSS.
+
 ### Fixed
 A fixed intrinsic size means that a layout node will be a fixed width or height. Fixed sizing is 
 respected by all layout nodes during constraint calculations so, for example, if a layout node
@@ -92,8 +111,8 @@ Fixed sizing is most prominently used for text and icons.
 
 Licensed under either of:
 
-Apache License, Version 2.0 (LICENSE-APACHE or http://www.apache.org/licenses/LICENSE-2.0)
-MIT License (LICENSE-MIT or http://opensource.org/licenses/MIT)
+- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+- MIT License ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
 
 at your option.
 
