@@ -9,9 +9,6 @@ repository = "https://github.com/snubwoody/cascada"
 categories = ["gui"]
 keywords = ["gui", "graphics","ui"]
 
-
-
-
 [dependencies]
 agape_core = "0.3.0"
 thiserror = "2.0.9"

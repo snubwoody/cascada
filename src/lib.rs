@@ -202,7 +202,7 @@ impl IntrinsicSize {
     ///
     /// # Example
     /// ```
-    /// use agape_layout::{IntrinsicSize,BoxSizing};
+    /// use cascada::{IntrinsicSize,BoxSizing};
     ///
     /// let intrinsic_size = IntrinsicSize::fixed(100.0,50.0);
     ///
@@ -267,7 +267,7 @@ impl Padding {
     /// # Example
     ///
     /// ```
-    /// use agape_layout::Padding;
+    /// use cascada::Padding;
     ///
     /// let padding = Padding::symmetric(20.0,10.0);
     ///
@@ -282,7 +282,7 @@ impl Padding {
     /// # Example
     ///
     /// ```
-    /// use agape_layout::Padding;
+    /// use cascada::Padding;
     ///
     /// let padding = Padding::symmetric(20.0,10.0);
     ///

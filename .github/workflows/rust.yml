@@ -10,15 +10,15 @@ concurrency:
 env:
   CARGO_TERM_COLOR: always
 jobs:
-  semver:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Check semver
-        uses: obi1kenobi/cargo-semver-checks-action@v2
-        with:
-          # TODO: Remove after first release
-          exclude: cascada
+# TODO: add after first release
+#  semver:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Check semver
+#        uses: obi1kenobi/cargo-semver-checks-action@v2
+#        with:
+#          exclude: cascada
   clippy:
     runs-on: ubuntu-latest
     steps:

@@ -1,4 +1,4 @@
-use agape_layout::{BoxSizing, EmptyLayout, Size, VerticalLayout, solve_layout};
+use cascada::{BoxSizing, EmptyLayout, Size, VerticalLayout, solve_layout};
 
 #[test]
 fn scrolling() {
