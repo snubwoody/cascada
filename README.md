@@ -43,6 +43,15 @@ There are three `AxisAlignment` variants that specify how a node should align it
 - `AxisAlignment::Center`: Align content in the center of the axis.
 - `AxisAlignement::End`: Align content at the end of the axis.
 
+```
+|----------------------------|
+|                            |
+|                            |
+|                          | |
+|                          | |
+|____________________________|
+```
+
 TODO: Add figma diagrams
 
 ## Layouts
