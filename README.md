@@ -36,10 +36,29 @@ has 4 sides: `left`, `right`, `top` and `bottom`.
 Each node has two axes: the main axis and the cross axis. The main axis is the axis which content
 flow along and the cross axis is the axis perpendicular to the cross axis.
 
+### Alignment
+There are three `AxisAlignment` variants that specify how a node should align its children i.e.
+
+- `AxisAlignment::Start`: Align content at the start of the axis.
+- `AxisAlignment::Center`: Align content in the center of the axis.
+- `AxisAlignement::End`: Align content at the end of the axis.
+
+TODO: Add figma diagrams
+
 ## Layouts
 
 ### Horizontal layout
 This is a layout node that arranges it's content along the x-axis.
+
+### Vertical layout
+
+### Block layout
+
+### Empty layout
+A layout node with no children. The distinction between no children, one child and multiple children
+is important, which is why they are separate. This is usually used for graphical elements such as 
+text, images, icons and so on. Due to the fact that they have no children, internally, empty layouts
+get to skip a lot of the calculations.
 
 ## Intrinsic size
 Intrinsic size is the size that a layout node wants to be
