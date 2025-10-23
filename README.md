@@ -38,7 +38,7 @@ up.
 ## Constraints
 Constraints define the minimum and maximum bounds of a layout node, i.e. the minimum
 and maximum size it can take up. Maximum constraints are set by the parents and passed
-down the tree, while minimum constraints are set the node itself and passed up the tree.
+down the tree, while minimum constraints are set the node itself and passed up the tree. Hence why this is a two pass layout engine, the minimum constraints start at the bottom going up, while the maximum constraints start at the top going down.
 
 [TODO: diagram](#)
 
@@ -84,7 +84,7 @@ text, images, icons and so on. Due to the fact that they have no children, inter
 get to skip a lot of the calculations.
 
 ## Intrinsic size
-Intrinsic size is the size that a layout node wants to be
+Intrinsic size is the size that a layout node requests to be, for example, filling the screen.
 
 For example to have two equally sized nodes in a horizontal node you would give them an intrinsic
 width of `Flex`.
