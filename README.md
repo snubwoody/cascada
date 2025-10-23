@@ -1,6 +1,8 @@
 # Cascada
 
-A simple, high performance, general purpose UI layout engine.
+Cascada is a lightweight, high-performance layout engine for UI frameworks, 
+inspired by modern constraint-based systems like Flexbox and Flutter. 
+
 <div>
     <a href="https://codecov.io/gh/snubwoody/cascada" > 
      <img src="https://codecov.io/gh/snubwoody/cascada/graph/badge.svg?token=PLYL0VUB5Y"/> 
@@ -27,83 +29,7 @@ Add `cascada` to your project
 cascada = "0.1.0"
 ```
 
-## Layout engine
-`cascada` is a two pass layout engine that uses `contraints` to solve the layout tree. Minimum
-constraints flow up and maximum constraints flow down.
-
-The maximum size starts from the top, as it goes down the widget tree the nodes are given the 
-maximum size they can take up, and similarly give their child nodes the maximum they can take
-up.
-
-## Constraints
-Constraints define the minimum and maximum bounds of a layout node, i.e. the minimum
-and maximum size it can take up. Maximum constraints are set by the parents and passed
-down the tree, while minimum constraints are set the node itself and passed up the tree. Hence why this is a two pass layout engine, the minimum constraints start at the bottom going up, while the maximum constraints start at the top going down.
-
-[TODO: diagram](#)
-
-## Padding 
-Padding is the space between the edges of a layout node and its content, the padding struct
-has 4 sides: `left`, `right`, `top` and `bottom`.
-
-## Axes
-Each node has two axes: the main axis and the cross axis. The main axis is the axis which content
-flow along and the cross axis is the axis perpendicular to the cross axis.
-
-### Alignment
-There are three `AxisAlignment` variants that specify how a node should align its children i.e.
-
-- `AxisAlignment::Start`: Align content at the start of the axis.
-- `AxisAlignment::Center`: Align content in the center of the axis.
-- `AxisAlignement::End`: Align content at the end of the axis.
-
-```
-|----------------------------|
-|                            |
-|                            |
-|                          | |
-|                          | |
-|____________________________|
-```
-
-TODO: Add figma diagrams
-
-## Layouts
-
-### Horizontal layout
-This is a layout node that arranges it's content along the x-axis.
-
-### Vertical layout
-
-### Block layout
-
-### Empty layout
-A layout node with no children. The distinction between no children, one child and multiple children
-is important, which is why they are separate. This is usually used for graphical elements such as 
-text, images, icons and so on. Due to the fact that they have no children, internally, empty layouts
-get to skip a lot of the calculations.
-
-## Intrinsic size
-Intrinsic size is the size that a layout node requests to be, for example, filling the screen.
-
-For example to have two equally sized nodes in a horizontal node you would give them an intrinsic
-width of `Flex`.
-
-### Shrink
-Shrink sizing means a layout node wants to be as small as possible, for nodes with child nodes this 
-mean that they will fit their children. This is similar to 
-[`fit-content`](https://developer.mozilla.org/en-US/docs/Web/CSS/fit-content) in CSS.
-
-### Fixed
-A fixed intrinsic size means that a layout node will be a fixed width or height. Fixed sizing is 
-respected by all layout nodes during constraint calculations so, for example, if a layout node
-has a fixed size of `500.0` then it will be `500.0` no matter what. This is useful but can often 
-lead to bugs if misused, in fact most of the errors you encounter will mostly be caused by some fixed
-node.
-
-Fixed sizing is most prominently used for text and icons.
-
-## Example layouts
+## Overview 
 
 ## Comparison to CSS
 - Justify between: There is no justify between, you may use nodes in between and set the flex to 1.
