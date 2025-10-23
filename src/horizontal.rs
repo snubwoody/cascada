@@ -1,3 +1,5 @@
+//!
+//! 
 use crate::{
     AxisAlignment, BoxConstraints, BoxSizing, IntrinsicSize, Layout, LayoutError, LayoutIter,
     Padding, Position, Size,
@@ -6,6 +8,10 @@ use agape_core::GlobalId;
 
 // TODO add example
 /// A [`Layout`] that arranges it's children horizontally.
+///
+/// See the [module docs] for more info.
+///
+/// [module docs]: crate::horizontal
 #[derive(Default, Debug)]
 pub struct HorizontalLayout {
     pub id: GlobalId,
