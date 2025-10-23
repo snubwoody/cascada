@@ -91,8 +91,9 @@ fn flex_with_shrink() {
         ..EmptyLayout::new()
     };
 
-    let mut block = BlockLayout::new(Box::new(inner_child));
-    block.padding = Padding::all(24.0);
+    let block = BlockLayout::new(Box::new(inner_child))
+        .padding(Padding::all(24.0));
+    // block.padding = Padding::all(24.0);
 
     let empty = EmptyLayout {
         intrinsic_size: IntrinsicSize::flex(1),

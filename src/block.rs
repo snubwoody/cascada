@@ -8,17 +8,17 @@ use agape_core::GlobalId;
 /// A [`Layout`] that only has one child.
 #[derive(Debug)]
 pub struct BlockLayout {
-    pub id: GlobalId,
-    pub size: Size,
-    pub position: Position,
-    pub padding: Padding,
+    id: GlobalId,
+    size: Size,
+    position: Position,
+    padding: Padding,
     pub intrinsic_size: IntrinsicSize,
-    pub constraints: BoxConstraints,
+    constraints: BoxConstraints,
     /// The main axis is the `x-axis`
-    pub main_axis_alignment: AxisAlignment,
+    main_axis_alignment: AxisAlignment,
     /// The cross axis is the `y-axis`
-    pub cross_axis_alignment: AxisAlignment,
-    pub child: Box<dyn Layout>,
+    cross_axis_alignment: AxisAlignment,
+    child: Box<dyn Layout>,
     errors: Vec<LayoutError>,
 }
 
@@ -45,6 +45,32 @@ impl BlockLayout {
             child,
             ..Default::default()
         }
+    }
+    
+    pub fn child(&self) -> &dyn Layout {
+        self.child.as_ref()
+    }
+    
+    pub fn set_id(&mut self, id: GlobalId) {
+        self.id = id;
+    }
+    
+    /// Set the [`Padding`].
+    pub fn padding(mut self, padding: Padding) -> Self {
+        self.padding = padding;
+        self
+    }
+    
+    /// Set the main axis alignment
+    pub fn main_axis_alignment(mut self, main_axis_alignment: AxisAlignment) -> Self {
+        self.main_axis_alignment = main_axis_alignment;
+        self
+    }
+    
+    /// Set the cross axis alignment.
+    pub fn cross_axis_alignment(mut self, cross_axis_alignment: AxisAlignment) -> Self {
+        self.cross_axis_alignment = cross_axis_alignment;
+        self
     }
 
     fn align_main_axis_start(&mut self) {

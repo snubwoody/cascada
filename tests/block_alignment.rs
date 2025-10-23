@@ -1,7 +1,4 @@
-use cascada::{
-    AxisAlignment, BlockLayout, BoxSizing, EmptyLayout, IntrinsicSize, Padding, Position, Size,
-    solve_layout,
-};
+use cascada::{AxisAlignment, BlockLayout, BoxSizing, EmptyLayout, IntrinsicSize, Padding, Position, Size, solve_layout, Layout};
 
 #[test]
 fn center_alignment() {
@@ -15,19 +12,19 @@ fn center_alignment() {
         ..Default::default()
     };
 
-    let mut root = BlockLayout::new(Box::new(child));
-    root.main_axis_alignment = AxisAlignment::Center;
-    root.cross_axis_alignment = AxisAlignment::Center;
-    root.padding = Padding::all(24.0);
+    let mut root = BlockLayout::new(Box::new(child))
+        .main_axis_alignment(AxisAlignment::Center)
+        .cross_axis_alignment(AxisAlignment::Center)
+        .padding(Padding::all(24.0));
     root.intrinsic_size.width = BoxSizing::Flex(1);
     root.intrinsic_size.height = BoxSizing::Flex(1);
 
     solve_layout(&mut root, window);
 
-    let child_y = (root.size.height - root.child.size().height) / 2.0 + root.position.y;
-    let child_x = (root.size.width - root.child.size().width) / 2.0 + root.position.x;
+    let child_y = (root.size().height - root.child().size().height) / 2.0 + root.position().y;
+    let child_x = (root.size().width - root.child().size().width) / 2.0 + root.position().x;
 
-    assert_eq!(root.child.position(), Position::new(child_x, child_y));
+    assert_eq!(root.child().position(), Position::new(child_x, child_y));
 }
 
 #[test]
@@ -44,16 +41,16 @@ fn test_start_alignment() {
         ..Default::default()
     };
 
-    let mut root = BlockLayout::new(Box::new(child_1));
-    root.position = Position::new(20.0, 500.0);
-    root.padding = Padding::all(32.0);
+    let mut root = BlockLayout::new(Box::new(child_1))
+        .padding(Padding::all(32.0));
+    root.set_position(Position::new(20.0, 500.0));
 
     solve_layout(&mut root, window);
 
-    let mut child_1_pos = root.position;
+    let mut child_1_pos = root.position();
     child_1_pos += padding as f32;
 
-    assert_eq!(root.child.position(), child_1_pos);
+    assert_eq!(root.child().position(), child_1_pos);
 }
 
 #[test]
@@ -70,21 +67,21 @@ fn test_end_alignment() {
         ..Default::default()
     };
 
-    let mut root = BlockLayout::new(Box::new(child_1));
-    root.position = Position::new(250.0, 10.0);
-    root.padding = Padding::all(32.0);
-    root.main_axis_alignment = AxisAlignment::End;
-    root.cross_axis_alignment = AxisAlignment::End;
+    let mut root = BlockLayout::new(Box::new(child_1))
+        .padding(Padding::all(32.0))
+        .main_axis_alignment(AxisAlignment::End)
+        .cross_axis_alignment(AxisAlignment::End);
+    root.set_position(Position::new(250.0, 10.0));
 
     solve_layout(&mut root, window);
 
     let mut child_1_pos = Position {
-        x: root.position.x + root.size.width,
-        y: root.position.y + root.size.height,
+        x: root.position().x + root.size().width,
+        y: root.position().y + root.size().height,
     };
     child_1_pos -= padding as f32;
 
-    assert_eq!(root.child.position(), child_1_pos);
+    assert_eq!(root.child().position(), child_1_pos);
 }
 
 // TODO test overflow

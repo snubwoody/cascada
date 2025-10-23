@@ -692,8 +692,8 @@ mod test {
         inner_child.intrinsic_size.width = BoxSizing::Fixed(250.0);
         inner_child.intrinsic_size.height = BoxSizing::Fixed(250.0);
 
-        let mut child_1 = BlockLayout::new(Box::new(inner_child));
-        child_1.padding = Padding::all(24.0);
+        let mut child_1 = BlockLayout::new(Box::new(inner_child))
+            .padding(Padding::all(24.0));
 
         let mut child_2 = EmptyLayout::new();
         child_2.intrinsic_size.width = BoxSizing::Flex(1);
