@@ -1,5 +1,3 @@
-//!
-//! 
 use crate::{
     AxisAlignment, BoxConstraints, BoxSizing, IntrinsicSize, Layout, LayoutError, LayoutIter,
     Padding, Position, Size,
