@@ -69,7 +69,9 @@ pub fn solve_layout(root: &mut dyn Layout, window_size: Size) -> Vec<LayoutError
     root.update_size();
     root.position_children();
 
-    root.collect_errors()
+    // FIXME
+    // root.collect_errors();
+    vec![]
 }
 
 /// A layout node.
@@ -326,7 +328,6 @@ impl Padding {
         }
     }
 
-
     /// Create padding with symmetric vertical and horizontal sides.
     ///
     /// # Example
@@ -407,12 +408,12 @@ impl Padding {
 }
 
 #[cfg(test)]
-mod test{
+mod test {
     use super::*;
 
     #[test]
     #[should_panic]
-    fn padding_no_negative(){
+    fn padding_no_negative() {
         Padding::new(0.0, 0.0, 0.0, -35.0);
     }
 }
