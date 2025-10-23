@@ -86,7 +86,7 @@ pub fn solve_layout(root: &mut dyn Layout, window_size: Size) -> Vec<LayoutError
 /// axis along which content flows and the cross axis is the axis perpendicular
 /// to the cross axis. For most nodes the main axis is the x-axis while the
 /// cross axis is the y-axis.
-pub trait Layout: Debug + Send + Sync {
+pub trait Layout: Debug + private::Sealed {
     /// Solve the minimum constraints of each [`Layout`] node recursively
     fn solve_min_constraints(&mut self) -> (f32, f32);
 
@@ -109,7 +109,7 @@ pub trait Layout: Debug + Send + Sync {
     fn constraints(&self) -> BoxConstraints;
 
     /// Get the [`IntrinsicSize`] of the [`Layout`]
-    fn intrinsic_size(&self) -> IntrinsicSize;
+    fn get_intrinsic_size(&self) -> IntrinsicSize;
 
     /// Get the `Size` of the [`Layout`]
     fn size(&self) -> Size;
@@ -144,6 +144,15 @@ pub trait Layout: Debug + Send + Sync {
     fn get(&self, id: GlobalId) -> Option<&dyn Layout> {
         self.iter().find(|&layout| layout.id() == id)
     }
+}
+
+mod private{
+    pub trait Sealed {}
+
+    impl Sealed for super::EmptyLayout {}
+    impl Sealed for super::BlockLayout {}
+    impl Sealed for super::HorizontalLayout {}
+    impl Sealed for super::VerticalLayout {}
 }
 
 /// An `Iterator` over the layout tree.

@@ -70,11 +70,11 @@ impl VerticalLayout {
         let mut sum = Size::default();
 
         for child in self.children.iter() {
-            if let BoxSizing::Fixed(width) = child.intrinsic_size().width {
+            if let BoxSizing::Fixed(width) = child.get_intrinsic_size().width {
                 sum.width = sum.width.max(width);
             }
 
-            match child.intrinsic_size().height {
+            match child.get_intrinsic_size().height {
                 BoxSizing::Fixed(height) => {
                     sum.height += height;
                 }
@@ -207,7 +207,7 @@ impl Layout for VerticalLayout {
         self.constraints
     }
 
-    fn intrinsic_size(&self) -> IntrinsicSize {
+    fn get_intrinsic_size(&self) -> IntrinsicSize {
         self.intrinsic_size
     }
 
@@ -273,7 +273,7 @@ impl Layout for VerticalLayout {
             .children
             .iter()
             .filter_map(|child| {
-                if let BoxSizing::Flex(factor) = child.intrinsic_size().height {
+                if let BoxSizing::Flex(factor) = child.get_intrinsic_size().height {
                     Some(factor)
                 } else {
                     None
@@ -311,7 +311,7 @@ impl Layout for VerticalLayout {
         }
 
         for child in self.children.iter_mut() {
-            match child.intrinsic_size().width {
+            match child.get_intrinsic_size().width {
                 BoxSizing::Flex(_) => {
                     child.set_max_width(available_width);
                 }
@@ -323,7 +323,7 @@ impl Layout for VerticalLayout {
                 }
             }
 
-            match child.intrinsic_size().height {
+            match child.get_intrinsic_size().height {
                 BoxSizing::Flex(factor) => {
                     let grow_factor = factor as f32 / flex_total as f32;
                     child.set_max_height(grow_factor * available_height);
@@ -692,7 +692,7 @@ mod test {
         inner_child.intrinsic_size.width = BoxSizing::Fixed(250.0);
         inner_child.intrinsic_size.height = BoxSizing::Fixed(250.0);
 
-        let mut child_1 = BlockLayout::new(Box::new(inner_child))
+        let child_1 = BlockLayout::new(Box::new(inner_child))
             .padding(Padding::all(24.0));
 
         let mut child_2 = EmptyLayout::new();

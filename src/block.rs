@@ -12,7 +12,7 @@ pub struct BlockLayout {
     size: Size,
     position: Position,
     padding: Padding,
-    pub intrinsic_size: IntrinsicSize,
+    intrinsic_size: IntrinsicSize,
     constraints: BoxConstraints,
     /// The main axis is the `x-axis`
     main_axis_alignment: AxisAlignment,
@@ -46,27 +46,33 @@ impl BlockLayout {
             ..Default::default()
         }
     }
-    
+
     pub fn child(&self) -> &dyn Layout {
         self.child.as_ref()
     }
-    
+
     pub fn set_id(&mut self, id: GlobalId) {
         self.id = id;
     }
-    
+
+    /// Set the intrinsic size.
+    pub fn intrinsic_size(mut self,intrinsic_size: IntrinsicSize) -> Self {
+        self.intrinsic_size = intrinsic_size;
+        self
+    }
+
     /// Set the [`Padding`].
     pub fn padding(mut self, padding: Padding) -> Self {
         self.padding = padding;
         self
     }
-    
+
     /// Set the main axis alignment
     pub fn main_axis_alignment(mut self, main_axis_alignment: AxisAlignment) -> Self {
         self.main_axis_alignment = main_axis_alignment;
         self
     }
-    
+
     /// Set the cross axis alignment.
     pub fn cross_axis_alignment(mut self, cross_axis_alignment: AxisAlignment) -> Self {
         self.cross_axis_alignment = cross_axis_alignment;
@@ -143,7 +149,7 @@ impl Layout for BlockLayout {
         self.constraints
     }
 
-    fn intrinsic_size(&self) -> IntrinsicSize {
+    fn get_intrinsic_size(&self) -> IntrinsicSize {
         self.intrinsic_size
     }
 
@@ -205,7 +211,7 @@ impl Layout for BlockLayout {
         available_space.height -= self.padding.vertical_sum();
 
         // TODO: should layout set max constraints when shrink?
-        match self.child.intrinsic_size().width {
+        match self.child.get_intrinsic_size().width {
             BoxSizing::Flex(_) => {
                 self.child.set_max_width(available_space.width);
             }
@@ -215,7 +221,7 @@ impl Layout for BlockLayout {
             BoxSizing::Shrink => {}
         }
 
-        match self.child.intrinsic_size().height {
+        match self.child.get_intrinsic_size().height {
             BoxSizing::Flex(_) => {
                 self.child.set_max_height(available_space.height);
             }

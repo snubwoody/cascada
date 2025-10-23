@@ -51,7 +51,7 @@ impl Layout for EmptyLayout {
         self.constraints
     }
 
-    fn intrinsic_size(&self) -> IntrinsicSize {
+    fn get_intrinsic_size(&self) -> IntrinsicSize {
         self.intrinsic_size
     }
 

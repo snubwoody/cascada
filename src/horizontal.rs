@@ -75,7 +75,7 @@ impl HorizontalLayout {
         let mut sum = Size::default();
 
         for (i, child) in self.children.iter().enumerate() {
-            match child.intrinsic_size().width {
+            match child.get_intrinsic_size().width {
                 BoxSizing::Fixed(width) => {
                     sum.width += width;
                 }
@@ -85,7 +85,7 @@ impl HorizontalLayout {
                 _ => {}
             }
 
-            if let BoxSizing::Fixed(height) = child.intrinsic_size().height {
+            if let BoxSizing::Fixed(height) = child.get_intrinsic_size().height {
                 sum.height = sum.height.max(height);
             }
 
@@ -195,7 +195,7 @@ impl Layout for HorizontalLayout {
         self.constraints
     }
 
-    fn intrinsic_size(&self) -> IntrinsicSize {
+    fn get_intrinsic_size(&self) -> IntrinsicSize {
         self.intrinsic_size
     }
 
@@ -260,7 +260,7 @@ impl Layout for HorizontalLayout {
             .children
             .iter()
             .filter_map(|child| {
-                if let BoxSizing::Flex(factor) = child.intrinsic_size().width {
+                if let BoxSizing::Flex(factor) = child.get_intrinsic_size().width {
                     Some(factor)
                 } else {
                     None
@@ -291,7 +291,7 @@ impl Layout for HorizontalLayout {
         }
 
         for child in &mut self.children {
-            match child.intrinsic_size().width {
+            match child.get_intrinsic_size().width {
                 BoxSizing::Flex(factor) => {
                     let grow_factor = factor as f32 / flex_total as f32;
                     child.set_max_width(grow_factor * available_width);
@@ -305,7 +305,7 @@ impl Layout for HorizontalLayout {
                 }
             }
 
-            match child.intrinsic_size().height {
+            match child.get_intrinsic_size().height {
                 BoxSizing::Flex(_) => {
                     child.set_max_height(available_height);
                 }

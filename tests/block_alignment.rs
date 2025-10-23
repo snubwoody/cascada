@@ -15,9 +15,8 @@ fn center_alignment() {
     let mut root = BlockLayout::new(Box::new(child))
         .main_axis_alignment(AxisAlignment::Center)
         .cross_axis_alignment(AxisAlignment::Center)
-        .padding(Padding::all(24.0));
-    root.intrinsic_size.width = BoxSizing::Flex(1);
-    root.intrinsic_size.height = BoxSizing::Flex(1);
+        .padding(Padding::all(24.0))
+        .intrinsic_size(IntrinsicSize::flex(1));
 
     solve_layout(&mut root, window);
 
