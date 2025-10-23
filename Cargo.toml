@@ -5,9 +5,13 @@ version = "0.1.0"
 authors = ["Wakunguma Kalimukwa <wakunguma13@gmail.com>"]
 license = "Apache-2.0 OR MIT"
 edition = "2024"
+readme = "README.md"
+documentation = "https://docs.rs/cascada"
 repository = "https://github.com/snubwoody/cascada"
 categories = ["gui"]
-keywords = ["gui", "graphics","ui"]
+keywords = ["gui", "graphics","ui","layout","engine"]
+
+exclude = ["benches/*","examples/*"]
 
 [dependencies]
 agape_core = "0.3.0"
@@ -20,6 +24,7 @@ criterion = "0.7.0"
 [workspace.lints.clippy]
 enum_glob_use = "warn"
 branches_sharing_code = "warn"
+
 
 [[bench]]
 name = "horizontal"
