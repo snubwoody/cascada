@@ -56,7 +56,7 @@ jobs:
           restore-keys: ${{runner.os}}-cargo-
       - uses: taiki-e/install-action@cargo-nextest
       - name: Run tests
-        run: cargo nextest run --locked
+        run: cargo nextest run
   doc-tests:
     strategy:
       fail-fast: false
@@ -73,7 +73,7 @@ jobs:
             target/
           restore-keys: ${{runner.os}}-cargo-
       - name: Run doc tests
-        run: cargo test --doc --locked
+        run: cargo test --doc
   all-systems-pass:
     runs-on: ubuntu-latest
     needs:
