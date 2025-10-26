@@ -2,7 +2,7 @@
 ## Axes
 Every layout node has two axes, the main axis and cross axis.
 
-![](./art/axes.svg)
+![](./art/axis-alignment.svg)
 
 ### Axis alignment
 ![](./art/alignment.svg)
