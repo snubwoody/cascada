@@ -44,8 +44,24 @@ pub use size::Size;
 use std::fmt::Debug;
 pub use vertical::VerticalLayout;
 
-/// Solve the final size and position of all the layout nodes. This functions
+/// Solve the final size and position of all the layout nodes. The
+/// `window_size` is the maximum available space for the root node.
+///
+/// This functions
 /// returns any layout errors such as overflow or out of bounds.
+///
+/// # Example
+///
+/// ```
+/// use cascada::{solve_layout, BlockLayout, EmptyLayout, IntrinsicSize, Padding, Size};
+///
+/// let child = EmptyLayout::new()
+///     .intrinsic_size(IntrinsicSize::fixed(50.0,50.0));
+/// let mut block = BlockLayout::new(child)
+///     .padding(Padding::all(10.0));
+///
+/// solve_layout(&mut block,Size::unit(500.0));
+/// ```
 pub fn solve_layout(root: &mut dyn Layout, window_size: Size) -> Vec<LayoutError> {
     root.set_max_width(window_size.width);
     root.set_max_height(window_size.height);
