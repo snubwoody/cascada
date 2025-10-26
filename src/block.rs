@@ -85,7 +85,6 @@ impl BlockLayout {
 
     /// Align the children on the main axis in the center
     fn align_main_axis_center(&mut self) {
-        // TODO handle overflow
         let center_start = self.position.x + (self.size.width - self.child.size().width) / 2.0;
         self.child.set_x(center_start);
     }
@@ -103,7 +102,6 @@ impl BlockLayout {
     }
 
     fn align_cross_axis_center(&mut self) {
-        // TODO handle overflow
         let y_pos = (self.size.height - self.child.size().height) / 2.0 + self.position.y;
         self.child.set_y(y_pos);
     }
@@ -203,7 +201,6 @@ impl Layout for BlockLayout {
     }
 
     fn solve_max_constraints(&mut self, space: Size) {
-        // FIXME: how?
         let mut available_space = space;
         available_space.width -= self.padding.horizontal_sum();
         available_space.height -= self.padding.vertical_sum();

@@ -4,9 +4,24 @@ use crate::{
 };
 use agape_core::GlobalId;
 
-// TODO maybe make some items private
-// TODO if min width is larger than max width then it's an overflow
-/// A [`Layout`] that arranges it's children vertically.
+/// A [`Layout`] node that arranges it's children vertically.
+///
+/// # Example
+/// ```
+/// use cascada::{solve_layout, AxisAlignment, EmptyLayout, IntrinsicSize, Padding, Size, VerticalLayout};
+///
+/// let child = EmptyLayout::new()
+///     .intrinsic_size(IntrinsicSize::fixed(12.0,50.0));
+///
+///
+/// let mut layout = VerticalLayout::new()
+///     .spacing(12)
+///     .padding(Padding::all(24.0))
+///     .add_children([child.clone(),child])
+///     .main_axis_alignment(AxisAlignment::Center);
+///
+/// solve_layout(&mut layout, Size::unit(500.0));
+/// ```
 #[derive(Default, Debug)]
 pub struct VerticalLayout {
     id: GlobalId,
@@ -154,7 +169,6 @@ impl VerticalLayout {
 
     /// Align the children on the main axis in the center
     fn align_main_axis_center(&mut self) {
-        // TODO handle overflow
         let mut height_sum = self
             .children
             .iter()
@@ -190,7 +204,6 @@ impl VerticalLayout {
 
     fn align_cross_axis_center(&mut self) {
         for child in &mut self.children {
-            // TODO handle overflow
             let x_pos = (self.size.width - child.size().width) / 2.0 + self.position.x;
             child.set_x(x_pos);
         }
@@ -383,8 +396,6 @@ impl Layout for VerticalLayout {
                 BoxSizing::Shrink => {}
             }
 
-            // TODO not using size anymore
-            // FIXME check this
             child.solve_max_constraints(Size::default());
         }
     }
@@ -398,7 +409,6 @@ impl Layout for VerticalLayout {
                 self.size.width = self.constraints.min_width;
             }
             BoxSizing::Fixed(width) => {
-                // TODO maybe set the min constrains?
                 self.size.width = width;
             }
         }
@@ -411,7 +421,6 @@ impl Layout for VerticalLayout {
                 self.size.height = self.constraints.min_height;
             }
             BoxSizing::Fixed(height) => {
-                // TODO maybe set the min constrains?
                 self.size.height = height;
             }
         }
@@ -420,7 +429,6 @@ impl Layout for VerticalLayout {
             child.update_size();
         }
 
-        // TODO check for padding and spacing
         let width_sum: f32 = self.children.iter().map(|child| child.size().width).sum();
         let mut height_sum = self.padding.vertical_sum();
         for (i, child) in self.children.iter().enumerate() {
@@ -478,7 +486,6 @@ mod test {
 
     #[test]
     fn calculate_min_width() {
-        // TODO: test max height and width
         let widths: [f32; 5] = [500.0, 200.0, 10.2, 20.2, 45.0];
         let children: Vec<Box<dyn Layout>> = widths
             .into_iter()
