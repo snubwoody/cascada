@@ -1,8 +1,8 @@
 
-<h1 align="center">Cascada</h1>
-<div align="center">
-    <a href="https://crates.io/crates/agape">
-        <img alt="Crates.io Version" src="https://img.shields.io/crates/v/agape">
+# Cascada
+<div>
+    <a href="https://crates.io/crates/cascada">
+        <img alt="Crates.io Version" src="https://img.shields.io/crates/v/cascada">
     </a>
     <a href="https://docs.rs/cascada/latest/cascada/">
         <img src="https://img.shields.io/docsrs/cascada"/>
@@ -14,7 +14,8 @@
     </a>
 </div>
 
-Cascada is a lightweight, high-performance UI layout engine.
+Cascada is a lightweight, high-performance UI layout engine. Cascada's goals are to be
+fast **and** have an intuitive API, as well as overcoming the confusing aspect of CSS.
 
 
 ## Goals
@@ -24,12 +25,11 @@ Cascada is a lightweight, high-performance UI layout engine.
 - Portable
 
 ## Use cases
-- TUI
-- GUI
-- Game interfaces
+- Terminal UIs
+- GUIs
 
-## Installation
-Add `cascada` to your project
+## Usage
+Add this to your `Cargo.toml`.
 
 ```toml
 [dependencies]
