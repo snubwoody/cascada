@@ -5,7 +5,7 @@ use crate::{
 use agape_core::GlobalId;
 
 /// A [`Layout`] that arranges it's child nodes horizontally.
-/// 
+///
 /// # Example
 /// ```
 /// use cascada::{EmptyLayout, HorizontalLayout, IntrinsicSize, Padding};
@@ -456,7 +456,7 @@ mod test {
         assert_eq!(layout.constraints.min_width, 20.0);
         assert_eq!(layout.constraints.min_height, 24.0);
     }
-    
+
     #[test]
     fn compute_min_size_no_children() {
         let mut layout = HorizontalLayout::new();
