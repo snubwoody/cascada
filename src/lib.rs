@@ -16,6 +16,9 @@
 //! - [`HorizontalLayout`]
 //! - [`VerticalLayout`]
 //!
+//! Create a root layout node and pass it into the [`solve_layout`] function with the total
+//! available space.
+//!
 //! ```
 //! use cascada::{HorizontalLayout, EmptyLayout, solve_layout, IntrinsicSize, Size, Layout};
 //!
@@ -37,6 +40,50 @@
 //! assert_eq!(size.width,1000.0);
 //! ```
 //!
+//! To get the size and position of the layout nodes you can iterate over the tree.
+//!
+//! ```
+//! use cascada::{HorizontalLayout, EmptyLayout, solve_layout, IntrinsicSize, Size, Layout};
+//! let child = EmptyLayout::new()
+//!     .intrinsic_size(IntrinsicSize::fill());
+//!
+//! let mut layout = HorizontalLayout::new()
+//!     .intrinsic_size(IntrinsicSize::fill())
+//!     .add_children([
+//!         child.clone(),
+//!         child.clone(),
+//!         child,
+//!     ]);
+//!
+//! solve_layout(&mut layout,Size::unit(3000.0));
+//!
+//! for node in layout.iter(){
+//!     println!("Size: {:?}",node.size());
+//!     println!("Position: {:?}",node.position());
+//! }
+//! ```
+//! To get the size and position of the layout nodes you can iterate over the tree.
+//!
+//! ```
+//! use cascada::{HorizontalLayout, EmptyLayout, solve_layout, IntrinsicSize, Size, Layout};
+//! let child = EmptyLayout::new()
+//!     .intrinsic_size(IntrinsicSize::fill());
+//!
+//! let mut layout = HorizontalLayout::new()
+//!     .intrinsic_size(IntrinsicSize::fill())
+//!     .add_children([
+//!         child.clone(),
+//!         child.clone(),
+//!         child,
+//!     ]);
+//!
+//! solve_layout(&mut layout,Size::unit(3000.0));
+//!
+//! for node in layout.iter(){
+//!     println!("Size: {:?}",node.size());
+//!     println!("Position: {:?}",node.position());
+//! }
+//! ```
 #![warn(clippy::suboptimal_flops)]
 #![warn(clippy::suspicious_operation_groupings)]
 #![warn(clippy::imprecise_flops)]

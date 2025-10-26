@@ -60,9 +60,7 @@ assert_eq!(children[2].size().width,1000.0);
 ## Implementation details
 Cascada was originally [agape_layout](https://crates.io/crates/agape_layout) which I made for 
 [agape](https://crates.io/crates/agape), but I forked it because over time it started to feel 
-like more of a standalone crate. So if you see a giant [5000 line initial commit]
-(https://github.com/snubwoody/cascada/commit/b594394aa240d59e35f150e464641696492d2b4c) that's
-why.
+like more of a standalone crate.
 
 ## License
 
