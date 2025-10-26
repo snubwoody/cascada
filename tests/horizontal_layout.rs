@@ -32,16 +32,20 @@ fn horizontal_layout() {
 fn horizontal_and_empty_layout() {
     let window = Size::new(1000.0, 1000.0);
 
-    let mut child_1 = EmptyLayout::new();
-    child_1.intrinsic_size.width = BoxSizing::Fixed(250.0);
-    child_1.intrinsic_size.height = BoxSizing::Flex(1);
+    let mut child_1 = EmptyLayout::new()
+        .intrinsic_size(IntrinsicSize{
+            width: BoxSizing::Fixed(250.0),
+            height: BoxSizing::Flex(1),
+        });
 
-    let mut child_2 = EmptyLayout::new();
-    child_2.intrinsic_size.width = BoxSizing::Flex(1);
-    child_2.intrinsic_size.height = BoxSizing::Fixed(20.0);
+    let mut child_2 = EmptyLayout::new()
+        .intrinsic_size(IntrinsicSize{
+            width: BoxSizing::Flex(1),
+            height: BoxSizing::Fixed(20.0),
+        });
 
-    let mut child_3 = EmptyLayout::new();
-    child_3.intrinsic_size.height = BoxSizing::Fixed(250.0);
+    let mut child_3 = EmptyLayout::new()
+        .intrinsic_size(IntrinsicSize{height: BoxSizing::Fixed(250.0),..Default::default()});
 
     let mut root = HorizontalLayout::new();
     root.add_children([child_1, child_2, child_3]);
@@ -86,19 +90,13 @@ fn flex_with_shrink() {
     let padding = Padding::all(24.0);
     let spacing = 45;
 
-    let inner_child = EmptyLayout {
-        intrinsic_size: IntrinsicSize::fixed(250.0, 250.0),
-        ..EmptyLayout::new()
-    };
+    let inner_child = EmptyLayout::new()
+        .intrinsic_size(IntrinsicSize::fixed(250.0, 250.0));
 
     let block = BlockLayout::new(Box::new(inner_child))
         .padding(Padding::all(24.0));
-    // block.padding = Padding::all(24.0);
 
-    let empty = EmptyLayout {
-        intrinsic_size: IntrinsicSize::flex(1),
-        ..EmptyLayout::new()
-    };
+    let empty = EmptyLayout::new().intrinsic_size(IntrinsicSize::fill());
 
     let mut root = HorizontalLayout {
         padding,
@@ -136,19 +134,17 @@ fn flex_with_fixed() {
     let padding = Padding::all(24.0);
     let spacing = 45;
 
-    let child_1 = EmptyLayout {
-        intrinsic_size: IntrinsicSize::fixed(250.0, 250.0),
-        ..Default::default()
-    };
+    let child_1 = EmptyLayout::new()
+        .intrinsic_size(IntrinsicSize::fixed(250.0,250.0));
 
-    let mut child_2 = EmptyLayout::new();
-    child_2.intrinsic_size.width = BoxSizing::Flex(1);
-    child_2.intrinsic_size.height = BoxSizing::Flex(2);
+    let child_2 = EmptyLayout::new()
+        .intrinsic_size(IntrinsicSize{
+            width: BoxSizing::Flex(1),
+            height: BoxSizing::Flex(2),
+        });
 
-    let child_3 = EmptyLayout {
-        intrinsic_size: IntrinsicSize::flex(4),
-        ..Default::default()
-    };
+    let child_3 = EmptyLayout::new()
+        .intrinsic_size(IntrinsicSize::flex(4));
 
     let mut root = HorizontalLayout {
         padding,

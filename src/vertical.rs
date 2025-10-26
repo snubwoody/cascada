@@ -9,22 +9,22 @@ use agape_core::GlobalId;
 /// A [`Layout`] that arranges it's children vertically.
 #[derive(Default, Debug)]
 pub struct VerticalLayout {
-    pub id: GlobalId,
-    pub size: Size,
-    pub position: Position,
-    pub spacing: u32,
-    pub padding: Padding,
+    id: GlobalId,
+    size: Size,
+    position: Position,
+    spacing: u32,
+    padding: Padding,
     // TODO: maybe scrolling should be handled in
     // the UI layer instead
-    pub scroll_offset: f32,
-    pub intrinsic_size: IntrinsicSize,
-    pub children: Vec<Box<dyn Layout>>,
+    scroll_offset: f32,
+    intrinsic_size: IntrinsicSize,
+    children: Vec<Box<dyn Layout>>,
     /// The main axis is the `y-axis`
-    pub main_axis_alignment: AxisAlignment,
+    main_axis_alignment: AxisAlignment,
     /// The cross axis is the `x-axis`
-    pub cross_axis_alignment: AxisAlignment,
-    pub constraints: BoxConstraints,
-    pub errors: Vec<LayoutError>,
+    cross_axis_alignment: AxisAlignment,
+    constraints: BoxConstraints,
+    errors: Vec<LayoutError>,
 }
 
 impl VerticalLayout {
@@ -33,22 +33,66 @@ impl VerticalLayout {
         Self::default()
     }
 
-    /// Add a child [`Layout`] to the `VerticalLayout`
-    pub fn add_child(&mut self, child: impl Layout + 'static) {
+    /// Appends a [`Layout`] node to the list of children.
+    ///
+    /// # Example
+    /// ```
+    /// use cascada::{EmptyLayout,VerticalLayout};
+    ///
+    /// VerticalLayout::new()
+    ///     .add_child(EmptyLayout::default())
+    ///     .add_child(VerticalLayout::default());
+    /// ```
+    pub fn add_child(mut self, child: impl Layout + 'static) -> Self {
         self.children.push(Box::new(child));
+        self
     }
 
-    pub fn add_children<I>(&mut self, children: I)
+    /// Add multiple child nodes to the list of children.
+    ///
+    /// # Example
+    /// ```
+    /// use cascada::{VerticalLayout,EmptyLayout};
+    ///
+    /// VerticalLayout::new()
+    ///     .add_children([
+    ///         EmptyLayout::new(),
+    ///         EmptyLayout::new(),
+    ///         EmptyLayout::new(),
+    ///     ]);
+    /// ```
+    pub fn add_children<I>(mut self, children: I) -> Self
     where
         I: IntoIterator<Item: Layout + 'static>,
     {
         for child in children {
             self.children.push(Box::new(child));
         }
+        self
     }
 
+    /// Set this layout's [`IntrinsicSize`].
+    pub fn intrinsic_size(mut self,intrinsic_size: IntrinsicSize) -> Self {
+        self.intrinsic_size = intrinsic_size;
+        self
+    }
+
+
+    /// Set this layout's [`Padding`].
+    pub fn padding(mut self, padding: Padding) -> Self {
+        self.padding = padding;
+        self
+    }
+
+    /// Set this layout's spacing.
+    pub fn spacing(mut self, spacing: u32) -> Self {
+        self.spacing = spacing;
+        self
+    }
+
+
     /// Returns `true` if a [`VerticalLayout`]'s children are overflowing.
-    pub fn overflow(&self) -> bool {
+    fn overflow(&self) -> bool {
         self.main_axis_overflow() || self.cross_axis_overflow()
     }
 
@@ -484,16 +528,17 @@ mod test {
     fn overflow_error() {
         let window = Size::unit(500.0);
 
-        let mut root = VerticalLayout::new();
+
+        let child = EmptyLayout::new()
+            .intrinsic_size(IntrinsicSize::fixed(200.0,200.0));
+        let mut root = VerticalLayout::new()
+            .add_child(child);
         root.intrinsic_size = IntrinsicSize {
             width: BoxSizing::Fixed(0.0),
             height: BoxSizing::Fixed(0.0),
         };
 
-        let child = EmptyLayout::new()
-            .intrinsic_size(IntrinsicSize::fixed(200.0,200.0));
 
-        root.add_child(child);
 
         solve_layout(&mut root, window);
         assert!(root.main_axis_overflow());
@@ -504,16 +549,15 @@ mod test {
     fn cross_axis_overflow() {
         let window = Size::unit(500.0);
 
-        let mut root = VerticalLayout::new();
+
+        let child = EmptyLayout::new()
+            .intrinsic_size(IntrinsicSize::fixed(200.0,0.0));
+        let mut root = VerticalLayout::new().add_child(child);
         root.intrinsic_size = IntrinsicSize {
             width: BoxSizing::Fixed(0.0),
             ..Default::default()
         };
 
-        let mut child = EmptyLayout::new()
-            .intrinsic_size(IntrinsicSize::fixed(200.0,0.0));
-
-        root.add_child(child);
 
         solve_layout(&mut root, window);
         assert!(!root.main_axis_overflow());
@@ -524,16 +568,17 @@ mod test {
     fn main_axis_overflow() {
         let window = Size::unit(500.0);
 
-        let mut root = VerticalLayout::new();
+
+        let child = EmptyLayout::new()
+            .intrinsic_size(IntrinsicSize::fixed(0.0,200.0));
+        let mut root = VerticalLayout::new()
+            .add_child(child);
+
         root.intrinsic_size = IntrinsicSize {
             height: BoxSizing::Fixed(0.0),
             ..Default::default()
         };
 
-        let mut child = EmptyLayout::new()
-            .intrinsic_size(IntrinsicSize::fixed(0.0,200.0));
-
-        root.add_child(child);
 
         solve_layout(&mut root, window);
         assert!(root.main_axis_overflow());
@@ -543,7 +588,9 @@ mod test {
     fn include_spacing_and_padding_main_axis_overflow() {
         let window = Size::unit(500.0);
 
-        let mut root = VerticalLayout::new();
+        let child = EmptyLayout::new()
+            .intrinsic_size(IntrinsicSize::fixed(0.0,180.0));
+        let mut root = VerticalLayout::new().add_child(child);
         root.spacing = 20;
         root.padding = Padding::all(20.0);
         root.intrinsic_size = IntrinsicSize {
@@ -551,10 +598,7 @@ mod test {
             ..Default::default()
         };
 
-        let mut child = EmptyLayout::new()
-            .intrinsic_size(IntrinsicSize::fixed(0.0,180.0));
 
-        root.add_child(child);
 
         solve_layout(&mut root, window);
         assert!(root.main_axis_overflow());
@@ -565,20 +609,17 @@ mod test {
     fn no_duplicate_overflow_error() {
         let window = Size::unit(500.0);
 
-        let mut root = VerticalLayout::new();
+        let child = EmptyLayout::new()
+            .intrinsic_size(IntrinsicSize::fixed(200.0,200.0));
+        let mut root = VerticalLayout::new()
+            .add_child(child);
         root.intrinsic_size = IntrinsicSize {
             width: BoxSizing::Fixed(0.0),
             ..Default::default()
         };
 
-        let mut child = EmptyLayout::new()
-            .intrinsic_size(IntrinsicSize::fixed(200.0,200.0));
 
-        root.add_child(child);
 
-        solve_layout(&mut root, window);
-        solve_layout(&mut root, window);
-        solve_layout(&mut root, window);
         solve_layout(&mut root, window);
 
         assert_eq!(root.errors.len(), 1);
@@ -587,7 +628,6 @@ mod test {
     #[test]
     fn vertical_layout() {
         let window = Size::new(800.0, 800.0);
-        let mut root = VerticalLayout::new();
         let mut child_1 = VerticalLayout::new();
         let mut child_2 = VerticalLayout::new();
 
@@ -597,8 +637,8 @@ mod test {
         child_2.intrinsic_size.width = BoxSizing::Fixed(500.0);
         child_2.intrinsic_size.height = BoxSizing::Fixed(350.0);
 
-        root.add_child(child_1);
-        root.add_child(child_2);
+        let mut root = VerticalLayout::new()
+            .add_children([child_1, child_2]);
 
         solve_layout(&mut root, window);
 
@@ -634,7 +674,6 @@ mod test {
     #[test]
     fn flex_sizing() {
         let window = Size::new(800.0, 800.0);
-        let mut root = VerticalLayout::new();
         let mut child_1 = VerticalLayout::new();
         let mut child_2 = VerticalLayout::new();
 
@@ -644,11 +683,9 @@ mod test {
         child_2.intrinsic_size.width = BoxSizing::Flex(1);
         child_2.intrinsic_size.height = BoxSizing::Flex(1);
 
-        root.intrinsic_size.width = BoxSizing::Flex(1);
-        root.intrinsic_size.height = BoxSizing::Flex(1);
-
-        root.add_child(child_1);
-        root.add_child(child_2);
+        let mut root = VerticalLayout::new()
+            .intrinsic_size(IntrinsicSize::fill())
+            .add_children([child_1,child_2]);
 
         solve_layout(&mut root, window);
 
@@ -664,7 +701,7 @@ mod test {
         let padding = 24;
         let spacing = 45;
 
-        let mut inner_child = EmptyLayout::new()
+        let inner_child = EmptyLayout::new()
             .intrinsic_size(IntrinsicSize::fixed(250.0,250.0));
 
         let child_1 = BlockLayout::new(Box::new(inner_child))
@@ -673,12 +710,12 @@ mod test {
         let mut child_2 = EmptyLayout::new()
             .intrinsic_size(IntrinsicSize::fill());
 
-        let mut root = VerticalLayout::new();
+        let mut root = VerticalLayout::new()
+            .add_child(child_1)
+            .add_child(child_2);
         root.intrinsic_size.height = BoxSizing::Flex(1);
         root.padding = Padding::all(24.0);
         root.spacing = spacing;
-        root.add_child(child_1);
-        root.add_child(child_2);
 
         solve_layout(&mut root, window);
 
@@ -690,6 +727,7 @@ mod test {
         root_size.width += (padding * 2) as f32;
 
         // I feel like the math is slightly wrong due to padding
+        panic!("CHECK");
         let mut child_2_size = Size {
             width: root_size.width,
             height: root_size.height,
@@ -707,7 +745,6 @@ mod test {
     #[test]
     fn flex_factor() {
         let window = Size::new(800.0, 400.0);
-        let mut node = VerticalLayout::new();
         let mut child_node_1 = VerticalLayout::new();
         let mut child_node_2 = VerticalLayout::new();
 
@@ -717,11 +754,9 @@ mod test {
         child_node_2.intrinsic_size.width = BoxSizing::Flex(3);
         child_node_2.intrinsic_size.height = BoxSizing::Flex(3);
 
-        node.intrinsic_size.width = BoxSizing::Flex(1);
-        node.intrinsic_size.height = BoxSizing::Flex(1);
-
-        node.add_child(child_node_1);
-        node.add_child(child_node_2);
+        let mut node = VerticalLayout::new()
+            .intrinsic_size(IntrinsicSize::fill())
+            .add_children([child_node_1,child_node_2]);
 
         solve_layout(&mut node, window);
 

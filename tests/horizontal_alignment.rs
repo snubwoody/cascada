@@ -85,21 +85,12 @@ fn start_alignment() {
     let padding = Padding::all(24.0);
     let spacing = 10;
 
-    let child_1 = EmptyLayout {
-        intrinsic_size: IntrinsicSize {
-            width: BoxSizing::Fixed(240.0),
-            height: BoxSizing::Fixed(40.0),
-        },
-        ..Default::default()
-    };
+    let child_1 = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(240.0,40.0));
 
-    let child_2 = EmptyLayout {
-        intrinsic_size: IntrinsicSize {
-            width: BoxSizing::Fixed(20.0),
-            ..Default::default()
-        },
+    let child_2 = EmptyLayout::new().intrinsic_size(IntrinsicSize {
+        width: BoxSizing::Fixed(20.0),
         ..Default::default()
-    };
+    });
 
     let mut root = HorizontalLayout {
         position: Position { x: 250.0, y: 10.0 },

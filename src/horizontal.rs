@@ -12,20 +12,20 @@ use agape_core::GlobalId;
 /// [module docs]: crate::horizontal
 #[derive(Default, Debug)]
 pub struct HorizontalLayout {
-    pub id: GlobalId,
-    pub size: Size,
-    pub position: Position,
-    pub spacing: u32,
-    pub padding: Padding,
-    pub constraints: BoxConstraints,
-    pub intrinsic_size: IntrinsicSize,
+    id: GlobalId,
+    size: Size,
+    position: Position,
+    spacing: u32,
+    padding: Padding,
+    constraints: BoxConstraints,
+    intrinsic_size: IntrinsicSize,
     /// The main axis is the axis which the content flows in, for the [`HorizontalLayout`]
     /// main axis is the `x-axis`
-    pub main_axis_alignment: AxisAlignment,
+    main_axis_alignment: AxisAlignment,
     /// The cross axis is the `y-axis`
-    pub cross_axis_alignment: AxisAlignment,
-    pub children: Vec<Box<dyn Layout>>,
-    pub errors: Vec<LayoutError>,
+    cross_axis_alignment: AxisAlignment,
+    children: Vec<Box<dyn Layout>>,
+    errors: Vec<LayoutError>,
 }
 
 impl HorizontalLayout {
@@ -33,17 +33,73 @@ impl HorizontalLayout {
         Self::default()
     }
 
-    pub fn add_child(&mut self, child: impl Layout + 'static) {
+    /// Appends a [`Layout`] node to the list of children.
+    ///
+    /// # Example
+    /// ```
+    /// use cascada::{HorizontalLayout,EmptyLayout,VerticalLayout};
+    ///
+    /// HorizontalLayout::new()
+    ///     .add_child(EmptyLayout::default())
+    ///     .add_child(VerticalLayout::default());
+    /// ```
+    pub fn add_child(mut self, child: impl Layout + 'static) -> Self {
         self.children.push(Box::new(child));
+        self
     }
 
-    pub fn add_children<I>(&mut self, children: I)
+    /// Add multiple child nodes to the list of children.
+    ///
+    /// # Example
+    /// ```
+    /// use cascada::{HorizontalLayout,EmptyLayout};
+    ///
+    /// HorizontalLayout::new()
+    ///     .add_children([
+    ///         EmptyLayout::new(),
+    ///         EmptyLayout::new(),
+    ///         EmptyLayout::new(),
+    ///     ]);
+    /// ```
+    pub fn add_children<I>(mut self, children: I) -> Self
     where
         I: IntoIterator<Item: Layout + 'static>,
     {
         for child in children {
             self.children.push(Box::new(child));
         }
+        self
+    }
+
+    /// Set this layout's [`IntrinsicSize`].
+    pub fn intrinsic_size(mut self,intrinsic_size: IntrinsicSize) -> Self {
+        self.intrinsic_size = intrinsic_size;
+        self
+    }
+
+
+    /// Set this layout's [`Padding`].
+    pub fn padding(mut self, padding: Padding) -> Self {
+        self.padding = padding;
+        self
+    }    
+    
+    /// Set this layout's spacing.
+    pub fn spacing(mut self, spacing: u32) -> Self {
+        self.spacing = spacing;
+        self
+    }
+
+    /// Set the main axis alignment
+    pub fn main_axis_alignment(mut self, main_axis_alignment: AxisAlignment) -> Self {
+        self.main_axis_alignment = main_axis_alignment;
+        self
+    }
+
+    /// Set the cross axis alignment.
+    pub fn cross_axis_alignment(mut self, cross_axis_alignment: AxisAlignment) -> Self {
+        self.cross_axis_alignment = cross_axis_alignment;
+        self
     }
 
     /// Calculate the total minimum constraints of all

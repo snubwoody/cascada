@@ -7,13 +7,7 @@ use cascada::{
 fn test_single_center_alignment() {
     let window = Size::new(500.0, 500.0);
 
-    let child_1 = EmptyLayout {
-        intrinsic_size: IntrinsicSize {
-            width: BoxSizing::Fixed(250.0),
-            height: BoxSizing::Fixed(350.0),
-        },
-        ..Default::default()
-    };
+    let child_1 = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(250.0,350.0));
 
     let mut root = VerticalLayout {
         main_axis_alignment: AxisAlignment::Center,
@@ -39,29 +33,10 @@ fn test_single_center_alignment() {
 fn test_center_alignment() {
     let window = Size::new(1500.0, 1500.0);
 
-    let child_1 = EmptyLayout {
-        intrinsic_size: IntrinsicSize {
-            width: BoxSizing::Fixed(250.0),
-            height: BoxSizing::Fixed(350.0),
-        },
-        ..Default::default()
-    };
+    let child_1 = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(250.0,350.0));
 
-    let child_2 = EmptyLayout {
-        intrinsic_size: IntrinsicSize {
-            width: BoxSizing::Fixed(250.0),
-            height: BoxSizing::Fixed(350.0),
-        },
-        ..Default::default()
-    };
-
-    let child_3 = EmptyLayout {
-        intrinsic_size: IntrinsicSize {
-            width: BoxSizing::Fixed(250.0),
-            height: BoxSizing::Fixed(350.0),
-        },
-        ..Default::default()
-    };
+    let child_2 = child_1.clone();
+    let child_3 = child_1.clone();
 
     let mut root = VerticalLayout {
         main_axis_alignment: AxisAlignment::Center,
@@ -112,21 +87,12 @@ fn test_start_alignment() {
     let padding = Padding::all(32.0);
     let spacing = 10;
 
-    let child_1 = EmptyLayout {
-        intrinsic_size: IntrinsicSize {
-            width: BoxSizing::Fixed(240.0),
-            height: BoxSizing::Fixed(40.0),
-        },
-        ..Default::default()
-    };
+    let child_1 = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(240.0,40.0));
 
-    let child_2 = EmptyLayout {
-        intrinsic_size: IntrinsicSize {
-            width: BoxSizing::Fixed(20.0),
-            ..Default::default()
-        },
+    let child_2 = EmptyLayout::new().intrinsic_size(IntrinsicSize{
+        width: BoxSizing::Fixed(20.0),
         ..Default::default()
-    };
+    });
 
     let mut root = VerticalLayout {
         position: Position { x: 250.0, y: 10.0 },
