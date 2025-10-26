@@ -3,7 +3,7 @@ use cascada::{
 };
 
 #[test]
-fn child_flex_height_works_with_shrink_height() {
+fn subtract_fixed_height_from_available_space() {
     let inner_child = EmptyLayout::new().intrinsic_size(IntrinsicSize {
         height: BoxSizing::Fixed(250.0),
         ..Default::default()
@@ -14,9 +14,10 @@ fn child_flex_height_works_with_shrink_height() {
         ..Default::default()
     });
 
+    let padding = Padding::all(10.0);
     let mut root = VerticalLayout::new()
         .spacing(24)
-        .padding(Padding::all(10.0))
+        .padding(padding)
         .add_children([inner_child.clone(), inner_child, flex_child])
         .intrinsic_size(IntrinsicSize {
             height: BoxSizing::Flex(1),
@@ -28,7 +29,7 @@ fn child_flex_height_works_with_shrink_height() {
     let mut flex_child_height = 1000.0;
     flex_child_height -= 250.0 * 2.0;
     flex_child_height -= 24.0 * 2.0;
-    flex_child_height -= 10.0 * 2.0;
+    flex_child_height -= padding.vertical_sum();
 
-    assert_eq!(root.children()[1].size().height, flex_child_height)
+    assert_eq!(root.children()[2].size().height, flex_child_height)
 }

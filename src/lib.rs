@@ -24,7 +24,7 @@
 //! ```
 //!
 //! ## Layout engine
-//! `cascada` is a two pass layout engine that uses `contraints` and [`IntrinsicSize`] to solve the layout 
+//! `cascada` is a two pass layout engine that uses `contraints` and [`IntrinsicSize`] to solve the layout
 //! tree. Minimum constraints flow up and maximum constraints flow down.
 //!
 //! The maximum size starts from the top, as it goes down the widget tree the nodes are given the
@@ -212,7 +212,7 @@ impl BoxConstraints {
     }
 }
 
-/// This is the preferred size of a [`Layout`] node. 
+/// This is the preferred size of a [`Layout`] node.
 #[derive(Debug, Clone, Copy, Default, PartialEq, PartialOrd)]
 pub struct IntrinsicSize {
     pub width: BoxSizing,

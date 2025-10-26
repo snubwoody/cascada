@@ -74,14 +74,17 @@ fn flex_with_shrink() {
 
     let inner_child = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(250.0, 250.0));
 
-    let block = BlockLayout::new(Box::new(inner_child)).padding(Padding::all(24.0));
+    let block = BlockLayout::new(Box::new(inner_child)).padding(padding);
 
     let empty = EmptyLayout::new().intrinsic_size(IntrinsicSize::fill());
 
     let mut root = HorizontalLayout::new()
         .padding(padding)
         .spacing(spacing)
-        .intrinsic_size(IntrinsicSize::fill())
+        .intrinsic_size(IntrinsicSize {
+            width: BoxSizing::Flex(1),
+            height: BoxSizing::Shrink,
+        })
         .add_child(block)
         .add_child(empty);
 
@@ -101,9 +104,9 @@ fn flex_with_shrink() {
     empty_size.height += padding.vertical_sum();
 
     let empty = &root.children()[1];
+    assert_eq!(root.size(), root_size);
     assert_eq!(empty.size(), empty_size);
     assert_eq!(root.children()[0].size(), child_1_size);
-    assert_eq!(root.size(), root_size);
 }
 
 #[test]
