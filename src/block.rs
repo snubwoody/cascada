@@ -5,6 +5,24 @@ use crate::{
 use agape_core::GlobalId;
 
 /// A [`Layout`] that only has one child node.
+///
+/// # Example
+/// ```
+/// use cascada::{solve_layout, BlockLayout, EmptyLayout, HorizontalLayout, Padding, Size};
+///
+/// let child = HorizontalLayout::new()
+///     .add_children([
+///         EmptyLayout::new(),
+///         EmptyLayout::new(),
+///         EmptyLayout::new(),
+///     ])
+///     .spacing(12);
+///
+/// let mut block = BlockLayout::new(child)
+///     .padding(Padding::all(20.0));
+///
+/// solve_layout(&mut block, Size::unit(200.0));
+/// ```
 #[derive(Debug)]
 pub struct BlockLayout {
     id: GlobalId,
