@@ -46,7 +46,7 @@ impl Position {
     ///
     /// # Example
     /// ```
-    /// use agape_core::Position;
+    /// use cascada::Position;
     ///
     /// let position = Position::unit(500.0);
     ///
@@ -77,7 +77,7 @@ impl Bounds {
     ///
     /// # Example
     /// ```
-    /// use agape_core::{Position,Bounds,Size};
+    /// use cascada::{Position,Bounds,Size};
     ///
     /// let size = Size::new(250.0,100.0);
     /// let position = Position::new(10.0,0.0);
