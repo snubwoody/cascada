@@ -10,7 +10,7 @@ use agape_core::GlobalId;
 /// See the [module docs] for more info.
 ///
 /// [module docs]: crate::horizontal
-#[derive(Default, Debug)]
+#[derive(Default, Debug,)]
 pub struct HorizontalLayout {
     id: GlobalId,
     size: Size,
@@ -442,7 +442,7 @@ impl Layout for HorizontalLayout {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::EmptyLayout;
+    use crate::{solve_layout, EmptyLayout};
 
     #[test]
     fn fixed_min_constraints() {
@@ -626,5 +626,39 @@ mod test {
             assert_eq!(l.position().x, x_pos, "Failed on iteration {i}");
             x_pos -= layout.spacing as f32;
         }
+    }
+
+    #[test]
+    fn start_alignment() {
+        let window = Size::new(200.0, 200.0);
+
+        let padding = Padding::all(24.0);
+        let spacing = 10;
+
+        let child_1 = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(240.0,40.0));
+
+        let child_2 = EmptyLayout::new().intrinsic_size(IntrinsicSize {
+            width: BoxSizing::Fixed(20.0),
+            ..Default::default()
+        });
+
+        let mut root = HorizontalLayout {
+            position: Position { x: 250.0, y: 10.0 },
+            spacing,
+            padding,
+            children: vec![Box::new(child_1), Box::new(child_2)],
+            ..Default::default()
+        };
+
+        solve_layout(&mut root, window);
+
+        let mut child_1_pos = root.position;
+        child_1_pos.x += padding.left;
+        child_1_pos.y += padding.top;
+        let mut child_2_pos = child_1_pos;
+        child_2_pos.x += root.children[0].size().width + spacing as f32;
+
+        assert_eq!(root.children[0].position(), child_1_pos);
+        assert_eq!(root.children[1].position(), child_2_pos);
     }
 }

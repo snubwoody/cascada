@@ -226,7 +226,7 @@ pub struct IntrinsicSize {
 }
 
 impl IntrinsicSize {
-    /// Create a flex intrinsic size.
+    /// Create an intrinsic size with a flex factor of `1`.
     ///
     /// # Example
     /// ```
@@ -237,14 +237,14 @@ impl IntrinsicSize {
     /// assert_eq!(instrinsic_size.width,BoxSizing::Flex(1));
     /// assert_eq!(instrinsic_size.height,BoxSizing::Flex(1));
     /// ```
-    pub fn fill() -> Self {
+    pub const fn fill() -> Self {
         Self {
             width: BoxSizing::Flex(1),
             height: BoxSizing::Flex(1),
         }
     }
 
-    /// Create a flex intrinsic size with a flex factor.
+    /// Creates an intrinsic size with a flex factor.
     ///
     /// # Example
     ///
@@ -256,14 +256,14 @@ impl IntrinsicSize {
     /// assert_eq!(intrinsic_size.width,BoxSizing::Flex(8));
     /// assert_eq!(intrinsic_size.height,BoxSizing::Flex(8));
     /// ```
-    pub fn flex(factor: u8) -> Self {
+    pub const fn flex(factor: u8) -> Self {
         Self {
             width: BoxSizing::Flex(factor),
             height: BoxSizing::Flex(factor),
         }
     }
 
-    /// Create a new shrink intrinsic size.
+    /// Creates an [`IntrinsicSize`] that shrinks to fit its contents.
     ///
     /// # Example
     ///
@@ -275,14 +275,14 @@ impl IntrinsicSize {
     /// assert_eq!(intrinsic_size.width, BoxSizing::Shrink);
     /// assert_eq!(intrinsic_size.height, BoxSizing::Shrink);
     /// ```
-    pub fn shrink() -> Self {
+    pub const fn shrink() -> Self {
         Self {
             width: BoxSizing::Shrink,
             height: BoxSizing::Shrink,
         }
     }
 
-    /// Create a new fixed intrinsic size.
+    /// Creates an [`IntrinsicSize`] with a fixed size.
     ///
     /// # Example
     /// ```
@@ -293,7 +293,7 @@ impl IntrinsicSize {
     /// assert_eq!(intrinsic_size.width,BoxSizing::Fixed(100.0));
     /// assert_eq!(intrinsic_size.height,BoxSizing::Fixed(50.0));
     /// ```
-    pub fn fixed(width: f32, height: f32) -> Self {
+    pub const fn fixed(width: f32, height: f32) -> Self {
         Self {
             width: BoxSizing::Fixed(width),
             height: BoxSizing::Fixed(height),
@@ -320,7 +320,7 @@ pub struct Padding {
 }
 
 impl Padding {
-    /// Create a new [`Padding`].
+    /// Creates a new [`Padding`].
     ///
     /// # Panics
     /// Panics if sides are negative.
