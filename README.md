@@ -15,6 +15,8 @@
 
 Cascada is a lightweight, high-performance UI layout engine. Cascada's goals are to be
 fast **and** have an intuitive API, as well as overcoming the confusing aspect of CSS.
+For an in depth explanation of the algorithm please see the [architecture](./ARCHITECTURE.md)
+file.
 
 
 ## Features
