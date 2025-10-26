@@ -6,10 +6,8 @@ use cascada::{
 #[test]
 fn horizontal_layout() {
     let window = Size::new(800.0, 800.0);
-    let mut child_1 = HorizontalLayout::new()
-        .intrinsic_size(IntrinsicSize::fixed(400.0,200.0));
-    let mut child_2 = HorizontalLayout::new()
-        .intrinsic_size(IntrinsicSize::fixed(500.0,350.0));
+    let child_1 = HorizontalLayout::new().intrinsic_size(IntrinsicSize::fixed(400.0, 200.0));
+    let child_2 = HorizontalLayout::new().intrinsic_size(IntrinsicSize::fixed(500.0, 350.0));
     let mut root = HorizontalLayout::new()
         .add_child(child_1)
         .add_child(child_2);
@@ -27,23 +25,22 @@ fn horizontal_layout() {
 fn horizontal_and_empty_layout() {
     let window = Size::new(1000.0, 1000.0);
 
-    let mut child_1 = EmptyLayout::new()
-        .intrinsic_size(IntrinsicSize{
-            width: BoxSizing::Fixed(250.0),
-            height: BoxSizing::Flex(1),
-        });
+    let child_1 = EmptyLayout::new().intrinsic_size(IntrinsicSize {
+        width: BoxSizing::Fixed(250.0),
+        height: BoxSizing::Flex(1),
+    });
 
-    let mut child_2 = EmptyLayout::new()
-        .intrinsic_size(IntrinsicSize{
-            width: BoxSizing::Flex(1),
-            height: BoxSizing::Fixed(20.0),
-        });
+    let child_2 = EmptyLayout::new().intrinsic_size(IntrinsicSize {
+        width: BoxSizing::Flex(1),
+        height: BoxSizing::Fixed(20.0),
+    });
 
-    let mut child_3 = EmptyLayout::new()
-        .intrinsic_size(IntrinsicSize{height: BoxSizing::Fixed(250.0),..Default::default()});
+    let child_3 = EmptyLayout::new().intrinsic_size(IntrinsicSize {
+        height: BoxSizing::Fixed(250.0),
+        ..Default::default()
+    });
 
-    let mut root = HorizontalLayout::new()
-        .add_children([child_1, child_2, child_3]);
+    let mut root = HorizontalLayout::new().add_children([child_1, child_2, child_3]);
 
     solve_layout(&mut root, window);
 
@@ -56,14 +53,11 @@ fn horizontal_and_empty_layout() {
 #[test]
 fn test_flex_sizing() {
     let window = Size::new(800.0, 800.0);
-    let mut child = HorizontalLayout::new()
-        .intrinsic_size(IntrinsicSize::fill());
-    let mut child_2 = HorizontalLayout::new()
-        .intrinsic_size(IntrinsicSize::fill());
+    let child = HorizontalLayout::new().intrinsic_size(IntrinsicSize::fill());
+    let child_2 = HorizontalLayout::new().intrinsic_size(IntrinsicSize::fill());
     let mut root = HorizontalLayout::new()
         .intrinsic_size(IntrinsicSize::fill())
         .add_children([child, child_2]);
-
 
     solve_layout(&mut root, window);
     let child_size = Size::new(400.0, 800.0);
@@ -78,11 +72,9 @@ fn flex_with_shrink() {
     let padding = Padding::all(24.0);
     let spacing = 45;
 
-    let inner_child = EmptyLayout::new()
-        .intrinsic_size(IntrinsicSize::fixed(250.0, 250.0));
+    let inner_child = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(250.0, 250.0));
 
-    let block = BlockLayout::new(Box::new(inner_child))
-        .padding(Padding::all(24.0));
+    let block = BlockLayout::new(Box::new(inner_child)).padding(Padding::all(24.0));
 
     let empty = EmptyLayout::new().intrinsic_size(IntrinsicSize::fill());
 
@@ -120,23 +112,20 @@ fn flex_with_fixed() {
     let padding = Padding::all(24.0);
     let spacing = 45;
 
-    let child_1 = EmptyLayout::new()
-        .intrinsic_size(IntrinsicSize::fixed(250.0,250.0));
+    let child_1 = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(250.0, 250.0));
 
-    let child_2 = EmptyLayout::new()
-        .intrinsic_size(IntrinsicSize{
-            width: BoxSizing::Flex(1),
-            height: BoxSizing::Flex(2),
-        });
+    let child_2 = EmptyLayout::new().intrinsic_size(IntrinsicSize {
+        width: BoxSizing::Flex(1),
+        height: BoxSizing::Flex(2),
+    });
 
-    let child_3 = EmptyLayout::new()
-        .intrinsic_size(IntrinsicSize::flex(4));
+    let child_3 = EmptyLayout::new().intrinsic_size(IntrinsicSize::flex(4));
 
     let mut root = HorizontalLayout::new()
-    .padding(padding)
-    .spacing(spacing)
-    .intrinsic_size(IntrinsicSize::fill())
-    .add_children([child_1, child_2, child_3]);
+        .padding(padding)
+        .spacing(spacing)
+        .intrinsic_size(IntrinsicSize::fill())
+        .add_children([child_1, child_2, child_3]);
 
     solve_layout(&mut root, window);
 
@@ -157,16 +146,13 @@ fn flex_with_fixed() {
 #[test]
 fn flex_factor() {
     let window = Size::new(800.0, 400.0);
-    let mut child_node_1 = HorizontalLayout::new()
-        .intrinsic_size(IntrinsicSize::flex(1));
-    let mut child_node_2 = HorizontalLayout::new()
-        .intrinsic_size(IntrinsicSize::flex(3));
-
+    let child_node_1 = HorizontalLayout::new().intrinsic_size(IntrinsicSize::flex(1));
+    let child_node_2 = HorizontalLayout::new().intrinsic_size(IntrinsicSize::flex(3));
 
     let mut node = HorizontalLayout::new()
         .intrinsic_size(IntrinsicSize::fill())
-    .add_child(child_node_1)
-    .add_child(child_node_2);
+        .add_child(child_node_1)
+        .add_child(child_node_2);
 
     solve_layout(&mut node, window);
 

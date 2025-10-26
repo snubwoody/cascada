@@ -1,10 +1,13 @@
-use cascada::{AxisAlignment, BoxSizing, EmptyLayout, IntrinsicSize, Padding, Position, Size, VerticalLayout, solve_layout, Layout};
+use cascada::{
+    AxisAlignment, EmptyLayout, IntrinsicSize, Layout, Padding, Position, Size, VerticalLayout,
+    solve_layout,
+};
 
 #[test]
 fn test_single_center_alignment() {
     let window = Size::new(500.0, 500.0);
 
-    let child_1 = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(250.0,350.0));
+    let child_1 = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(250.0, 350.0));
 
     let mut root = VerticalLayout::new()
         .cross_axis_alignment(AxisAlignment::Center)
@@ -18,14 +21,17 @@ fn test_single_center_alignment() {
     let child_y = (root.size().height - root.children()[0].size().height) / 2.0 + root.position().y;
     let child_x = (root.size().width - root.children()[0].size().width) / 2.0 + root.position().x;
 
-    assert_eq!(root.children()[0].position(), Position::new(child_x, child_y));
+    assert_eq!(
+        root.children()[0].position(),
+        Position::new(child_x, child_y)
+    );
 }
 
 #[test]
 fn test_center_alignment() {
     let window = Size::new(1500.0, 1500.0);
 
-    let child_1 = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(250.0,350.0));
+    let child_1 = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(250.0, 350.0));
 
     let child_2 = child_1.clone();
     let child_3 = child_1.clone();
@@ -39,7 +45,6 @@ fn test_center_alignment() {
         .add_child(child_1)
         .add_child(child_2)
         .add_child(child_3);
-    
 
     solve_layout(&mut root, window);
 
@@ -69,7 +74,5 @@ fn test_center_alignment() {
     assert_eq!(root.children()[1].position(), child_2_pos);
     assert_eq!(root.children()[2].position(), child_3_pos);
 }
-
-
 
 // TODO test overflow

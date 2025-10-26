@@ -1,10 +1,13 @@
-use cascada::{AxisAlignment, BlockLayout, BoxSizing, EmptyLayout, IntrinsicSize, Padding, Position, Size, solve_layout, Layout};
+use cascada::{
+    AxisAlignment, BlockLayout, EmptyLayout, IntrinsicSize, Layout, Padding, Position, Size,
+    solve_layout,
+};
 
 #[test]
 fn center_alignment() {
     let window = Size::new(500.0, 500.0);
 
-    let child = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(250.0,350.0));
+    let child = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(250.0, 350.0));
     let mut root = BlockLayout::new(Box::new(child))
         .main_axis_alignment(AxisAlignment::Center)
         .cross_axis_alignment(AxisAlignment::Center)
@@ -25,9 +28,8 @@ fn test_start_alignment() {
 
     let padding = 32;
 
-    let child_1 = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(240.0,40.0));
-    let mut root = BlockLayout::new(Box::new(child_1))
-        .padding(Padding::all(32.0));
+    let child_1 = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(240.0, 40.0));
+    let mut root = BlockLayout::new(Box::new(child_1)).padding(Padding::all(32.0));
     root.set_position(Position::new(20.0, 500.0));
 
     solve_layout(&mut root, window);
@@ -44,7 +46,7 @@ fn test_end_alignment() {
 
     let padding = 32;
 
-    let child_1 = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(240.0,40.0));
+    let child_1 = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(240.0, 40.0));
     let mut root = BlockLayout::new(Box::new(child_1))
         .padding(Padding::all(32.0))
         .main_axis_alignment(AxisAlignment::End)

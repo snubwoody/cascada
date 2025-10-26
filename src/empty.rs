@@ -5,7 +5,7 @@ use agape_core::GlobalId;
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct EmptyLayout {
     id: GlobalId,
-    pub (crate) size: Size,
+    pub(crate) size: Size,
     position: Position,
     intrinsic_size: IntrinsicSize,
     constraints: BoxConstraints,
@@ -23,11 +23,10 @@ impl EmptyLayout {
     }
 
     /// Set the intrinsic size.
-    pub fn intrinsic_size(mut self,intrinsic_size: IntrinsicSize) -> Self {
+    pub fn intrinsic_size(mut self, intrinsic_size: IntrinsicSize) -> Self {
         self.intrinsic_size = intrinsic_size;
         self
     }
-
 }
 
 impl Layout for EmptyLayout {

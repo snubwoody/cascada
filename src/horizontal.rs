@@ -10,7 +10,7 @@ use agape_core::GlobalId;
 /// See the [module docs] for more info.
 ///
 /// [module docs]: crate::horizontal
-#[derive(Default, Debug,)]
+#[derive(Default, Debug)]
 pub struct HorizontalLayout {
     id: GlobalId,
     size: Size,
@@ -72,18 +72,17 @@ impl HorizontalLayout {
     }
 
     /// Set this layout's [`IntrinsicSize`].
-    pub fn intrinsic_size(mut self,intrinsic_size: IntrinsicSize) -> Self {
+    pub fn intrinsic_size(mut self, intrinsic_size: IntrinsicSize) -> Self {
         self.intrinsic_size = intrinsic_size;
         self
     }
-
 
     /// Set this layout's [`Padding`].
     pub fn padding(mut self, padding: Padding) -> Self {
         self.padding = padding;
         self
-    }    
-    
+    }
+
     /// Set this layout's spacing.
     pub fn spacing(mut self, spacing: u32) -> Self {
         self.spacing = spacing;
@@ -442,7 +441,7 @@ impl Layout for HorizontalLayout {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::{solve_layout, EmptyLayout};
+    use crate::{EmptyLayout, solve_layout};
 
     #[test]
     fn fixed_min_constraints() {
@@ -497,7 +496,7 @@ mod test {
         let widths: &[f32] = &[500.0, 200.0, 10.2, 20.2, 45.0];
         let children: Vec<Box<dyn Layout>> = widths
             .iter()
-            .map(|w| EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(*w,0.0)))
+            .map(|w| EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(*w, 0.0)))
             .map(|l| Box::new(l) as Box<dyn Layout>)
             .collect();
 
@@ -592,8 +591,8 @@ mod test {
         let widths: &[f32] = &[500.0, 200.0, 10.2, 20.2, 45.0];
         let children: Vec<Box<dyn Layout>> = widths
             .iter()
-            .map(|w|{ 
-                let mut layout = EmptyLayout::new(); 
+            .map(|w| {
+                let mut layout = EmptyLayout::new();
                 layout.size = Size::unit(*w);
                 layout
             })
@@ -635,7 +634,7 @@ mod test {
         let padding = Padding::all(24.0);
         let spacing = 10;
 
-        let child_1 = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(240.0,40.0));
+        let child_1 = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(240.0, 40.0));
 
         let child_2 = EmptyLayout::new().intrinsic_size(IntrinsicSize {
             width: BoxSizing::Fixed(20.0),

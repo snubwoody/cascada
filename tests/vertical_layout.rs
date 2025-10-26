@@ -1,23 +1,23 @@
-use cascada::{BlockLayout, BoxSizing, EmptyLayout, IntrinsicSize, Padding, Size, VerticalLayout, solve_layout, Layout};
+use cascada::{
+    BoxSizing, EmptyLayout, IntrinsicSize, Layout, Padding, Size, VerticalLayout, solve_layout,
+};
 
 #[test]
 fn child_flex_height_works_with_shrink_height() {
-    let inner_child = EmptyLayout::new().intrinsic_size(
-        IntrinsicSize {
-            height: BoxSizing::Fixed(250.0),
-            ..Default::default()
-        });
+    let inner_child = EmptyLayout::new().intrinsic_size(IntrinsicSize {
+        height: BoxSizing::Fixed(250.0),
+        ..Default::default()
+    });
 
-    let flex_child = EmptyLayout::new().intrinsic_size( 
-        IntrinsicSize {
-            height: BoxSizing::Flex(1),
-            ..Default::default()
-        });
+    let flex_child = EmptyLayout::new().intrinsic_size(IntrinsicSize {
+        height: BoxSizing::Flex(1),
+        ..Default::default()
+    });
 
     let mut root = VerticalLayout::new()
         .spacing(24)
         .padding(Padding::all(10.0))
-        .add_children([inner_child.clone(),inner_child,flex_child])
+        .add_children([inner_child.clone(), inner_child, flex_child])
         .intrinsic_size(IntrinsicSize {
             height: BoxSizing::Flex(1),
             ..Default::default()

@@ -146,7 +146,7 @@ pub trait Layout: Debug + private::Sealed {
     }
 }
 
-mod private{
+mod private {
     pub trait Sealed {}
 
     impl Sealed for super::EmptyLayout {}
