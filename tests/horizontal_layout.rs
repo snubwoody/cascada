@@ -74,7 +74,7 @@ fn flex_with_shrink() {
 
     let inner_child = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(250.0, 250.0));
 
-    let block = BlockLayout::new(Box::new(inner_child)).padding(padding);
+    let block = BlockLayout::new(inner_child).padding(padding);
 
     let empty = EmptyLayout::new().intrinsic_size(IntrinsicSize::fill());
 
