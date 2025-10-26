@@ -541,8 +541,21 @@ mod test {
         };
 
         solve_layout(&mut root, window);
-        assert!(root.main_axis_overflow());
-        assert!(root.cross_axis_overflow());
+        let errors = solve_layout(&mut root, window);
+        assert!(matches!(
+            &errors[0],
+            LayoutError::Overflow {
+                id: _,
+                axis: OverflowAxis::CrossAxis
+            }
+        ));
+        assert!(matches!(
+            &errors[1],
+            LayoutError::Overflow {
+                id: _,
+                axis: OverflowAxis::MainAxis
+            }
+        ))
     }
 
     #[test]
@@ -556,9 +569,14 @@ mod test {
             ..Default::default()
         };
 
-        solve_layout(&mut root, window);
-        assert!(!root.main_axis_overflow());
-        assert!(root.cross_axis_overflow());
+        let errors = solve_layout(&mut root, window);
+        assert!(matches!(
+            &errors[0],
+            LayoutError::Overflow {
+                id: _,
+                axis: OverflowAxis::CrossAxis
+            }
+        ))
     }
 
     #[test]
@@ -573,9 +591,14 @@ mod test {
             ..Default::default()
         };
 
-        solve_layout(&mut root, window);
-        assert!(root.main_axis_overflow());
-        assert!(!root.cross_axis_overflow());
+        let errors = solve_layout(&mut root, window);
+        assert!(matches!(
+            &errors[0],
+            LayoutError::Overflow {
+                id: _,
+                axis: OverflowAxis::MainAxis
+            }
+        ))
     }
     #[test]
     fn include_spacing_and_padding_main_axis_overflow() {
@@ -590,9 +613,14 @@ mod test {
             ..Default::default()
         };
 
-        solve_layout(&mut root, window);
-        assert!(root.main_axis_overflow());
-        assert!(!root.cross_axis_overflow());
+        let errors = solve_layout(&mut root, window);
+        assert!(matches!(
+            &errors[0],
+            LayoutError::Overflow {
+                id: _,
+                axis: OverflowAxis::MainAxis
+            }
+        ))
     }
 
     #[test]
@@ -606,9 +634,9 @@ mod test {
             ..Default::default()
         };
 
-        solve_layout(&mut root, window);
+        let errors = solve_layout(&mut root, window);
 
-        assert_eq!(root.errors.len(), 1);
+        assert_eq!(errors.len(), 1);
     }
 
     #[test]

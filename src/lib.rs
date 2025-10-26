@@ -45,7 +45,8 @@ pub use size::Size;
 use std::fmt::Debug;
 pub use vertical::VerticalLayout;
 
-/// Solve the final size and position of all the layout nodes.
+/// Solve the final size and position of all the layout nodes. This functions
+/// returns any layout errors such as overflow or out of bounds.
 pub fn solve_layout(root: &mut dyn Layout, window_size: Size) -> Vec<LayoutError> {
     root.set_max_width(window_size.width);
     root.set_max_height(window_size.height);
@@ -57,9 +58,7 @@ pub fn solve_layout(root: &mut dyn Layout, window_size: Size) -> Vec<LayoutError
     root.update_size();
     root.position_children();
 
-    // FIXME
-    // root.collect_errors();
-    vec![]
+    root.collect_errors()
 }
 
 /// A layout node.
