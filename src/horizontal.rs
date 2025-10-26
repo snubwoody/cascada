@@ -4,12 +4,18 @@ use crate::{
 };
 use agape_core::GlobalId;
 
-// TODO add example
-/// A [`Layout`] that arranges it's children horizontally.
+/// A [`Layout`] that arranges it's child nodes horizontally.
 ///
-/// See the [module docs] for more info.
+/// # Example
+/// ```
+/// use cascada::{EmptyLayout, HorizontalLayout, IntrinsicSize, Padding};
 ///
-/// [module docs]: crate::horizontal
+/// HorizontalLayout::new()
+///     .intrinsic_size(IntrinsicSize::fill())
+///     .add_child(EmptyLayout::new())
+///     .padding(Padding::symmetric(10.0,20.0))
+///     .spacing(12);
+/// ```
 #[derive(Default, Debug)]
 pub struct HorizontalLayout {
     id: GlobalId,
@@ -124,7 +130,6 @@ impl HorizontalLayout {
         sum
     }
 
-    // TODO should probably rename this function
     /// Calculate the sum of the width's of all nodes with fixed sizes and the max height
     fn fixed_size_sum(&self) -> Size {
         let mut sum = Size::default();
@@ -165,7 +170,6 @@ impl HorizontalLayout {
 
     /// Align the children on the main axis in the center
     fn align_main_axis_center(&mut self) {
-        // TODO handle overflow
         if self.children.is_empty() {
             return;
         }
@@ -208,7 +212,6 @@ impl HorizontalLayout {
 
     fn align_cross_axis_center(&mut self) {
         for child in &mut self.children {
-            // TODO handle overflow
             let y_pos = (self.size.height - child.size().height) / 2.0 + self.position.y;
             child.set_y(y_pos);
         }
@@ -378,7 +381,6 @@ impl Layout for HorizontalLayout {
                 height: child.constraints().max_height,
             };
 
-            // TODO not even using the space anymore
             child.solve_max_constraints(space);
         }
     }
@@ -456,34 +458,6 @@ mod test {
     }
 
     #[test]
-    fn flex_max_constraints() {
-        let flex: [u8; 4] = [2, 4, 5, 1];
-        let children = flex
-            .into_iter()
-            .map(|f| EmptyLayout::new().intrinsic_size(IntrinsicSize::flex(f)))
-            .map(|l| Box::new(l) as Box<dyn Layout>)
-            .collect::<Vec<_>>();
-        let mut layout = HorizontalLayout {
-            children,
-            constraints: BoxConstraints {
-                max_width: 500.0,
-                max_height: 250.0,
-                ..Default::default()
-            },
-            ..Default::default()
-        };
-
-        layout.solve_max_constraints(Size::default());
-
-        // for (layout, flex) in layout.children.iter().zip(flex.iter()) {
-        //     let width = 500.0 * (*flex as f32 / flex_total as f32);
-        //     // FIXME: will come back
-        //     // assert_eq!(layout.constraints().max_width, width);
-        //     // assert_eq!(layout.constraints().max_height, 250.0);
-        // }
-    }
-
-    #[test]
     fn compute_min_size_no_children() {
         let mut layout = HorizontalLayout::new();
         let size = layout.compute_children_min_size();
@@ -492,7 +466,6 @@ mod test {
 
     #[test]
     fn calculate_min_width() {
-        // TODO: test max height and width
         let widths: &[f32] = &[500.0, 200.0, 10.2, 20.2, 45.0];
         let children: Vec<Box<dyn Layout>> = widths
             .iter()
@@ -518,7 +491,6 @@ mod test {
 
     #[test]
     fn calculate_min_height() {
-        // TODO: test max height and width
         let heights: [f32; 5] = [500.0, 200.0, 10.2, 20.2, 45.0];
         let children: Vec<Box<dyn Layout>> = heights
             .iter()
