@@ -47,6 +47,11 @@ impl VerticalLayout {
         Self::default()
     }
 
+    pub fn set_id(mut self, id: GlobalId) -> Self {
+        self.id = id;
+        self
+    }
+
     /// Appends a [`Layout`] node to the list of children.
     ///
     /// # Example

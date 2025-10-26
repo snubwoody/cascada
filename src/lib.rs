@@ -1,6 +1,20 @@
 //! Cascada is a lightweight, high-performance layout engine for UI frameworks.
 //!
-//! # Example
+//! It is designed for developers building UI libraries, such as GUIs or TUI's, who
+//! want a fast, predictable layout system without the complexity of
+//! implementing their own.
+//!
+//! # Usage
+//! The core of this library is the [`Layout`] trait, which is implemented for different
+//! use cases. There are currently four types of layout nodes:
+//!
+//! - [`EmptyLayout`]
+//! - [`BlockLayout`]
+//! - [`HorizontalLayout`]
+//! - [`VerticalLayout`]
+//!
+//! Create a root layout node and pass it into the [`solve_layout`] function with the total
+//! available space.
 //!
 //! ```
 //! use cascada::{HorizontalLayout, EmptyLayout, solve_layout, IntrinsicSize, Size, Layout};
@@ -23,6 +37,53 @@
 //! assert_eq!(size.width,1000.0);
 //! ```
 //!
+//! To get the size and position of the layout nodes you can iterate over the tree.
+//!
+//! ```
+//! use cascada::{HorizontalLayout, EmptyLayout, solve_layout, IntrinsicSize, Size, Layout};
+//! let child = EmptyLayout::new()
+//!     .intrinsic_size(IntrinsicSize::fill());
+//!
+//! let mut layout = HorizontalLayout::new()
+//!     .intrinsic_size(IntrinsicSize::fill())
+//!     .add_children([
+//!         child.clone(),
+//!         child.clone(),
+//!         child,
+//!     ]);
+//!
+//! solve_layout(&mut layout,Size::unit(3000.0));
+//!
+//! for node in layout.iter(){
+//!     println!("Size: {:?}",node.size());
+//!     println!("Position: {:?}",node.position());
+//! }
+//! ```
+//!
+//! Or you could use ids to get specific nodes from the tree.
+//!
+//! ```
+//! use cascada::{HorizontalLayout, EmptyLayout, solve_layout, IntrinsicSize, Size, Layout, GlobalId};
+//! let id = GlobalId::new();
+//!
+//! let child = EmptyLayout::new()
+//!     .set_id(id)
+//!     .intrinsic_size(IntrinsicSize::fixed(20.0,50.0));
+//!
+//! let mut layout = HorizontalLayout::new()
+//!     .intrinsic_size(IntrinsicSize::fill())
+//!     .add_children([
+//!         child.clone(),
+//!         child.clone(),
+//!         child,
+//!     ]);
+//!
+//! solve_layout(&mut layout,Size::unit(3000.0));
+//!
+//!
+//! let child = layout.get(id).unwrap();
+//! assert_eq!(child.size().width,20.0);
+//! ```
 #![warn(clippy::suboptimal_flops)]
 #![warn(clippy::suspicious_operation_groupings)]
 #![warn(clippy::imprecise_flops)]
@@ -44,8 +105,24 @@ pub use size::Size;
 use std::fmt::Debug;
 pub use vertical::VerticalLayout;
 
-/// Solve the final size and position of all the layout nodes. This functions
+/// Solve the final size and position of all the layout nodes. The
+/// `window_size` is the maximum available space for the root node.
+///
+/// This functions
 /// returns any layout errors such as overflow or out of bounds.
+///
+/// # Example
+///
+/// ```
+/// use cascada::{solve_layout, BlockLayout, EmptyLayout, IntrinsicSize, Padding, Size};
+///
+/// let child = EmptyLayout::new()
+///     .intrinsic_size(IntrinsicSize::fixed(50.0,50.0));
+/// let mut block = BlockLayout::new(child)
+///     .padding(Padding::all(10.0));
+///
+/// solve_layout(&mut block,Size::unit(500.0));
+/// ```
 pub fn solve_layout(root: &mut dyn Layout, window_size: Size) -> Vec<LayoutError> {
     root.set_max_width(window_size.width);
     root.set_max_height(window_size.height);
