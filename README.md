@@ -14,8 +14,7 @@
 </div>
 
 Cascada is a lightweight, high-performance UI layout engine.
-For an in depth explanation of the algorithm please see the [architecture](./ARCHITECTURE.md)
-file.
+
 
 
 [API Docs](https://docs.rs/cascada/latest/cascada) |
