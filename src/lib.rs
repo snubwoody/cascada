@@ -23,13 +23,6 @@
 //! assert_eq!(size.width,1000.0);
 //! ```
 //!
-//! ## Layout engine
-//! `cascada` is a two pass layout engine that uses `contraints` and [`IntrinsicSize`] to solve the layout
-//! tree. Minimum constraints flow up and maximum constraints flow down.
-//!
-//! The maximum size starts from the top, as it goes down the widget tree the nodes are given the
-//! maximum size they can take up, and similarly give their child nodes the maximum they can take
-//! up.
 #![warn(clippy::suboptimal_flops)]
 #![warn(clippy::suspicious_operation_groupings)]
 #![warn(clippy::imprecise_flops)]
