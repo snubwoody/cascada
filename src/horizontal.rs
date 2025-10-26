@@ -405,10 +405,7 @@ mod test {
         let flex: [u8; 4] = [2, 4, 5, 1];
         let children = flex
             .into_iter()
-            .map(|f| EmptyLayout {
-                intrinsic_size: IntrinsicSize::flex(f),
-                ..Default::default()
-            })
+            .map(|f| EmptyLayout::new().intrinsic_size(IntrinsicSize::flex(f)))
             .map(|l| Box::new(l) as Box<dyn Layout>)
             .collect::<Vec<_>>();
         let mut layout = HorizontalLayout {
@@ -444,10 +441,7 @@ mod test {
         let widths: &[f32] = &[500.0, 200.0, 10.2, 20.2, 45.0];
         let children: Vec<Box<dyn Layout>> = widths
             .iter()
-            .map(|w| EmptyLayout {
-                intrinsic_size: IntrinsicSize::fixed(*w, 0.0),
-                ..Default::default()
-            })
+            .map(|w| EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(*w,0.0)))
             .map(|l| Box::new(l) as Box<dyn Layout>)
             .collect();
 
@@ -473,10 +467,7 @@ mod test {
         let heights: [f32; 5] = [500.0, 200.0, 10.2, 20.2, 45.0];
         let children: Vec<Box<dyn Layout>> = heights
             .iter()
-            .map(|h| EmptyLayout {
-                intrinsic_size: IntrinsicSize::fixed(0.0, *h),
-                ..Default::default()
-            })
+            .map(|h| EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(0.0, *h)))
             .map(|l| Box::new(l) as Box<dyn Layout>)
             .collect();
 
@@ -545,9 +536,10 @@ mod test {
         let widths: &[f32] = &[500.0, 200.0, 10.2, 20.2, 45.0];
         let children: Vec<Box<dyn Layout>> = widths
             .iter()
-            .map(|w| EmptyLayout {
-                size: Size::unit(*w),
-                ..Default::default()
+            .map(|w|{ 
+                let mut layout = EmptyLayout::new(); 
+                layout.size = Size::unit(*w);
+                layout
             })
             .map(|l| Box::new(l) as Box<dyn Layout>)
             .collect();

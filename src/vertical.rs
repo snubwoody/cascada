@@ -433,10 +433,7 @@ mod test {
         let widths: [f32; 5] = [500.0, 200.0, 10.2, 20.2, 45.0];
         let children: Vec<Box<dyn Layout>> = widths
             .into_iter()
-            .map(|i| EmptyLayout {
-                intrinsic_size: IntrinsicSize::fixed(i, 0.0),
-                ..Default::default()
-            })
+            .map(|i| EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(i,0.0)))
             .map(|l| Box::new(l) as Box<dyn Layout>)
             .collect();
 
@@ -463,10 +460,7 @@ mod test {
         let heights: [f32; 5] = [500.0, 200.0, 10.2, 20.2, 45.0];
         let children: Vec<Box<dyn Layout>> = heights
             .into_iter()
-            .map(|h| EmptyLayout {
-                intrinsic_size: IntrinsicSize::fixed(0.0, h),
-                ..Default::default()
-            })
+            .map(|h| EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(0.0,h)))
             .map(|l| Box::new(l) as Box<dyn Layout>)
             .collect();
 
@@ -496,11 +490,8 @@ mod test {
             height: BoxSizing::Fixed(0.0),
         };
 
-        let mut child = EmptyLayout::new();
-        child.intrinsic_size = IntrinsicSize {
-            width: BoxSizing::Fixed(200.0),
-            height: BoxSizing::Fixed(200.0),
-        };
+        let child = EmptyLayout::new()
+            .intrinsic_size(IntrinsicSize::fixed(200.0,200.0));
 
         root.add_child(child);
 
@@ -519,11 +510,8 @@ mod test {
             ..Default::default()
         };
 
-        let mut child = EmptyLayout::new();
-        child.intrinsic_size = IntrinsicSize {
-            width: BoxSizing::Fixed(200.0),
-            ..Default::default()
-        };
+        let mut child = EmptyLayout::new()
+            .intrinsic_size(IntrinsicSize::fixed(200.0,0.0));
 
         root.add_child(child);
 
@@ -542,11 +530,8 @@ mod test {
             ..Default::default()
         };
 
-        let mut child = EmptyLayout::new();
-        child.intrinsic_size = IntrinsicSize {
-            height: BoxSizing::Fixed(200.0),
-            ..Default::default()
-        };
+        let mut child = EmptyLayout::new()
+            .intrinsic_size(IntrinsicSize::fixed(0.0,200.0));
 
         root.add_child(child);
 
@@ -566,11 +551,8 @@ mod test {
             ..Default::default()
         };
 
-        let mut child = EmptyLayout::new();
-        child.intrinsic_size = IntrinsicSize {
-            height: BoxSizing::Fixed(180.0),
-            ..Default::default()
-        };
+        let mut child = EmptyLayout::new()
+            .intrinsic_size(IntrinsicSize::fixed(0.0,180.0));
 
         root.add_child(child);
 
@@ -589,11 +571,8 @@ mod test {
             ..Default::default()
         };
 
-        let mut child = EmptyLayout::new();
-        child.intrinsic_size = IntrinsicSize {
-            width: BoxSizing::Fixed(200.0),
-            height: BoxSizing::Fixed(200.0),
-        };
+        let mut child = EmptyLayout::new()
+            .intrinsic_size(IntrinsicSize::fixed(200.0,200.0));
 
         root.add_child(child);
 
@@ -630,9 +609,6 @@ mod test {
         assert_eq!(root.children()[1].size(), Size::new(500.0, 350.0));
     }
 
-    // Padding should still be applied when a `VerticalLayout` is empty to ensure
-    // consistency in the overall layout. It also preserves the structure
-    // if layouts are added later on
     #[test]
     fn padding_applied_when_empty() {
         let mut empty = VerticalLayout {
@@ -688,16 +664,14 @@ mod test {
         let padding = 24;
         let spacing = 45;
 
-        let mut inner_child = EmptyLayout::new();
-        inner_child.intrinsic_size.width = BoxSizing::Fixed(250.0);
-        inner_child.intrinsic_size.height = BoxSizing::Fixed(250.0);
+        let mut inner_child = EmptyLayout::new()
+            .intrinsic_size(IntrinsicSize::fixed(250.0,250.0));
 
         let child_1 = BlockLayout::new(Box::new(inner_child))
             .padding(Padding::all(24.0));
 
-        let mut child_2 = EmptyLayout::new();
-        child_2.intrinsic_size.width = BoxSizing::Flex(1);
-        child_2.intrinsic_size.height = BoxSizing::Flex(1);
+        let mut child_2 = EmptyLayout::new()
+            .intrinsic_size(IntrinsicSize::fill());
 
         let mut root = VerticalLayout::new();
         root.intrinsic_size.height = BoxSizing::Flex(1);

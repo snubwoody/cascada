@@ -7,14 +7,7 @@ use cascada::{
 fn single_horizontal_center_alignment() {
     let window = Size::new(500.0, 500.0);
 
-    let child_1 = EmptyLayout {
-        intrinsic_size: IntrinsicSize {
-            width: BoxSizing::Fixed(250.0),
-            height: BoxSizing::Fixed(350.0),
-        },
-        ..Default::default()
-    };
-
+    let child_1 = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(250.0,350.0));
     let mut root = HorizontalLayout {
         main_axis_alignment: AxisAlignment::Center,
         cross_axis_alignment: AxisAlignment::Center,
@@ -39,29 +32,9 @@ fn single_horizontal_center_alignment() {
 fn horizontal_center_alignment() {
     let window = Size::new(1500.0, 1500.0);
 
-    let child_1 = EmptyLayout {
-        intrinsic_size: IntrinsicSize {
-            width: BoxSizing::Fixed(250.0),
-            height: BoxSizing::Fixed(350.0),
-        },
-        ..Default::default()
-    };
-
-    let child_2 = EmptyLayout {
-        intrinsic_size: IntrinsicSize {
-            width: BoxSizing::Fixed(250.0),
-            height: BoxSizing::Fixed(350.0),
-        },
-        ..Default::default()
-    };
-
-    let child_3 = EmptyLayout {
-        intrinsic_size: IntrinsicSize {
-            width: BoxSizing::Fixed(250.0),
-            height: BoxSizing::Fixed(350.0),
-        },
-        ..Default::default()
-    };
+    let child_1 = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(250.0,350.0));
+    let child_2 = child_1.clone();    
+    let child_3 = child_1.clone();    
 
     let mut root = HorizontalLayout {
         main_axis_alignment: AxisAlignment::Center,
