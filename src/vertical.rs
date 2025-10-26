@@ -723,7 +723,7 @@ mod test {
 
         let inner_child = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(250.0, 250.0));
 
-        let child_1 = BlockLayout::new(Box::new(inner_child)).padding(Padding::all(24.0));
+        let child_1 = BlockLayout::new(inner_child).padding(Padding::all(24.0));
 
         let child_2 = EmptyLayout::new().intrinsic_size(IntrinsicSize::fill());
 
