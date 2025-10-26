@@ -34,7 +34,6 @@ mod position;
 mod size;
 pub mod vertical;
 
-use agape_core::GlobalId;
 pub use block::BlockLayout;
 pub use empty::EmptyLayout;
 pub use error::LayoutError;
@@ -174,6 +173,29 @@ pub enum BoxSizing {
     /// Tries to be as big as possible, the behaviour of the flex factor is
     /// dependent on the type of layout.
     Flex(u8),
+}
+
+/// A global unique identifier
+#[derive(Copy, Clone, PartialOrd, PartialEq, Eq, Debug, Ord, Hash)]
+pub struct GlobalId(u32);
+
+impl GlobalId {
+    pub fn new() -> Self {
+        let id = rand::random();
+        Self(id)
+    }
+}
+
+impl Default for GlobalId {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl std::fmt::Display for GlobalId {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
 }
 
 /// Describes how a [`Layout`] should align its children.

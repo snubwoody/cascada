@@ -1,8 +1,7 @@
 use crate::{
-    AxisAlignment, BoxConstraints, BoxSizing, IntrinsicSize, Layout, LayoutError, LayoutIter,
-    Padding, Position, Size, error::OverflowAxis,
+    AxisAlignment, BoxConstraints, BoxSizing, GlobalId, IntrinsicSize, Layout, LayoutError,
+    LayoutIter, Padding, Position, Size, error::OverflowAxis,
 };
-use agape_core::GlobalId;
 
 /// A [`Layout`] node that arranges it's children vertically.
 ///

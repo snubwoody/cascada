@@ -1,4 +1,4 @@
-use agape_core::GlobalId;
+use crate::GlobalId;
 use thiserror::Error;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
