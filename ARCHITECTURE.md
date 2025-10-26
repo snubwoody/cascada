@@ -12,6 +12,23 @@ The layout algorithm tries to satisfy each nodes intrinsic size, for example, if
 were three nodes that each wanted to fill the width of their parent, then each node
 would be a 1/3 of the width.
 
+Properties of layout nodes:
+Not all layout nodes have all properties.
+
+- Padding: The spacing between the edges of the node and it's content.
+- Spacing: The spacing between child nodes.
+- Main axis alignment: Specifies how to align child nodes on the main axis.
+- Cross axis alignment: Specifies how to align child nodes on the cross axis.
+- Constraints: The minimum and maximum size of a node.
+- Intrinsic size: The preferred size of a node.
+
+**Layout types:**
+
+- `EmptyLayout`
+- `BlockLayout`
+- `HorizontalLayout`
+- `VerticalLayout`
+
 ## Axes
 Every layout node has two axes:
 
@@ -25,16 +42,7 @@ whose main axis is the y-axis and cross axis is the x-axis.
 
 ![axis-alignment](./art/axis-alignment.svg)
 
-## Padding
-Padding is the space between the edges of a node and it's content.
 
-![](./art/padding.png)
 
-## Layout types
-
-### Empty layout
-### Block layout
-### Horizontal layout
-![](./art/horizontal-layout.svg)
 
 ### Vertical layout
