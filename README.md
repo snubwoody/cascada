@@ -8,7 +8,6 @@
         <img src="https://img.shields.io/docsrs/cascada"/>
     </a>
     <img src="https://img.shields.io/github/actions/workflow/status/snubwoody/agape-rs/rust.yml"/>
-    <img alt="Crates.io Size" src="https://img.shields.io/crates/size/cascada">
     <a href="https://codecov.io/gh/snubwoody/cascada" > 
         <img src="https://codecov.io/gh/snubwoody/cascada/graph/badge.svg?token=PLYL0VUB5Y"/> 
     </a>
@@ -18,15 +17,11 @@ Cascada is a lightweight, high-performance UI layout engine. Cascada's goals are
 fast **and** have an intuitive API, as well as overcoming the confusing aspect of CSS.
 
 
-## Goals
-
-- Fast
-- Simple
-- Portable
-
-## Use cases
-- Terminal UIs
-- GUIs
+## Features
+- Microsecond layout performance
+- Declarative syntax
+- Predictable layouts
+- Descriptive error handling
 
 ## Usage
 Add this to your `Cargo.toml`.
