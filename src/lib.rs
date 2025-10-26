@@ -5,22 +5,17 @@
 //! ```
 //! use cascada::{HorizontalLayout, EmptyLayout, solve_layout, IntrinsicSize, Size, Layout};
 //!
-//! let child = EmptyLayout{
-//!     intrinsic_size: IntrinsicSize::fill(),
-//!     ..Default::default()
-//! };
-//!
-//! let mut layout = HorizontalLayout{
-//!     intrinsic_size: IntrinsicSize::fill(),
-//!     ..Default::default()
-//! };
-//!
 //! // Add three equally sized nodes.
-//! layout.add_children([
-//!     child.clone(),
-//!     child.clone(),
-//!     child,
-//!  ]);
+//! let child = EmptyLayout::new()
+//!     .intrinsic_size(IntrinsicSize::fill());
+//!
+//! let mut layout = HorizontalLayout::new()
+//!     .intrinsic_size(IntrinsicSize::fill())
+//!     .add_children([
+//!         child.clone(),
+//!         child.clone(),
+//!         child,
+//!     ]);
 //!
 //! solve_layout(&mut layout,Size::unit(3000.0));
 //!
@@ -29,8 +24,8 @@
 //! ```
 //!
 //! ## Layout engine
-//! `cascada` is a two pass layout engine that uses `contraints` to solve the layout tree. Minimum
-//! constraints flow up and maximum constraints flow down.
+//! `cascada` is a two pass layout engine that uses `contraints` and [`IntrinsicSize`] to solve the layout 
+//! tree. Minimum constraints flow up and maximum constraints flow down.
 //!
 //! The maximum size starts from the top, as it goes down the widget tree the nodes are given the
 //! maximum size they can take up, and similarly give their child nodes the maximum they can take
@@ -217,8 +212,7 @@ impl BoxConstraints {
     }
 }
 
-/// This is the size that a [`Layout`] will try to be, the actual final size is
-/// dependent on the space available.
+/// This is the preferred size of a [`Layout`] node. 
 #[derive(Debug, Clone, Copy, Default, PartialEq, PartialOrd)]
 pub struct IntrinsicSize {
     pub width: BoxSizing,
