@@ -1,19 +1,22 @@
+
 # Cascada
-
-Cascada is a lightweight, high-performance layout engine for UI frameworks, 
-inspired by modern constraint-based systems like Flexbox and Flutter. 
-
 <div>
+    <a href="https://crates.io/crates/cascada">
+        <img alt="Crates.io Version" src="https://img.shields.io/crates/v/cascada">
+    </a>
+    <a href="https://docs.rs/cascada/latest/cascada/">
+        <img src="https://img.shields.io/docsrs/cascada"/>
+    </a>
+    <img src="https://img.shields.io/github/actions/workflow/status/snubwoody/agape-rs/rust.yml"/>
+    <img alt="Crates.io Size" src="https://img.shields.io/crates/size/cascada">
     <a href="https://codecov.io/gh/snubwoody/cascada" > 
-     <img src="https://codecov.io/gh/snubwoody/cascada/graph/badge.svg?token=PLYL0VUB5Y"/> 
+        <img src="https://codecov.io/gh/snubwoody/cascada/graph/badge.svg?token=PLYL0VUB5Y"/> 
     </a>
 </div>
 
-## Contents
-- [Goals](#goals)
-- [Installation](#installation)
-- [Axes](#axes)
-  - [Alignment](#alignment)
+Cascada is a lightweight, high-performance UI layout engine. Cascada's goals are to be
+fast **and** have an intuitive API, as well as overcoming the confusing aspect of CSS.
+
 
 ## Goals
 
@@ -21,17 +24,42 @@ inspired by modern constraint-based systems like Flexbox and Flutter.
 - Simple
 - Portable
 
-## Installation
-Add `cascada` to your project
+## Use cases
+- Terminal UIs
+- GUIs
+
+## Usage
+Add this to your `Cargo.toml`.
 
 ```toml
 [dependencies]
 cascada = "0.1.0"
 ```
 
-## Overview 
-## Comparison to CSS
-- Justify between: There is no justify between, you may use nodes in between and set the flex to 1.
+## Example
+
+```rust
+use cascada::{solve_layout,HorizontalLayout,EmptyLayout,Size};
+
+let child = EmptyLayout::new()
+    .intrinsic_size(IntrinsicSize::fill());
+
+// Add three equally sizes child nodes.
+let mut layout = HorizontalLayout::new()
+    .intrinsic_size(IntrinsicSize::fill())
+    .add_child(child.clone())
+    .add_child(child.clone())
+    .add_child(child);
+
+solve_layout(&mut layout, Size::unit(3000.0));
+
+let children = layout.children();
+
+assert_eq!(children[0].size().width,1000.0);
+assert_eq!(children[1].size().width,1000.0);
+assert_eq!(children[2].size().width,1000.0);
+```
+
 ## License
 
 Licensed under either of:
@@ -41,6 +69,3 @@ Licensed under either of:
 
 at your option.
 
-## TODO
-
-- Add benchmarks
