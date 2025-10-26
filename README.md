@@ -13,10 +13,13 @@
     </a>
 </div>
 
-Cascada is a lightweight, high-performance UI layout engine. Cascada's goals are to be
-fast **and** have an intuitive API, as well as overcoming the confusing aspect of CSS.
+Cascada is a lightweight, high-performance UI layout engine.
 For an in depth explanation of the algorithm please see the [architecture](./ARCHITECTURE.md)
 file.
+
+
+[API Docs](https://docs.rs/cascada/latest/cascada) |
+[Architecture](./ARCHITECTURE.md) 
 
 
 ## Features
@@ -30,7 +33,7 @@ Add this to your `Cargo.toml`.
 
 ```toml
 [dependencies]
-cascada = "0.1.0"
+cascada = "0.2.0"
 ```
 
 ## Example
@@ -41,7 +44,7 @@ use cascada::{solve_layout,HorizontalLayout,EmptyLayout,Size};
 let child = EmptyLayout::new()
     .intrinsic_size(IntrinsicSize::fill());
 
-// Add three equally sizes child nodes.
+// Add three equally sized child nodes.
 let mut layout = HorizontalLayout::new()
     .intrinsic_size(IntrinsicSize::fill())
     .add_child(child.clone())
