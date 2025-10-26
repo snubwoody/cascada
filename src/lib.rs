@@ -1,6 +1,20 @@
-//! Cascada is a lightweight, high-performance layout engine for UI frameworks.
+//! Cascada is a lightweight, high-performance layout engine for UI frameworks. Cascada aims
+//! to be of use to developers building custom GUI or TUI libraries, instead of having to
+//! create your own layout implementation.
 //!
-//! # Example
+//! It's designed for developers building UI libraries, such as GUIs or TUI's, who
+//! want a fast, predictable and easy-to-use layout system without the complexity of
+//! implementing their own.
+//! It is non-intrusive.
+//!
+//! # Usage
+//! The core of this library is the [`Layout`] trait, which is implemented for different
+//! use cases. There are currently four type of layout nodes:
+//!
+//! - [`EmptyLayout`]
+//! - [`BlockLayout`]
+//! - [`HorizontalLayout`]
+//! - [`VerticalLayout`]
 //!
 //! ```
 //! use cascada::{HorizontalLayout, EmptyLayout, solve_layout, IntrinsicSize, Size, Layout};
