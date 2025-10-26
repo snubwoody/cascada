@@ -1,8 +1,8 @@
 use crate::{
     AxisAlignment, BoxConstraints, BoxSizing, EmptyLayout, IntrinsicSize, Layout, LayoutError,
     LayoutIter, Padding, Position, Size,
+    GlobalId
 };
-use agape_core::GlobalId;
 
 /// A [`Layout`] that only has one child node.
 #[derive(Debug)]
