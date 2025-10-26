@@ -12,20 +12,20 @@ use agape_core::GlobalId;
 /// [module docs]: crate::horizontal
 #[derive(Default, Debug)]
 pub struct HorizontalLayout {
-    pub id: GlobalId,
-    pub size: Size,
-    pub position: Position,
-    pub spacing: u32,
-    pub padding: Padding,
-    pub constraints: BoxConstraints,
-    pub intrinsic_size: IntrinsicSize,
+    id: GlobalId,
+    size: Size,
+    position: Position,
+    spacing: u32,
+    padding: Padding,
+    constraints: BoxConstraints,
+    intrinsic_size: IntrinsicSize,
     /// The main axis is the axis which the content flows in, for the [`HorizontalLayout`]
     /// main axis is the `x-axis`
-    pub main_axis_alignment: AxisAlignment,
+    main_axis_alignment: AxisAlignment,
     /// The cross axis is the `y-axis`
-    pub cross_axis_alignment: AxisAlignment,
-    pub children: Vec<Box<dyn Layout>>,
-    pub errors: Vec<LayoutError>,
+    cross_axis_alignment: AxisAlignment,
+    children: Vec<Box<dyn Layout>>,
+    errors: Vec<LayoutError>,
 }
 
 impl HorizontalLayout {
@@ -33,17 +33,72 @@ impl HorizontalLayout {
         Self::default()
     }
 
-    pub fn add_child(&mut self, child: impl Layout + 'static) {
+    /// Appends a [`Layout`] node to the list of children.
+    ///
+    /// # Example
+    /// ```
+    /// use cascada::{HorizontalLayout,EmptyLayout,VerticalLayout};
+    ///
+    /// HorizontalLayout::new()
+    ///     .add_child(EmptyLayout::default())
+    ///     .add_child(VerticalLayout::default());
+    /// ```
+    pub fn add_child(mut self, child: impl Layout + 'static) -> Self {
         self.children.push(Box::new(child));
+        self
     }
 
-    pub fn add_children<I>(&mut self, children: I)
+    /// Add multiple child nodes to the list of children.
+    ///
+    /// # Example
+    /// ```
+    /// use cascada::{HorizontalLayout,EmptyLayout};
+    ///
+    /// HorizontalLayout::new()
+    ///     .add_children([
+    ///         EmptyLayout::new(),
+    ///         EmptyLayout::new(),
+    ///         EmptyLayout::new(),
+    ///     ]);
+    /// ```
+    pub fn add_children<I>(mut self, children: I) -> Self
     where
         I: IntoIterator<Item: Layout + 'static>,
     {
         for child in children {
             self.children.push(Box::new(child));
         }
+        self
+    }
+
+    /// Set this layout's [`IntrinsicSize`].
+    pub fn intrinsic_size(mut self, intrinsic_size: IntrinsicSize) -> Self {
+        self.intrinsic_size = intrinsic_size;
+        self
+    }
+
+    /// Set this layout's [`Padding`].
+    pub fn padding(mut self, padding: Padding) -> Self {
+        self.padding = padding;
+        self
+    }
+
+    /// Set this layout's spacing.
+    pub fn spacing(mut self, spacing: u32) -> Self {
+        self.spacing = spacing;
+        self
+    }
+
+    /// Set the main axis alignment
+    pub fn main_axis_alignment(mut self, main_axis_alignment: AxisAlignment) -> Self {
+        self.main_axis_alignment = main_axis_alignment;
+        self
+    }
+
+    /// Set the cross axis alignment.
+    pub fn cross_axis_alignment(mut self, cross_axis_alignment: AxisAlignment) -> Self {
+        self.cross_axis_alignment = cross_axis_alignment;
+        self
     }
 
     /// Calculate the total minimum constraints of all
@@ -75,7 +130,7 @@ impl HorizontalLayout {
         let mut sum = Size::default();
 
         for (i, child) in self.children.iter().enumerate() {
-            match child.intrinsic_size().width {
+            match child.get_intrinsic_size().width {
                 BoxSizing::Fixed(width) => {
                     sum.width += width;
                 }
@@ -85,7 +140,7 @@ impl HorizontalLayout {
                 _ => {}
             }
 
-            if let BoxSizing::Fixed(height) = child.intrinsic_size().height {
+            if let BoxSizing::Fixed(height) = child.get_intrinsic_size().height {
                 sum.height = sum.height.max(height);
             }
 
@@ -195,7 +250,7 @@ impl Layout for HorizontalLayout {
         self.constraints
     }
 
-    fn intrinsic_size(&self) -> IntrinsicSize {
+    fn get_intrinsic_size(&self) -> IntrinsicSize {
         self.intrinsic_size
     }
 
@@ -260,7 +315,7 @@ impl Layout for HorizontalLayout {
             .children
             .iter()
             .filter_map(|child| {
-                if let BoxSizing::Flex(factor) = child.intrinsic_size().width {
+                if let BoxSizing::Flex(factor) = child.get_intrinsic_size().width {
                     Some(factor)
                 } else {
                     None
@@ -291,7 +346,7 @@ impl Layout for HorizontalLayout {
         }
 
         for child in &mut self.children {
-            match child.intrinsic_size().width {
+            match child.get_intrinsic_size().width {
                 BoxSizing::Flex(factor) => {
                     let grow_factor = factor as f32 / flex_total as f32;
                     child.set_max_width(grow_factor * available_width);
@@ -305,7 +360,7 @@ impl Layout for HorizontalLayout {
                 }
             }
 
-            match child.intrinsic_size().height {
+            match child.get_intrinsic_size().height {
                 BoxSizing::Flex(_) => {
                     child.set_max_height(available_height);
                 }
@@ -386,7 +441,7 @@ impl Layout for HorizontalLayout {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::EmptyLayout;
+    use crate::{EmptyLayout, solve_layout};
 
     #[test]
     fn fixed_min_constraints() {
@@ -405,10 +460,7 @@ mod test {
         let flex: [u8; 4] = [2, 4, 5, 1];
         let children = flex
             .into_iter()
-            .map(|f| EmptyLayout {
-                intrinsic_size: IntrinsicSize::flex(f),
-                ..Default::default()
-            })
+            .map(|f| EmptyLayout::new().intrinsic_size(IntrinsicSize::flex(f)))
             .map(|l| Box::new(l) as Box<dyn Layout>)
             .collect::<Vec<_>>();
         let mut layout = HorizontalLayout {
@@ -444,10 +496,7 @@ mod test {
         let widths: &[f32] = &[500.0, 200.0, 10.2, 20.2, 45.0];
         let children: Vec<Box<dyn Layout>> = widths
             .iter()
-            .map(|w| EmptyLayout {
-                intrinsic_size: IntrinsicSize::fixed(*w, 0.0),
-                ..Default::default()
-            })
+            .map(|w| EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(*w, 0.0)))
             .map(|l| Box::new(l) as Box<dyn Layout>)
             .collect();
 
@@ -473,10 +522,7 @@ mod test {
         let heights: [f32; 5] = [500.0, 200.0, 10.2, 20.2, 45.0];
         let children: Vec<Box<dyn Layout>> = heights
             .iter()
-            .map(|h| EmptyLayout {
-                intrinsic_size: IntrinsicSize::fixed(0.0, *h),
-                ..Default::default()
-            })
+            .map(|h| EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(0.0, *h)))
             .map(|l| Box::new(l) as Box<dyn Layout>)
             .collect();
 
@@ -545,9 +591,10 @@ mod test {
         let widths: &[f32] = &[500.0, 200.0, 10.2, 20.2, 45.0];
         let children: Vec<Box<dyn Layout>> = widths
             .iter()
-            .map(|w| EmptyLayout {
-                size: Size::unit(*w),
-                ..Default::default()
+            .map(|w| {
+                let mut layout = EmptyLayout::new();
+                layout.size = Size::unit(*w);
+                layout
             })
             .map(|l| Box::new(l) as Box<dyn Layout>)
             .collect();
@@ -578,5 +625,39 @@ mod test {
             assert_eq!(l.position().x, x_pos, "Failed on iteration {i}");
             x_pos -= layout.spacing as f32;
         }
+    }
+
+    #[test]
+    fn start_alignment() {
+        let window = Size::new(200.0, 200.0);
+
+        let padding = Padding::all(24.0);
+        let spacing = 10;
+
+        let child_1 = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(240.0, 40.0));
+
+        let child_2 = EmptyLayout::new().intrinsic_size(IntrinsicSize {
+            width: BoxSizing::Fixed(20.0),
+            ..Default::default()
+        });
+
+        let mut root = HorizontalLayout {
+            position: Position { x: 250.0, y: 10.0 },
+            spacing,
+            padding,
+            children: vec![Box::new(child_1), Box::new(child_2)],
+            ..Default::default()
+        };
+
+        solve_layout(&mut root, window);
+
+        let mut child_1_pos = root.position;
+        child_1_pos.x += padding.left;
+        child_1_pos.y += padding.top;
+        let mut child_2_pos = child_1_pos;
+        child_2_pos.x += root.children[0].size().width + spacing as f32;
+
+        assert_eq!(root.children[0].position(), child_1_pos);
+        assert_eq!(root.children[1].position(), child_2_pos);
     }
 }

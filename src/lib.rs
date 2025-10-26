@@ -5,22 +5,17 @@
 //! ```
 //! use cascada::{HorizontalLayout, EmptyLayout, solve_layout, IntrinsicSize, Size, Layout};
 //!
-//! let child = EmptyLayout{
-//!     intrinsic_size: IntrinsicSize::fill(),
-//!     ..Default::default()
-//! };
-//!
-//! let mut layout = HorizontalLayout{
-//!     intrinsic_size: IntrinsicSize::fill(),
-//!     ..Default::default()
-//! };
-//!
 //! // Add three equally sized nodes.
-//! layout.add_children([
-//!     child.clone(),
-//!     child.clone(),
-//!     child,
-//!  ]);
+//! let child = EmptyLayout::new()
+//!     .intrinsic_size(IntrinsicSize::fill());
+//!
+//! let mut layout = HorizontalLayout::new()
+//!     .intrinsic_size(IntrinsicSize::fill())
+//!     .add_children([
+//!         child.clone(),
+//!         child.clone(),
+//!         child,
+//!     ]);
 //!
 //! solve_layout(&mut layout,Size::unit(3000.0));
 //!
@@ -29,8 +24,8 @@
 //! ```
 //!
 //! ## Layout engine
-//! `cascada` is a two pass layout engine that uses `contraints` to solve the layout tree. Minimum
-//! constraints flow up and maximum constraints flow down.
+//! `cascada` is a two pass layout engine that uses `contraints` and [`IntrinsicSize`] to solve the layout
+//! tree. Minimum constraints flow up and maximum constraints flow down.
 //!
 //! The maximum size starts from the top, as it goes down the widget tree the nodes are given the
 //! maximum size they can take up, and similarly give their child nodes the maximum they can take
@@ -86,7 +81,7 @@ pub fn solve_layout(root: &mut dyn Layout, window_size: Size) -> Vec<LayoutError
 /// axis along which content flows and the cross axis is the axis perpendicular
 /// to the cross axis. For most nodes the main axis is the x-axis while the
 /// cross axis is the y-axis.
-pub trait Layout: Debug + Send + Sync {
+pub trait Layout: Debug + private::Sealed {
     /// Solve the minimum constraints of each [`Layout`] node recursively
     fn solve_min_constraints(&mut self) -> (f32, f32);
 
@@ -109,7 +104,7 @@ pub trait Layout: Debug + Send + Sync {
     fn constraints(&self) -> BoxConstraints;
 
     /// Get the [`IntrinsicSize`] of the [`Layout`]
-    fn intrinsic_size(&self) -> IntrinsicSize;
+    fn get_intrinsic_size(&self) -> IntrinsicSize;
 
     /// Get the `Size` of the [`Layout`]
     fn size(&self) -> Size;
@@ -144,6 +139,15 @@ pub trait Layout: Debug + Send + Sync {
     fn get(&self, id: GlobalId) -> Option<&dyn Layout> {
         self.iter().find(|&layout| layout.id() == id)
     }
+}
+
+mod private {
+    pub trait Sealed {}
+
+    impl Sealed for super::EmptyLayout {}
+    impl Sealed for super::BlockLayout {}
+    impl Sealed for super::HorizontalLayout {}
+    impl Sealed for super::VerticalLayout {}
 }
 
 /// An `Iterator` over the layout tree.
@@ -208,8 +212,7 @@ impl BoxConstraints {
     }
 }
 
-/// This is the size that a [`Layout`] will try to be, the actual final size is
-/// dependent on the space available.
+/// This is the preferred size of a [`Layout`] node.
 #[derive(Debug, Clone, Copy, Default, PartialEq, PartialOrd)]
 pub struct IntrinsicSize {
     pub width: BoxSizing,
@@ -217,7 +220,7 @@ pub struct IntrinsicSize {
 }
 
 impl IntrinsicSize {
-    /// Create a flex intrinsic size.
+    /// Create an intrinsic size with a flex factor of `1`.
     ///
     /// # Example
     /// ```
@@ -228,14 +231,14 @@ impl IntrinsicSize {
     /// assert_eq!(instrinsic_size.width,BoxSizing::Flex(1));
     /// assert_eq!(instrinsic_size.height,BoxSizing::Flex(1));
     /// ```
-    pub fn fill() -> Self {
+    pub const fn fill() -> Self {
         Self {
             width: BoxSizing::Flex(1),
             height: BoxSizing::Flex(1),
         }
     }
 
-    /// Create a flex intrinsic size with a flex factor.
+    /// Creates an intrinsic size with a flex factor.
     ///
     /// # Example
     ///
@@ -247,14 +250,14 @@ impl IntrinsicSize {
     /// assert_eq!(intrinsic_size.width,BoxSizing::Flex(8));
     /// assert_eq!(intrinsic_size.height,BoxSizing::Flex(8));
     /// ```
-    pub fn flex(factor: u8) -> Self {
+    pub const fn flex(factor: u8) -> Self {
         Self {
             width: BoxSizing::Flex(factor),
             height: BoxSizing::Flex(factor),
         }
     }
 
-    /// Create a new shrink intrinsic size.
+    /// Creates an [`IntrinsicSize`] that shrinks to fit its contents.
     ///
     /// # Example
     ///
@@ -266,14 +269,14 @@ impl IntrinsicSize {
     /// assert_eq!(intrinsic_size.width, BoxSizing::Shrink);
     /// assert_eq!(intrinsic_size.height, BoxSizing::Shrink);
     /// ```
-    pub fn shrink() -> Self {
+    pub const fn shrink() -> Self {
         Self {
             width: BoxSizing::Shrink,
             height: BoxSizing::Shrink,
         }
     }
 
-    /// Create a new fixed intrinsic size.
+    /// Creates an [`IntrinsicSize`] with a fixed size.
     ///
     /// # Example
     /// ```
@@ -284,7 +287,7 @@ impl IntrinsicSize {
     /// assert_eq!(intrinsic_size.width,BoxSizing::Fixed(100.0));
     /// assert_eq!(intrinsic_size.height,BoxSizing::Fixed(50.0));
     /// ```
-    pub fn fixed(width: f32, height: f32) -> Self {
+    pub const fn fixed(width: f32, height: f32) -> Self {
         Self {
             width: BoxSizing::Fixed(width),
             height: BoxSizing::Fixed(height),
@@ -311,7 +314,7 @@ pub struct Padding {
 }
 
 impl Padding {
-    /// Create a new [`Padding`].
+    /// Creates a new [`Padding`].
     ///
     /// # Panics
     /// Panics if sides are negative.

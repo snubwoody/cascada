@@ -4,17 +4,28 @@ use agape_core::GlobalId;
 /// An empty [`Layout`] with no child notes.  
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct EmptyLayout {
-    pub id: GlobalId,
-    pub size: Size,
-    pub position: Position,
-    pub intrinsic_size: IntrinsicSize,
-    pub constraints: BoxConstraints,
-    pub errors: Vec<crate::LayoutError>,
+    id: GlobalId,
+    pub(crate) size: Size,
+    position: Position,
+    intrinsic_size: IntrinsicSize,
+    constraints: BoxConstraints,
+    errors: Vec<crate::LayoutError>,
 }
 
 impl EmptyLayout {
     pub fn new() -> Self {
         Self::default()
+    }
+
+    pub fn set_id(mut self, id: GlobalId) -> Self {
+        self.id = id;
+        self
+    }
+
+    /// Set the intrinsic size.
+    pub fn intrinsic_size(mut self, intrinsic_size: IntrinsicSize) -> Self {
+        self.intrinsic_size = intrinsic_size;
+        self
     }
 }
 
@@ -51,7 +62,7 @@ impl Layout for EmptyLayout {
         self.constraints
     }
 
-    fn intrinsic_size(&self) -> IntrinsicSize {
+    fn get_intrinsic_size(&self) -> IntrinsicSize {
         self.intrinsic_size
     }
 

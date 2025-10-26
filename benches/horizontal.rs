@@ -6,18 +6,11 @@ pub fn benchmark(c: &mut Criterion) {
     let mut g = c.benchmark_group("nodes");
     for size in sizes {
         g.bench_with_input(BenchmarkId::from_parameter(size), &size, |b, size| {
-            let child = EmptyLayout {
-                intrinsic_size: IntrinsicSize::flex(1),
-                ..EmptyLayout::default()
-            };
-
-            let mut layout = HorizontalLayout {
-                intrinsic_size: IntrinsicSize::fill(),
-                ..HorizontalLayout::default()
-            };
+            let child = EmptyLayout::new().intrinsic_size(IntrinsicSize::fill());
+            let mut layout = HorizontalLayout::new().intrinsic_size(IntrinsicSize::fill());
 
             for _ in 0..*size {
-                layout.add_child(child.clone());
+                layout = layout.add_child(child.clone());
             }
 
             b.iter(|| solve_layout(&mut layout, Size::unit(1000.0)))

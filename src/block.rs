@@ -4,21 +4,18 @@ use crate::{
 };
 use agape_core::GlobalId;
 
-// TODO make these private and add builder
-/// A [`Layout`] that only has one child.
+/// A [`Layout`] that only has one child node.
 #[derive(Debug)]
 pub struct BlockLayout {
-    pub id: GlobalId,
-    pub size: Size,
-    pub position: Position,
-    pub padding: Padding,
-    pub intrinsic_size: IntrinsicSize,
-    pub constraints: BoxConstraints,
-    /// The main axis is the `x-axis`
-    pub main_axis_alignment: AxisAlignment,
-    /// The cross axis is the `y-axis`
-    pub cross_axis_alignment: AxisAlignment,
-    pub child: Box<dyn Layout>,
+    id: GlobalId,
+    pub(crate) size: Size,
+    position: Position,
+    padding: Padding,
+    intrinsic_size: IntrinsicSize,
+    constraints: BoxConstraints,
+    main_axis_alignment: AxisAlignment,
+    cross_axis_alignment: AxisAlignment,
+    child: Box<dyn Layout>,
     errors: Vec<LayoutError>,
 }
 
@@ -45,6 +42,39 @@ impl BlockLayout {
             child,
             ..Default::default()
         }
+    }
+
+    pub fn child(&self) -> &dyn Layout {
+        self.child.as_ref()
+    }
+
+    pub fn set_id(mut self, id: GlobalId) -> Self {
+        self.id = id;
+        self
+    }
+
+    /// Set the intrinsic size.
+    pub fn intrinsic_size(mut self, intrinsic_size: IntrinsicSize) -> Self {
+        self.intrinsic_size = intrinsic_size;
+        self
+    }
+
+    /// Set the [`Padding`].
+    pub fn padding(mut self, padding: Padding) -> Self {
+        self.padding = padding;
+        self
+    }
+
+    /// Set the main axis alignment
+    pub fn main_axis_alignment(mut self, main_axis_alignment: AxisAlignment) -> Self {
+        self.main_axis_alignment = main_axis_alignment;
+        self
+    }
+
+    /// Set the cross axis alignment.
+    pub fn cross_axis_alignment(mut self, cross_axis_alignment: AxisAlignment) -> Self {
+        self.cross_axis_alignment = cross_axis_alignment;
+        self
     }
 
     fn align_main_axis_start(&mut self) {
@@ -117,7 +147,7 @@ impl Layout for BlockLayout {
         self.constraints
     }
 
-    fn intrinsic_size(&self) -> IntrinsicSize {
+    fn get_intrinsic_size(&self) -> IntrinsicSize {
         self.intrinsic_size
     }
 
@@ -179,7 +209,7 @@ impl Layout for BlockLayout {
         available_space.height -= self.padding.vertical_sum();
 
         // TODO: should layout set max constraints when shrink?
-        match self.child.intrinsic_size().width {
+        match self.child.get_intrinsic_size().width {
             BoxSizing::Flex(_) => {
                 self.child.set_max_width(available_space.width);
             }
@@ -189,7 +219,7 @@ impl Layout for BlockLayout {
             BoxSizing::Shrink => {}
         }
 
-        match self.child.intrinsic_size().height {
+        match self.child.get_intrinsic_size().height {
             BoxSizing::Flex(_) => {
                 self.child.set_max_height(available_space.height);
             }
@@ -262,10 +292,7 @@ mod test {
 
     #[test]
     fn flex_max_constraints() {
-        let layout = EmptyLayout {
-            intrinsic_size: IntrinsicSize::fill(),
-            ..Default::default()
-        };
+        let layout = EmptyLayout::new().intrinsic_size(IntrinsicSize::fill());
 
         let mut layout = BlockLayout::new(Box::new(layout));
         layout.solve_max_constraints(Size::new(100.0, 200.0));
@@ -275,10 +302,7 @@ mod test {
 
     #[test]
     fn flex_max_constraints_with_padding() {
-        let layout = EmptyLayout {
-            intrinsic_size: IntrinsicSize::fill(),
-            ..Default::default()
-        };
+        let layout = EmptyLayout::new().intrinsic_size(IntrinsicSize::fill());
 
         let mut layout = BlockLayout::new(Box::new(layout));
         layout.padding = Padding::new(10.0, 15.0, 20.0, 25.0);
@@ -300,10 +324,8 @@ mod test {
 
     #[test]
     fn no_padding_in_fixed_min_constraints() {
-        let child = EmptyLayout {
-            intrinsic_size: IntrinsicSize::fixed(24.2, 24.0),
-            ..Default::default()
-        };
+        let child = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(24.2, 24.0));
+
         let mut layout = BlockLayout::new(Box::new(child));
         layout.intrinsic_size = IntrinsicSize::fixed(20.0, 500.0);
         layout.solve_min_constraints();
@@ -315,10 +337,7 @@ mod test {
 
     #[test]
     fn shrink_min_constraints() {
-        let child = EmptyLayout {
-            intrinsic_size: IntrinsicSize::fixed(20.0, 20.0),
-            ..Default::default()
-        };
+        let child = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(20.0, 20.0));
         let mut layout = BlockLayout::new(Box::new(child));
         layout.intrinsic_size = IntrinsicSize::shrink();
         layout.solve_min_constraints();
@@ -329,10 +348,7 @@ mod test {
 
     #[test]
     fn include_padding_shrink_min_constraints() {
-        let child = EmptyLayout {
-            intrinsic_size: IntrinsicSize::fixed(20.0, 20.0),
-            ..Default::default()
-        };
+        let child = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(20.0, 20.0));
         let mut layout = BlockLayout::new(Box::new(child));
         layout.intrinsic_size = IntrinsicSize::shrink();
         layout.padding = Padding::new(10.0, 15.0, 93.0, 53.0);
@@ -345,9 +361,7 @@ mod test {
     #[test]
     fn shrink_sizing() {
         let window = Size::new(800.0, 800.0);
-        let mut child = EmptyLayout::new();
-        child.intrinsic_size.width = BoxSizing::Fixed(200.0);
-        child.intrinsic_size.height = BoxSizing::Fixed(200.0);
+        let child = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(200.0, 200.0));
 
         let mut root = BlockLayout::new(Box::new(child));
         root.padding = Padding::all(24.0);
@@ -416,9 +430,7 @@ mod test {
     fn nested_shrink() {
         let window = Size::new(800.0, 800.0);
 
-        let mut inner_child = EmptyLayout::new();
-        inner_child.intrinsic_size.width = BoxSizing::Fixed(175.0);
-        inner_child.intrinsic_size.height = BoxSizing::Fixed(15.0);
+        let inner_child = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(175.0, 15.0));
 
         let mut child = BlockLayout::new(Box::new(inner_child));
         child.padding = Padding::all(24.0);
@@ -438,9 +450,7 @@ mod test {
     #[test]
     fn grow() {
         let window = Size::new(800.0, 800.0);
-        let mut child = EmptyLayout::new();
-        child.intrinsic_size.width = BoxSizing::Flex(1);
-        child.intrinsic_size.height = BoxSizing::Flex(1);
+        let child = EmptyLayout::new().intrinsic_size(IntrinsicSize::fill());
 
         let padding = Padding::all(24.0);
         let mut root = BlockLayout::new(Box::new(child));
@@ -460,8 +470,7 @@ mod test {
     #[test]
     fn inner_grow() {
         let window = Size::new(800.0, 800.0);
-        let mut inner_child = EmptyLayout::new();
-        inner_child.intrinsic_size = IntrinsicSize::fill();
+        let inner_child = EmptyLayout::new().intrinsic_size(IntrinsicSize::fill());
 
         let mut child = BlockLayout::new(Box::new(inner_child));
         child.intrinsic_size = IntrinsicSize::fill();
