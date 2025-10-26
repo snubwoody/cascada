@@ -1,15 +1,12 @@
-//! Cascada is a lightweight, high-performance layout engine for UI frameworks. Cascada aims
-//! to be of use to developers building custom GUI or TUI libraries, instead of having to
-//! create your own layout implementation.
+//! Cascada is a lightweight, high-performance layout engine for UI frameworks.
 //!
-//! It's designed for developers building UI libraries, such as GUIs or TUI's, who
-//! want a fast, predictable and easy-to-use layout system without the complexity of
+//! It is designed for developers building UI libraries, such as GUIs or TUI's, who
+//! want a fast, predictable layout system without the complexity of
 //! implementing their own.
-//! It is non-intrusive.
 //!
 //! # Usage
 //! The core of this library is the [`Layout`] trait, which is implemented for different
-//! use cases. There are currently four type of layout nodes:
+//! use cases. There are currently four types of layout nodes:
 //!
 //! - [`EmptyLayout`]
 //! - [`BlockLayout`]
@@ -62,12 +59,16 @@
 //!     println!("Position: {:?}",node.position());
 //! }
 //! ```
-//! To get the size and position of the layout nodes you can iterate over the tree.
+//!
+//! Or you could use ids to get specific nodes from the tree.
 //!
 //! ```
-//! use cascada::{HorizontalLayout, EmptyLayout, solve_layout, IntrinsicSize, Size, Layout};
+//! use cascada::{HorizontalLayout, EmptyLayout, solve_layout, IntrinsicSize, Size, Layout, GlobalId};
+//! let id = GlobalId::new();
+//!
 //! let child = EmptyLayout::new()
-//!     .intrinsic_size(IntrinsicSize::fill());
+//!     .set_id(id)
+//!     .intrinsic_size(IntrinsicSize::fixed(20.0,50.0));
 //!
 //! let mut layout = HorizontalLayout::new()
 //!     .intrinsic_size(IntrinsicSize::fill())
@@ -79,10 +80,9 @@
 //!
 //! solve_layout(&mut layout,Size::unit(3000.0));
 //!
-//! for node in layout.iter(){
-//!     println!("Size: {:?}",node.size());
-//!     println!("Position: {:?}",node.position());
-//! }
+//!
+//! let child = layout.get(id).unwrap();
+//! assert_eq!(child.size().width,20.0);
 //! ```
 #![warn(clippy::suboptimal_flops)]
 #![warn(clippy::suspicious_operation_groupings)]
