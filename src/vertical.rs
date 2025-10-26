@@ -1,6 +1,6 @@
 use crate::{
-    AxisAlignment, BoxConstraints, BoxSizing, IntrinsicSize, Layout, LayoutError, LayoutIter,
-    Padding, Position, Size, error::OverflowAxis,GlobalId
+    AxisAlignment, BoxConstraints, BoxSizing, GlobalId, IntrinsicSize, Layout, LayoutError,
+    LayoutIter, Padding, Position, Size, error::OverflowAxis,
 };
 
 /// A [`Layout`] node that arranges it's children vertically.

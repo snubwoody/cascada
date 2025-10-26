@@ -1,6 +1,6 @@
 use crate::{
-    AxisAlignment, BoxConstraints, BoxSizing, IntrinsicSize, Layout, LayoutError, LayoutIter,
-    Padding, Position, Size, GlobalId
+    AxisAlignment, BoxConstraints, BoxSizing, GlobalId, IntrinsicSize, Layout, LayoutError,
+    LayoutIter, Padding, Position, Size,
 };
 
 /// A [`Layout`] that arranges it's child nodes horizontally.

@@ -1,7 +1,6 @@
 use crate::{
-    AxisAlignment, BoxConstraints, BoxSizing, EmptyLayout, IntrinsicSize, Layout, LayoutError,
-    LayoutIter, Padding, Position, Size,
-    GlobalId
+    AxisAlignment, BoxConstraints, BoxSizing, EmptyLayout, GlobalId, IntrinsicSize, Layout,
+    LayoutError, LayoutIter, Padding, Position, Size,
 };
 
 /// A [`Layout`] that only has one child node.

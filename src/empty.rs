@@ -1,6 +1,5 @@
 use crate::{
-    BoxConstraints, BoxSizing, IntrinsicSize, Layout, LayoutIter, Position, Size,
-    GlobalId
+    BoxConstraints, BoxSizing, GlobalId, IntrinsicSize, Layout, LayoutIter, Position, Size,
 };
 
 /// An empty [`Layout`] with no child notes.  
