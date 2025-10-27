@@ -31,66 +31,6 @@ impl EmptyLayout {
 }
 
 impl Layout for EmptyLayout {
-    fn size(&self) -> Size {
-        self.size
-    }
-
-    fn id(&self) -> GlobalId {
-        self.id
-    }
-
-    fn set_position(&mut self, position: Position) {
-        self.position = position;
-    }
-
-    fn set_x(&mut self, x: f32) {
-        self.position.x = x;
-    }
-
-    fn set_y(&mut self, y: f32) {
-        self.position.y = y;
-    }
-
-    fn position(&self) -> Position {
-        self.position
-    }
-
-    fn children(&self) -> &[Box<dyn Layout>] {
-        &[]
-    }
-
-    fn constraints(&self) -> BoxConstraints {
-        self.constraints
-    }
-
-    fn get_intrinsic_size(&self) -> IntrinsicSize {
-        self.intrinsic_size
-    }
-
-    fn set_max_height(&mut self, height: f32) {
-        self.constraints.max_height = height;
-    }
-
-    fn set_max_width(&mut self, width: f32) {
-        self.constraints.max_width = width;
-    }
-
-    fn set_min_height(&mut self, height: f32) {
-        self.constraints.min_height = height;
-    }
-
-    fn set_min_width(&mut self, width: f32) {
-        self.constraints.min_width = width;
-    }
-
-    fn collect_errors(&mut self) -> Vec<crate::LayoutError> {
-        self.errors.drain(..).collect::<Vec<_>>()
-    }
-
-    fn iter(&self) -> LayoutIter<'_> {
-        LayoutIter { stack: vec![self] }
-    }
-
     fn solve_min_constraints(&mut self) -> (f32, f32) {
         if let BoxSizing::Fixed(width) = self.intrinsic_size.width {
             self.constraints.min_width = width;
@@ -105,6 +45,8 @@ impl Layout for EmptyLayout {
 
     // No children to solve for
     fn solve_max_constraints(&mut self, _: Size) {}
+
+    fn position_children(&mut self) {}
 
     fn update_size(&mut self) {
         match self.intrinsic_size.width {
@@ -132,7 +74,65 @@ impl Layout for EmptyLayout {
         }
     }
 
-    fn position_children(&mut self) {}
+    fn collect_errors(&mut self) -> Vec<crate::LayoutError> {
+        self.errors.drain(..).collect::<Vec<_>>()
+    }
+
+    fn id(&self) -> GlobalId {
+        self.id
+    }
+
+    fn constraints(&self) -> BoxConstraints {
+        self.constraints
+    }
+
+    fn get_intrinsic_size(&self) -> IntrinsicSize {
+        self.intrinsic_size
+    }
+
+    fn size(&self) -> Size {
+        self.size
+    }
+
+    fn position(&self) -> Position {
+        self.position
+    }
+
+    fn children(&self) -> &[Box<dyn Layout>] {
+        &[]
+    }
+
+    fn set_max_width(&mut self, width: f32) {
+        self.constraints.max_width = width;
+    }
+
+    fn set_max_height(&mut self, height: f32) {
+        self.constraints.max_height = height;
+    }
+
+    fn set_min_width(&mut self, width: f32) {
+        self.constraints.min_width = width;
+    }
+
+    fn set_min_height(&mut self, height: f32) {
+        self.constraints.min_height = height;
+    }
+
+    fn set_position(&mut self, position: Position) {
+        self.position = position;
+    }
+
+    fn set_x(&mut self, x: f32) {
+        self.position.x = x;
+    }
+
+    fn set_y(&mut self, y: f32) {
+        self.position.y = y;
+    }
+
+    fn iter(&self) -> LayoutIter<'_> {
+        LayoutIter { stack: vec![self] }
+    }
 }
 
 #[cfg(test)]
