@@ -6,7 +6,7 @@ resolver = "3"
 edition = "2024"
 
 [workspace.dependencies]
-cascada = "0.2.0"
+cascada = {path = "."}
 
 [package]
 name = "cascada"
