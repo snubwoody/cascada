@@ -1,0 +1,10 @@
+[package]
+name = "dashboard"
+version = "0.1.0"
+edition.workspace = true
+
+[dependencies]
+cascada.workspace = true
+
+[lints]
+workspace = true

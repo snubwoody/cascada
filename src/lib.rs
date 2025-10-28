@@ -290,23 +290,34 @@ pub enum AxisAlignment {
 /// Describes the maximum and minimum size of a [`Layout`].
 #[derive(Debug, Clone, Copy, Default, PartialEq, PartialOrd)]
 pub struct BoxConstraints {
+    /// The maximum possible width.
     pub max_width: f32,
+    /// The maximum possible height.
     pub max_height: f32,
+    /// The minimum possible height.
     pub min_height: f32,
+    /// The minimum possible width.
     pub min_width: f32,
 }
 
 impl BoxConstraints {
     /// Create new [`BoxConstraints`].
-    pub fn new() -> Self {
-        Self::default()
+    pub const fn new() -> Self {
+        Self {
+            max_height: 0.0,
+            max_width: 0.0,
+            min_height: 0.0,
+            min_width: 0.0,
+        }
     }
 }
 
 /// This is the preferred size of a [`Layout`] node.
 #[derive(Debug, Clone, Copy, Default, PartialEq, PartialOrd)]
 pub struct IntrinsicSize {
+    /// The intrinsic width.
     pub width: BoxSizing,
+    /// The intrinsic height.
     pub height: BoxSizing,
 }
 
@@ -398,9 +409,13 @@ impl From<Size> for IntrinsicSize {
 /// The space between the edges of a [`Layout`] node and its content.
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug)]
 pub struct Padding {
+    /// The left padding.
     pub left: f32,
+    /// The right padding.
     pub right: f32,
+    /// The top padding.
     pub top: f32,
+    /// The bottom padding.
     pub bottom: f32,
 }
 

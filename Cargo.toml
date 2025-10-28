@@ -1,10 +1,20 @@
+[workspace]
+members = ["examples/*"]
+resolver = "3"
+
+[workspace.package]
+edition = "2024"
+
+[workspace.dependencies]
+cascada = {path = "."}
+
 [package]
 name = "cascada"
 description = "A general purpose UI layout engine"
 version = "0.2.0"
 authors = ["Wakunguma Kalimukwa <wakunguma13@gmail.com>"]
 license = "Apache-2.0 OR MIT"
-edition = "2024"
+edition.workspace = true
 readme = "README.md"
 documentation = "https://docs.rs/cascada"
 repository = "https://github.com/snubwoody/cascada"
@@ -19,6 +29,7 @@ thiserror = "2.0.9"
 
 [dev-dependencies]
 criterion = "0.7.0"
+
 
 
 [workspace.lints.clippy]
