@@ -2,5 +2,7 @@
 
 Centering a layout node on both the main and cross axis.
 
-```rust
+This example can be run using:
+```bash
+cargo run -p center
 ```
