@@ -1,3 +1,4 @@
+use std::fmt::Display;
 use std::ops::{Add, AddAssign, Sub, SubAssign};
 
 /// The width and height of a layout node.
@@ -211,5 +212,35 @@ impl From<(f32, f32)> for Size {
     /// ```
     fn from((width, height): (f32, f32)) -> Self {
         Self { width, height }
+    }
+}
+
+impl Display for Size {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if let Some(prec) = f.precision(){
+            write!(f, "{:.prec$}x{:.prec$}", self.width, self.height)
+
+        }else{
+            write!(f, "{}x{}", self.width, self.height)
+        }
+    }
+}
+
+#[cfg(test)]
+mod test{
+    use super::*;
+
+    #[test]
+    fn display(){
+        let size = Size::new(50.0,20.24242);
+        let string = format!("{size}");
+        assert_eq!(string,"50x20.24242");
+    }
+
+    #[test]
+    fn display_with_precision(){
+        let size = Size::new(50.0,20.24242);
+        let string = format!("{size}");
+        assert_eq!(string,"50.0x20.2");
     }
 }
