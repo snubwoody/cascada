@@ -95,6 +95,7 @@ mod position;
 mod size;
 pub mod vertical;
 // TODO: hide behind feature flag
+#[cfg(feature = "debug-tools")]
 pub mod debug;
 
 pub use block::BlockLayout;
@@ -201,7 +202,7 @@ pub trait Layout: Debug + private::Sealed {
         self.iter().find(|&layout| layout.id() == id)
     }
 
-    
+
 }
 
 mod private {

@@ -15,8 +15,9 @@ pub trait DebugTree: Layout{
         let position = self.position();
         let label = self.label();
         let whitespace = " ".repeat(indent);
-        println!("{whitespace}{label}(size: {size}, position: {position})");
+        println!("{whitespace}•{label}(size: {size}, position: {position})");
     }
+
 
     fn debug_tree(&self){
         self.print(0);
