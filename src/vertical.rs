@@ -52,8 +52,8 @@ impl VerticalLayout {
         self.id = id;
         self
     }
-    
-    pub fn with_label(mut self, label:&str) -> Self {
+
+    pub fn with_label(mut self, label: &str) -> Self {
         self.label = Some(label.to_string());
         self
     }
@@ -248,10 +248,9 @@ impl VerticalLayout {
 
 impl Layout for VerticalLayout {
     fn label(&self) -> String {
-        self.label.clone()
-            .unwrap_or("VerticalLayout".to_string())
+        self.label.clone().unwrap_or("VerticalLayout".to_string())
     }
-    
+
     fn id(&self) -> GlobalId {
         self.id
     }

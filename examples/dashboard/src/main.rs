@@ -4,7 +4,6 @@ use cascada::{
     solve_layout,
 };
 
-// TODO: add debug_tree
 fn navbar() -> HorizontalLayout {
     let panel = EmptyLayout::new().intrinsic_size(IntrinsicSize {
         width: BoxSizing::Fixed(50.0),
@@ -15,7 +14,7 @@ fn navbar() -> HorizontalLayout {
 
     HorizontalLayout::new()
         .with_label("Navbar")
-        .intrinsic_size(IntrinsicSize{
+        .intrinsic_size(IntrinsicSize {
             width: BoxSizing::Flex(1),
             height: BoxSizing::Shrink,
         })

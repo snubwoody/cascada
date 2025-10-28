@@ -201,8 +201,6 @@ pub trait Layout: Debug + private::Sealed {
     fn get(&self, id: GlobalId) -> Option<&dyn Layout> {
         self.iter().find(|&layout| layout.id() == id)
     }
-
-
 }
 
 mod private {

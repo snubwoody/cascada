@@ -56,7 +56,6 @@ impl Default for BlockLayout {
 }
 
 impl BlockLayout {
-
     pub fn new<L: Layout + 'static>(child: L) -> Self {
         Self {
             child: Box::new(child),
@@ -73,7 +72,7 @@ impl BlockLayout {
         self
     }
 
-    pub fn with_label(mut self, label:&str) -> Self {
+    pub fn with_label(mut self, label: &str) -> Self {
         self.label = Some(label.to_string());
         self
     }
@@ -139,8 +138,7 @@ impl BlockLayout {
 
 impl Layout for BlockLayout {
     fn label(&self) -> String {
-        self.label.clone()
-            .unwrap_or("BlockLayout".to_string())
+        self.label.clone().unwrap_or("BlockLayout".to_string())
     }
 
     fn id(&self) -> GlobalId {

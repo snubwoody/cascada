@@ -30,19 +30,17 @@ impl EmptyLayout {
         self
     }
 
-    pub fn with_label(mut self, label:&str) -> Self {
+    pub fn with_label(mut self, label: &str) -> Self {
         self.label = Some(label.to_string());
         self
     }
-
 }
 
 impl Layout for EmptyLayout {
     fn label(&self) -> String {
-        self.label.clone()
-            .unwrap_or("EmptyLayout".to_string())
+        self.label.clone().unwrap_or("EmptyLayout".to_string())
     }
-    
+
     fn solve_min_constraints(&mut self) -> (f32, f32) {
         if let BoxSizing::Fixed(width) = self.intrinsic_size.width {
             self.constraints.min_width = width;
