@@ -87,7 +87,6 @@
 #![warn(clippy::suboptimal_flops)]
 #![warn(clippy::suspicious_operation_groupings)]
 #![warn(clippy::imprecise_flops)]
-#![warn(missing_debug_implementations)]
 pub mod block;
 pub mod empty;
 mod error;

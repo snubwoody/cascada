@@ -1,5 +1,5 @@
-use std::fmt::Display;
 use crate::Size;
+use std::fmt::Display;
 use std::ops::{Add, AddAssign, Sub, SubAssign};
 
 /// The x and y position of a layout node.
@@ -171,33 +171,31 @@ impl SubAssign<f32> for Position {
     }
 }
 
-impl Display for Position{
+impl Display for Position {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        if let Some(prec) = f.precision(){
+        if let Some(prec) = f.precision() {
             write!(f, "{:.prec$}x{:.prec$}", self.x, self.y)
-
-        }else{
+        } else {
             write!(f, "{}x{}", self.x, self.y)
         }
     }
 }
 
 #[cfg(test)]
-mod test{
-    use std::sync::TryLockError::Poisoned;
+mod test {
     use super::*;
 
     #[test]
-    fn display(){
-        let pos = Position::new(5.0,35.35);
+    fn display() {
+        let pos = Position::new(5.0, 35.35);
         let string = format!("{pos}");
-        assert_eq!(string,"5x35.35");
+        assert_eq!(string, "5x35.35");
     }
 
     #[test]
-    fn display_with_precision(){
-        let pos = Position::new(50.0,20.24242);
+    fn display_with_precision() {
+        let pos = Position::new(50.0, 20.24242);
         let string = format!("{pos:.2}");
-        assert_eq!(string,"50.00x20.24");
+        assert_eq!(string, "50.00x20.24");
     }
 }

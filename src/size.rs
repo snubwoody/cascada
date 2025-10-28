@@ -217,30 +217,29 @@ impl From<(f32, f32)> for Size {
 
 impl Display for Size {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        if let Some(prec) = f.precision(){
+        if let Some(prec) = f.precision() {
             write!(f, "{:.prec$}x{:.prec$}", self.width, self.height)
-
-        }else{
+        } else {
             write!(f, "{}x{}", self.width, self.height)
         }
     }
 }
 
 #[cfg(test)]
-mod test{
+mod test {
     use super::*;
 
     #[test]
-    fn display(){
-        let size = Size::new(50.0,20.24242);
+    fn display() {
+        let size = Size::new(50.0, 20.24242);
         let string = format!("{size}");
-        assert_eq!(string,"50x20.24242");
+        assert_eq!(string, "50x20.24242");
     }
 
     #[test]
-    fn display_with_precision(){
-        let size = Size::new(50.0,20.24242);
-        let string = format!("{size}");
-        assert_eq!(string,"50.0x20.2");
+    fn display_with_precision() {
+        let size = Size::new(50.0, 20.24242);
+        let string = format!("{size:.1}");
+        assert_eq!(string, "50.0x20.2");
     }
 }
