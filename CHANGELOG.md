@@ -2,6 +2,9 @@
 
 All notable changes to agape will be documented in this file.
 
+## (unreleased)
+- Added `debug_tree` method.
+
 ## 0.2.0 - 27-10-2025
 
 - Make all layout fields private ([#8](https://github.com/snubwoody/cascada/pull/8)).

@@ -38,6 +38,7 @@ pub struct VerticalLayout {
     /// The cross axis is the `x-axis`
     cross_axis_alignment: AxisAlignment,
     constraints: BoxConstraints,
+    label: Option<String>,
     errors: Vec<LayoutError>,
 }
 
@@ -49,6 +50,11 @@ impl VerticalLayout {
 
     pub fn set_id(mut self, id: GlobalId) -> Self {
         self.id = id;
+        self
+    }
+
+    pub fn with_label(mut self, label: &str) -> Self {
+        self.label = Some(label.to_string());
         self
     }
 
@@ -241,6 +247,10 @@ impl VerticalLayout {
 }
 
 impl Layout for VerticalLayout {
+    fn label(&self) -> String {
+        self.label.clone().unwrap_or("VerticalLayout".to_string())
+    }
+
     fn id(&self) -> GlobalId {
         self.id
     }

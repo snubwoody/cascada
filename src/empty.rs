@@ -11,6 +11,7 @@ pub struct EmptyLayout {
     intrinsic_size: IntrinsicSize,
     constraints: BoxConstraints,
     errors: Vec<crate::LayoutError>,
+    label: Option<String>,
 }
 
 impl EmptyLayout {
@@ -28,9 +29,18 @@ impl EmptyLayout {
         self.intrinsic_size = intrinsic_size;
         self
     }
+
+    pub fn with_label(mut self, label: &str) -> Self {
+        self.label = Some(label.to_string());
+        self
+    }
 }
 
 impl Layout for EmptyLayout {
+    fn label(&self) -> String {
+        self.label.clone().unwrap_or("EmptyLayout".to_string())
+    }
+
     fn solve_min_constraints(&mut self) -> (f32, f32) {
         if let BoxSizing::Fixed(width) = self.intrinsic_size.width {
             self.constraints.min_width = width;
