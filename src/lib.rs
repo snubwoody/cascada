@@ -88,14 +88,14 @@
 #![warn(clippy::suspicious_operation_groupings)]
 #![warn(clippy::imprecise_flops)]
 pub mod block;
+#[cfg(feature = "debug-tools")]
+pub mod debug;
 pub mod empty;
 mod error;
 pub mod horizontal;
 mod position;
 mod size;
 pub mod vertical;
-#[cfg(feature = "debug-tools")]
-pub mod debug;
 
 pub use block::BlockLayout;
 pub use empty::EmptyLayout;
