@@ -1,9 +1,11 @@
 [package]
 name = "flex"
 version = "0.1.0"
+publish = false
 edition.workspace = true
 
 [dependencies]
+cascada.workspace = true
 
 [lints]
 workspace = true
