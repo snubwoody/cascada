@@ -34,6 +34,7 @@ pub struct BlockLayout {
     cross_axis_alignment: AxisAlignment,
     child: Box<dyn Layout>,
     errors: Vec<LayoutError>,
+    label: Option<String>,
 }
 
 impl Default for BlockLayout {
@@ -49,11 +50,13 @@ impl Default for BlockLayout {
             cross_axis_alignment: AxisAlignment::default(),
             errors: vec![],
             child: Box::new(EmptyLayout::default()),
+            label: None,
         }
     }
 }
 
 impl BlockLayout {
+
     pub fn new<L: Layout + 'static>(child: L) -> Self {
         Self {
             child: Box::new(child),
@@ -67,6 +70,11 @@ impl BlockLayout {
 
     pub fn set_id(mut self, id: GlobalId) -> Self {
         self.id = id;
+        self
+    }
+
+    pub fn with_label(mut self, label:&str) -> Self {
+        self.label = Some(label.to_string());
         self
     }
 
@@ -130,6 +138,11 @@ impl BlockLayout {
 }
 
 impl Layout for BlockLayout {
+    fn label(&self) -> String {
+        self.label.clone()
+            .unwrap_or("BlockLayout".to_string())
+    }
+
     fn id(&self) -> GlobalId {
         self.id
     }

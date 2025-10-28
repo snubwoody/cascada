@@ -94,6 +94,8 @@ pub mod horizontal;
 mod position;
 mod size;
 pub mod vertical;
+// TODO: hide behind feature flag
+pub mod debug;
 
 pub use block::BlockLayout;
 pub use empty::EmptyLayout;
@@ -138,18 +140,9 @@ pub fn solve_layout(root: &mut dyn Layout, window_size: Size) -> Vec<LayoutError
 }
 
 /// A layout node.
-///
-/// ## Details
-///
-/// Each layout node has minimum and maximum constraints, these describe the bounds
-/// of the layout node i.e. the max and min space it's allowed to take up.
-///
-/// ### Axes
-/// Each node has two axes: the main axis and the cross axis. The main axis is the
-/// axis along which content flows and the cross axis is the axis perpendicular
-/// to the cross axis. For most nodes the main axis is the x-axis while the
-/// cross axis is the y-axis.
 pub trait Layout: Debug + private::Sealed {
+    fn label(&self) -> String;
+
     /// Solve the minimum constraints of each [`Layout`] node recursively
     fn solve_min_constraints(&mut self) -> (f32, f32);
 
@@ -207,6 +200,8 @@ pub trait Layout: Debug + private::Sealed {
     fn get(&self, id: GlobalId) -> Option<&dyn Layout> {
         self.iter().find(|&layout| layout.id() == id)
     }
+
+    
 }
 
 mod private {

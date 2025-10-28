@@ -31,6 +31,7 @@ pub struct HorizontalLayout {
     cross_axis_alignment: AxisAlignment,
     children: Vec<Box<dyn Layout>>,
     errors: Vec<LayoutError>,
+    label: Option<String>,
 }
 
 impl HorizontalLayout {
@@ -57,6 +58,12 @@ impl HorizontalLayout {
         self.children.push(Box::new(child));
         self
     }
+
+    pub fn with_label(mut self, label:&str) -> Self {
+        self.label = Some(label.to_string());
+        self
+    }
+
 
     /// Add multiple child nodes to the list of children.
     ///
@@ -229,6 +236,12 @@ impl HorizontalLayout {
 }
 
 impl Layout for HorizontalLayout {
+
+    fn label(&self) -> String {
+        self.label.clone()
+            .unwrap_or("HorizontalLayout".to_string())
+    }
+    
     fn id(&self) -> GlobalId {
         self.id
     }
