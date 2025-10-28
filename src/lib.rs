@@ -87,7 +87,6 @@
 #![warn(clippy::suboptimal_flops)]
 #![warn(clippy::suspicious_operation_groupings)]
 #![warn(clippy::imprecise_flops)]
-#![warn(missing_docs)]
 pub mod block;
 pub mod empty;
 mod error;
@@ -304,7 +303,7 @@ pub struct BoxConstraints {
 impl BoxConstraints {
     /// Create new [`BoxConstraints`].
     pub const fn new() -> Self {
-        Self{
+        Self {
             max_height: 0.0,
             max_width: 0.0,
             min_height: 0.0,
