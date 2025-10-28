@@ -94,7 +94,6 @@ pub mod horizontal;
 mod position;
 mod size;
 pub mod vertical;
-// TODO: hide behind feature flag
 #[cfg(feature = "debug-tools")]
 pub mod debug;
 
