@@ -1,5 +1,5 @@
-use cascada::{AxisAlignment, EmptyLayout, HorizontalLayout, IntrinsicSize, Size, solve_layout};
 use cascada::debug::DebugTree;
+use cascada::{AxisAlignment, EmptyLayout, HorizontalLayout, IntrinsicSize, Size, solve_layout};
 
 fn main() {
     // Define the maximum available size

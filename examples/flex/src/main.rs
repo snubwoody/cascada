@@ -1,14 +1,15 @@
-use cascada::{AxisAlignment, EmptyLayout, HorizontalLayout, IntrinsicSize, Size, solve_layout, BlockLayout, Padding};
 use cascada::debug::DebugTree;
+use cascada::{
+    AxisAlignment, BlockLayout, EmptyLayout, HorizontalLayout, IntrinsicSize, Padding, Size,
+    solve_layout,
+};
 
 fn main() {
     let window_size = Size::unit(1000.0);
 
-    let inner = EmptyLayout::new()
-        .intrinsic_size(IntrinsicSize::fixed(150.0, 150.0));
+    let inner = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(150.0, 150.0));
 
-    let child1 = BlockLayout::new(inner)
-        .padding(Padding::all(20.0));
+    let child1 = BlockLayout::new(inner).padding(Padding::all(20.0));
 
     let child2 = EmptyLayout::new().intrinsic_size(IntrinsicSize::flex(2));
     let child3 = EmptyLayout::new().intrinsic_size(IntrinsicSize::flex(1));
