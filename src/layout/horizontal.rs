@@ -232,6 +232,24 @@ impl HorizontalLayout {
             child.set_y(self.position.y + self.size.height - self.padding.bottom);
         }
     }
+
+    /// Sum up all the flex factors
+    fn flex_total(&self) -> u8{
+        // TODO: if max width is set should we exclude
+        // from flex factor?
+
+        self
+            .children
+            .iter()
+            .filter_map(|child| {
+                if let BoxSizing::Flex(factor) = child.get_intrinsic_size().width {
+                    Some(factor)
+                } else {
+                    None
+                }
+            })
+            .sum()
+    }
 }
 
 impl Layout for HorizontalLayout {
@@ -327,17 +345,9 @@ impl Layout for HorizontalLayout {
 
     fn solve_max_constraints(&mut self, _space: Size) {
         // Sum up all the flex factors
-        let flex_total: u8 = self
-            .children
-            .iter()
-            .filter_map(|child| {
-                if let BoxSizing::Flex(factor) = child.get_intrinsic_size().width {
-                    Some(factor)
-                } else {
-                    None
-                }
-            })
-            .sum();
+        // TODO: substrace max size from available width?
+
+        let flex_total = self.flex_total();
 
         let mut available_height;
         match self.intrinsic_size.height {
@@ -362,17 +372,19 @@ impl Layout for HorizontalLayout {
         }
 
         for child in &mut self.children {
-            match child.get_intrinsic_size().width {
-                BoxSizing::Flex(factor) => {
-                    let grow_factor = factor as f32 / flex_total as f32;
-                    child.set_max_width(grow_factor * available_width);
-                }
-                BoxSizing::Fixed(width) => {
-                    child.set_max_width(width);
-                }
-                BoxSizing::Shrink => {
-                    // Not sure about this
-                    child.set_max_width(child.constraints().min_width);
+            if child.constraints().max_width.is_none(){
+                match child.get_intrinsic_size().width {
+                    BoxSizing::Flex(factor) => {
+                        let grow_factor = factor as f32 / flex_total as f32;
+                        child.set_max_width(grow_factor * available_width);
+                    }
+                    BoxSizing::Fixed(width) => {
+                        child.set_max_width(width);
+                    }
+                    BoxSizing::Shrink => {
+                        // FIXME: Not sure about this
+                        child.set_max_width(child.constraints().min_width);
+                    }
                 }
             }
 
@@ -468,6 +480,19 @@ mod test {
         layout.solve_min_constraints();
         assert_eq!(layout.constraints.min_width, 20.0);
         assert_eq!(layout.constraints.min_height, 24.0);
+    }
+
+    #[test]
+    fn respect_child_max_width() {
+        let child = EmptyLayout::new()
+            .max_width(200.0)
+            .intrinsic_size(IntrinsicSize::fill());
+
+        let mut layout = HorizontalLayout::new()
+            .add_child(child);
+
+        layout.solve_max_constraints(Size::unit(1000.0));
+        assert_eq!(layout.children[0].constraints().max_width.unwrap(), 200.0);
     }
 
     #[test]

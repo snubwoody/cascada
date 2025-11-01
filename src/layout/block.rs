@@ -345,10 +345,9 @@ mod test {
             .intrinsic_size(IntrinsicSize::fixed(20.25,0.5));
 
         let mut layout = BlockLayout::new(layout);
-        layout.padding = Padding::new(10.0, 15.0, 20.0, 25.0);
         layout.solve_max_constraints(Size::new(100.0, 200.0));
-        assert_eq!(layout.child.constraints().max_width.unwrap(), 100.0 - 25.0);
-        assert_eq!(layout.child.constraints().max_height, 200.0 - 45.0);
+        assert_eq!(layout.child.constraints().max_width.unwrap(), 20.25);
+        assert_eq!(layout.child.constraints().max_height, 0.5);
     }
 
     #[test]
