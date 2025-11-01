@@ -26,19 +26,12 @@ exclude = ["benches/*","examples/*"]
 [features]
 debug-tools = []
 
-[dependencies]
-thiserror = "2.0.9"
-
 [dev-dependencies]
 criterion = "0.7.0"
-
-
 
 [workspace.lints.clippy]
 enum_glob_use = "warn"
 branches_sharing_code = "warn"
-
-
 
 [[bench]]
 name = "horizontal"
