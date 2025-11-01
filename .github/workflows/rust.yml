@@ -92,6 +92,7 @@ jobs:
       - test
       - semver
       - format
+      - wasm
     steps:
       - uses: actions/checkout@v4
       - run: echo All good
