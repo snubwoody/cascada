@@ -138,7 +138,8 @@ impl BlockLayout {
 
 impl Layout for BlockLayout {
     fn label(&self) -> String {
-        self.label.clone().unwrap_or("BlockLayout".to_string())
+        self.label.clone()
+            .unwrap_or("BlockLayout".to_string())
     }
 
     fn id(&self) -> GlobalId {
@@ -236,7 +237,9 @@ impl Layout for BlockLayout {
         // TODO: should layout set max constraints when shrink?
         match self.child.get_intrinsic_size().width {
             BoxSizing::Flex(_) => {
-                self.child.set_max_width(available_space.width);
+                if self.child.constraints().max_width.is_none(){
+                    self.child.set_max_width(available_space.width)
+                }
             }
             BoxSizing::Fixed(width) => {
                 self.child.set_max_width(width);
@@ -328,6 +331,18 @@ mod test {
     #[test]
     fn flex_max_constraints_with_padding() {
         let layout = EmptyLayout::new().intrinsic_size(IntrinsicSize::fill());
+
+        let mut layout = BlockLayout::new(layout);
+        layout.padding = Padding::new(10.0, 15.0, 20.0, 25.0);
+        layout.solve_max_constraints(Size::new(100.0, 200.0));
+        assert_eq!(layout.child.constraints().max_width.unwrap(), 100.0 - 25.0);
+        assert_eq!(layout.child.constraints().max_height, 200.0 - 45.0);
+    }
+
+    #[test]
+    fn fixed_max_constraints() {
+        let layout = EmptyLayout::new()
+            .intrinsic_size(IntrinsicSize::fixed(20.25,0.5));
 
         let mut layout = BlockLayout::new(layout);
         layout.padding = Padding::new(10.0, 15.0, 20.0, 25.0);
@@ -512,5 +527,18 @@ mod test {
         assert_eq!(root.size(), window);
         assert_eq!(root.child.size(), child_size);
         assert_eq!(root.child.size(), root.child.children()[0].size());
+    }
+
+    #[test]
+    fn respect_child_max_width() {
+        let window = Size::new(800.0, 800.0);
+        let child = EmptyLayout::new()
+            .max_width(20.0)
+            .intrinsic_size(IntrinsicSize::fill());
+
+        let mut root = BlockLayout::new(child);
+        root.solve_max_constraints(window);
+
+        assert_eq!(root.child.constraints().max_width.unwrap(),20.0);
     }
 }

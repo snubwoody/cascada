@@ -310,7 +310,6 @@ impl Layout for VerticalLayout {
                 self.children
                     .iter_mut()
                     .flat_map(|child| child.collect_errors())
-                    .collect::<Vec<_>>(),
             )
             .collect::<Vec<_>>()
     }

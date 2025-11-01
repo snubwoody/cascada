@@ -34,6 +34,12 @@ impl EmptyLayout {
         self.label = Some(label.to_string());
         self
     }
+
+    /// Sets the maximum width of the given layout.
+    pub fn max_width(mut self, width: f32) -> Self {
+        self.constraints.max_width = Some(width);
+        self
+    }
 }
 
 impl Layout for EmptyLayout {
