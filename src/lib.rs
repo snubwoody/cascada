@@ -105,6 +105,7 @@ pub use position::Bounds;
 pub use position::Position;
 pub use size::Size;
 use std::fmt::Debug;
+use std::sync::atomic::{AtomicU32, Ordering};
 pub use vertical::VerticalLayout;
 
 /// Solve the final size and position of all the layout nodes. The
@@ -245,14 +246,15 @@ pub enum BoxSizing {
     Flex(u8),
 }
 
+static COUNTER: AtomicU32 = AtomicU32::new(0);
+
 /// A global unique identifier
 #[derive(Copy, Clone, PartialOrd, PartialEq, Eq, Debug, Ord, Hash)]
 pub struct GlobalId(u32);
 
 impl GlobalId {
     pub fn new() -> Self {
-        let id = rand::random();
-        Self(id)
+        Self(COUNTER.fetch_add(1, Ordering::Relaxed))
     }
 }
 
