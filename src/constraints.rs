@@ -19,7 +19,7 @@ pub enum BoxSizing {
 #[derive(Debug, Clone, Copy, Default, PartialEq, PartialOrd)]
 pub struct BoxConstraints {
     /// The maximum possible width.
-    pub max_width: f32,
+    pub max_width: Option<f32>,
     /// The maximum possible height.
     pub max_height: f32,
     /// The minimum possible height.
@@ -33,7 +33,7 @@ impl BoxConstraints {
     pub const fn new() -> Self {
         Self {
             max_height: 0.0,
-            max_width: 0.0,
+            max_width: None,
             min_height: 0.0,
             min_width: 0.0,
         }

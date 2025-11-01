@@ -292,7 +292,7 @@ impl Layout for VerticalLayout {
     }
 
     fn set_max_width(&mut self, width: f32) {
-        self.constraints.max_width = width;
+        self.constraints.max_width = Some(width);
     }
 
     fn set_min_height(&mut self, height: f32) {
@@ -374,7 +374,7 @@ impl Layout for VerticalLayout {
         match self.intrinsic_size.width {
             BoxSizing::Shrink => available_width = self.constraints.min_width,
             BoxSizing::Fixed(_) | BoxSizing::Flex(_) => {
-                available_width = self.constraints.max_width;
+                available_width = self.constraints.max_width.unwrap_or_default();
                 available_width -= self.padding.horizontal_sum();
             }
         }
@@ -417,7 +417,7 @@ impl Layout for VerticalLayout {
     fn update_size(&mut self) {
         match self.intrinsic_size.width {
             BoxSizing::Flex(_) => {
-                self.size.width = self.constraints.max_width;
+                self.size.width = self.constraints.max_width.unwrap_or_default();
             }
             BoxSizing::Shrink => {
                 self.size.width = self.constraints.min_width;
