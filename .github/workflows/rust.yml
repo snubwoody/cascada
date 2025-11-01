@@ -82,7 +82,7 @@ jobs:
             ~/.cargo
             target/
           restore-keys: cargo-${{runner.os}}-
-      - run: rustup add target wasm32-unknown-unknown
+      - run: rustup target add wasm32-unknown-unknown
       - run: cargo check --target wasm32-unknown-unknown
   all-systems-pass:
     runs-on: ubuntu-latest
