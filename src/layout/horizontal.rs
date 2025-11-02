@@ -2,6 +2,7 @@ use crate::{
     AxisAlignment, BoxConstraints, BoxSizing, GlobalId, IntrinsicSize, Layout, LayoutError,
     LayoutIter, Padding, Position, Size,
 };
+use crate::constraints::impl_constraints;
 
 /// A [`Layout`] that arranges it's child nodes horizontally.
 ///
@@ -87,31 +88,26 @@ impl HorizontalLayout {
         self
     }
 
-    /// Set this layout's [`IntrinsicSize`].
-    pub fn intrinsic_size(mut self, intrinsic_size: IntrinsicSize) -> Self {
-        self.intrinsic_size = intrinsic_size;
-        self
-    }
 
-    /// Set this layout's [`Padding`].
+    /// Sets this layout's [`Padding`].
     pub fn padding(mut self, padding: Padding) -> Self {
         self.padding = padding;
         self
     }
 
-    /// Set this layout's spacing.
+    /// Sets this layout's spacing.
     pub fn spacing(mut self, spacing: u32) -> Self {
         self.spacing = spacing;
         self
     }
 
-    /// Set the main axis alignment
+    /// Sets the main axis alignment
     pub fn main_axis_alignment(mut self, main_axis_alignment: AxisAlignment) -> Self {
         self.main_axis_alignment = main_axis_alignment;
         self
     }
 
-    /// Set the cross axis alignment.
+    /// Sets the cross axis alignment.
     pub fn cross_axis_alignment(mut self, cross_axis_alignment: AxisAlignment) -> Self {
         self.cross_axis_alignment = cross_axis_alignment;
         self
@@ -250,6 +246,8 @@ impl HorizontalLayout {
             })
             .sum()
     }
+
+    impl_constraints!();
 }
 
 impl Layout for HorizontalLayout {
@@ -345,7 +343,7 @@ impl Layout for HorizontalLayout {
 
     fn solve_max_constraints(&mut self, _space: Size) {
         // Sum up all the flex factors
-        // TODO: substrace max size from available width?
+        // TODO: subtract max size from available width?
 
         let flex_total = self.flex_total();
 

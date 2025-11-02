@@ -133,3 +133,24 @@ impl From<Size> for IntrinsicSize {
         }
     }
 }
+
+
+macro_rules! impl_constraints {
+    () => {
+        /// Sets the maximum width of the given layout.
+        pub fn max_width(mut self, width: f32) -> Self {
+            self.constraints.max_width = Some(width);
+            self
+        }
+
+        /// Sets the intrinsic size of the layout node.
+        pub fn intrinsic_size(mut self, intrinsic_size: $crate::IntrinsicSize) -> Self {
+            self.intrinsic_size = intrinsic_size;
+            self
+        }
+    };
+}
+
+pub (crate) use impl_constraints;
+
+

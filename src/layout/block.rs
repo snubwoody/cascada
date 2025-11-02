@@ -2,6 +2,7 @@ use crate::{
     AxisAlignment, BoxConstraints, BoxSizing, EmptyLayout, GlobalId, IntrinsicSize, Layout,
     LayoutError, LayoutIter, Padding, Position, Size,
 };
+use crate::constraints::impl_constraints;
 
 /// A [`Layout`] that only has one child node.
 ///
@@ -77,11 +78,6 @@ impl BlockLayout {
         self
     }
 
-    /// Set the intrinsic size.
-    pub fn intrinsic_size(mut self, intrinsic_size: IntrinsicSize) -> Self {
-        self.intrinsic_size = intrinsic_size;
-        self
-    }
 
     /// Set the [`Padding`].
     pub fn padding(mut self, padding: Padding) -> Self {
@@ -134,6 +130,8 @@ impl BlockLayout {
         self.child
             .set_y(self.position.y + self.size.height - self.padding.bottom);
     }
+
+    impl_constraints!();
 }
 
 impl Layout for BlockLayout {

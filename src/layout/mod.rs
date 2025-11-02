@@ -31,7 +31,9 @@ pub use vertical::VerticalLayout;
 /// assert!(errors.is_empty());
 /// ```
 pub fn solve_layout(root: &mut dyn Layout, window_size: Size) -> Vec<LayoutError> {
-    root.set_max_width(window_size.width);
+    if root.constraints().max_width.is_none(){
+        root.set_max_width(window_size.width);
+    }
     root.set_max_height(window_size.height);
 
     // It's important that the min constraints are solved before the max constraints
@@ -133,5 +135,20 @@ impl<'a> Iterator for LayoutIter<'a> {
         }
 
         None
+    }
+}
+
+#[cfg(test)]
+mod test{
+    use super::*;
+
+    #[test]
+    fn root_max_width(){
+        let mut layout = EmptyLayout::new()
+            .max_width(20.0)
+            .intrinsic_size(IntrinsicSize::fill());
+
+        solve_layout(&mut layout, Size::unit(200.0));
+        assert_eq!(layout.size().width, 20.0);
     }
 }

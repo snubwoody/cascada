@@ -160,13 +160,32 @@ fn flex_factor() {
     solve_layout(&mut node, window);
 
     let flex_1_width = 1.0 / 4.0 * window.width;
-    // The two children should both be half the size
     assert_eq!(node.children()[0].size().width, flex_1_width);
     assert_eq!(node.children()[0].size().height, 400.0);
     assert_eq!(
         node.children()[0].size().height,
         node.children()[1].size().height,
     );
-    assert!(node.children()[1].size().width == 3.0 * node.children()[0].size().width);
-    assert!(node.children()[1].size().height != 3.0 * node.children()[0].size().height);
+    assert_eq!(node.children()[1].size().width, 3.0 * node.children()[0].size().width);
+    assert_ne!(node.children()[1].size().height, 3.0 * node.children()[0].size().height);
+}
+
+#[test]
+fn redistribute_max_width() {
+    let window = Size::new(800.0, 400.0);
+    let child_node_1 = HorizontalLayout::new()
+        .max_width(20.0)
+        .intrinsic_size(IntrinsicSize::flex(1));
+    let child_node_2 = HorizontalLayout::new()
+        .intrinsic_size(IntrinsicSize::flex(3));
+
+    let mut node = HorizontalLayout::new()
+        .intrinsic_size(IntrinsicSize::fill())
+        .add_children([child_node_1,child_node_2]);
+
+    solve_layout(&mut node, window);
+
+    let width = 3.0 / 4.0 * window.width;
+    assert_eq!(node.children()[0].size().width, 20.0);
+    assert_eq!(node.children()[1].size().width, width);
 }

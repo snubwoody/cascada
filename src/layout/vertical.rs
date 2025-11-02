@@ -2,6 +2,7 @@ use crate::{
     AxisAlignment, BoxConstraints, BoxSizing, GlobalId, IntrinsicSize, Layout, LayoutError,
     LayoutIter, Padding, Position, Size, error::OverflowAxis,
 };
+use crate::constraints::impl_constraints;
 
 /// A [`Layout`] node that arranges it's children vertically.
 ///
@@ -96,12 +97,6 @@ impl VerticalLayout {
         self
     }
 
-    /// Set this layout's [`IntrinsicSize`].
-    pub fn intrinsic_size(mut self, intrinsic_size: IntrinsicSize) -> Self {
-        self.intrinsic_size = intrinsic_size;
-        self
-    }
-
     /// Set the main axis alignment
     pub fn main_axis_alignment(mut self, main_axis_alignment: AxisAlignment) -> Self {
         self.main_axis_alignment = main_axis_alignment;
@@ -162,7 +157,7 @@ impl VerticalLayout {
         sum
     }
 
-    pub fn scroll(&mut self, offset: f32) {
+    pub(crate) fn scroll(&mut self, offset: f32) {
         self.scroll_offset += offset;
     }
 
@@ -244,6 +239,8 @@ impl VerticalLayout {
         sum.width += max_width;
         sum
     }
+
+    impl_constraints!();
 }
 
 impl Layout for VerticalLayout {

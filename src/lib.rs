@@ -104,7 +104,6 @@ pub use size::Size;
 use std::fmt::Debug;
 use std::sync::atomic::{AtomicU32, Ordering};
 
-
 static COUNTER: AtomicU32 = AtomicU32::new(0);
 
 /// A global unique identifier
