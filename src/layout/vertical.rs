@@ -1,3 +1,4 @@
+use crate::constraints::impl_constraints;
 use crate::{
     AxisAlignment, BoxConstraints, BoxSizing, GlobalId, IntrinsicSize, Layout, LayoutError,
     LayoutIter, Padding, Position, Size, error::OverflowAxis,
@@ -96,12 +97,6 @@ impl VerticalLayout {
         self
     }
 
-    /// Set this layout's [`IntrinsicSize`].
-    pub fn intrinsic_size(mut self, intrinsic_size: IntrinsicSize) -> Self {
-        self.intrinsic_size = intrinsic_size;
-        self
-    }
-
     /// Set the main axis alignment
     pub fn main_axis_alignment(mut self, main_axis_alignment: AxisAlignment) -> Self {
         self.main_axis_alignment = main_axis_alignment;
@@ -160,10 +155,6 @@ impl VerticalLayout {
         }
 
         sum
-    }
-
-    pub fn scroll(&mut self, offset: f32) {
-        self.scroll_offset += offset;
     }
 
     /// Align the children on the main axis at the start
@@ -244,6 +235,8 @@ impl VerticalLayout {
         sum.width += max_width;
         sum
     }
+
+    impl_constraints!();
 }
 
 impl Layout for VerticalLayout {
@@ -292,7 +285,7 @@ impl Layout for VerticalLayout {
     }
 
     fn set_max_width(&mut self, width: f32) {
-        self.constraints.max_width = width;
+        self.constraints.max_width = Some(width);
     }
 
     fn set_min_height(&mut self, height: f32) {
@@ -309,8 +302,7 @@ impl Layout for VerticalLayout {
             .chain(
                 self.children
                     .iter_mut()
-                    .flat_map(|child| child.collect_errors())
-                    .collect::<Vec<_>>(),
+                    .flat_map(|child| child.collect_errors()),
             )
             .collect::<Vec<_>>()
     }
@@ -374,7 +366,7 @@ impl Layout for VerticalLayout {
         match self.intrinsic_size.width {
             BoxSizing::Shrink => available_width = self.constraints.min_width,
             BoxSizing::Fixed(_) | BoxSizing::Flex(_) => {
-                available_width = self.constraints.max_width;
+                available_width = self.constraints.max_width.unwrap_or_default();
                 available_width -= self.padding.horizontal_sum();
             }
         }
@@ -387,15 +379,17 @@ impl Layout for VerticalLayout {
         }
 
         for child in self.children.iter_mut() {
-            match child.get_intrinsic_size().width {
-                BoxSizing::Flex(_) => {
-                    child.set_max_width(available_width);
-                }
-                BoxSizing::Shrink => {
-                    child.set_max_width(child.constraints().min_width);
-                }
-                BoxSizing::Fixed(width) => {
-                    child.set_max_width(width);
+            if child.constraints().max_width.is_none() {
+                match child.get_intrinsic_size().width {
+                    BoxSizing::Flex(_) => {
+                        child.set_max_width(available_width);
+                    }
+                    BoxSizing::Shrink => {
+                        child.set_max_width(child.constraints().min_width);
+                    }
+                    BoxSizing::Fixed(width) => {
+                        child.set_max_width(width);
+                    }
                 }
             }
 
@@ -417,7 +411,7 @@ impl Layout for VerticalLayout {
     fn update_size(&mut self) {
         match self.intrinsic_size.width {
             BoxSizing::Flex(_) => {
-                self.size.width = self.constraints.max_width;
+                self.size.width = self.constraints.max_width.unwrap_or_default();
             }
             BoxSizing::Shrink => {
                 self.size.width = self.constraints.min_width;

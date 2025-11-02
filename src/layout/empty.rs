@@ -1,8 +1,9 @@
+use crate::constraints::impl_constraints;
 use crate::{
     BoxConstraints, BoxSizing, GlobalId, IntrinsicSize, Layout, LayoutIter, Position, Size,
 };
 
-/// An empty [`Layout`] with no child notes.  
+/// An empty [`Layout`] with no child notes.
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct EmptyLayout {
     id: GlobalId,
@@ -24,16 +25,12 @@ impl EmptyLayout {
         self
     }
 
-    /// Set the intrinsic size.
-    pub fn intrinsic_size(mut self, intrinsic_size: IntrinsicSize) -> Self {
-        self.intrinsic_size = intrinsic_size;
-        self
-    }
-
     pub fn with_label(mut self, label: &str) -> Self {
         self.label = Some(label.to_string());
         self
     }
+
+    impl_constraints!();
 }
 
 impl Layout for EmptyLayout {
@@ -61,7 +58,7 @@ impl Layout for EmptyLayout {
     fn update_size(&mut self) {
         match self.intrinsic_size.width {
             BoxSizing::Flex(_) => {
-                self.size.width = self.constraints.max_width;
+                self.size.width = self.constraints.max_width.unwrap_or_default();
             }
             BoxSizing::Shrink => {
                 self.size.width = self.constraints.min_width;
@@ -113,7 +110,7 @@ impl Layout for EmptyLayout {
     }
 
     fn set_max_width(&mut self, width: f32) {
-        self.constraints.max_width = width;
+        self.constraints.max_width = Some(width);
     }
 
     fn set_max_height(&mut self, height: f32) {

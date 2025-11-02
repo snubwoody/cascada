@@ -1,3 +1,4 @@
+use crate::constraints::impl_constraints;
 use crate::{
     AxisAlignment, BoxConstraints, BoxSizing, EmptyLayout, GlobalId, IntrinsicSize, Layout,
     LayoutError, LayoutIter, Padding, Position, Size,
@@ -77,12 +78,6 @@ impl BlockLayout {
         self
     }
 
-    /// Set the intrinsic size.
-    pub fn intrinsic_size(mut self, intrinsic_size: IntrinsicSize) -> Self {
-        self.intrinsic_size = intrinsic_size;
-        self
-    }
-
     /// Set the [`Padding`].
     pub fn padding(mut self, padding: Padding) -> Self {
         self.padding = padding;
@@ -134,6 +129,8 @@ impl BlockLayout {
         self.child
             .set_y(self.position.y + self.size.height - self.padding.bottom);
     }
+
+    impl_constraints!();
 }
 
 impl Layout for BlockLayout {
@@ -182,7 +179,7 @@ impl Layout for BlockLayout {
     }
 
     fn set_max_width(&mut self, width: f32) {
-        self.constraints.max_width = width;
+        self.constraints.max_width = Some(width);
     }
 
     fn set_min_height(&mut self, height: f32) {
@@ -236,7 +233,9 @@ impl Layout for BlockLayout {
         // TODO: should layout set max constraints when shrink?
         match self.child.get_intrinsic_size().width {
             BoxSizing::Flex(_) => {
-                self.child.set_max_width(available_space.width);
+                if self.child.constraints().max_width.is_none() {
+                    self.child.set_max_width(available_space.width)
+                }
             }
             BoxSizing::Fixed(width) => {
                 self.child.set_max_width(width);
@@ -260,7 +259,7 @@ impl Layout for BlockLayout {
     fn update_size(&mut self) {
         match self.intrinsic_size.width {
             BoxSizing::Flex(_) => {
-                self.size.width = self.constraints.max_width;
+                self.size.width = self.constraints.max_width.unwrap_or_default();
             }
             BoxSizing::Shrink => {
                 self.size.width = self.constraints.min_width;
@@ -321,7 +320,7 @@ mod test {
 
         let mut layout = BlockLayout::new(layout);
         layout.solve_max_constraints(Size::new(100.0, 200.0));
-        assert_eq!(layout.child.constraints().max_width, 100.0);
+        assert_eq!(layout.child.constraints().max_width.unwrap(), 100.0);
         assert_eq!(layout.child.constraints().max_height, 200.0);
     }
 
@@ -332,8 +331,18 @@ mod test {
         let mut layout = BlockLayout::new(layout);
         layout.padding = Padding::new(10.0, 15.0, 20.0, 25.0);
         layout.solve_max_constraints(Size::new(100.0, 200.0));
-        assert_eq!(layout.child.constraints().max_width, 100.0 - 25.0);
+        assert_eq!(layout.child.constraints().max_width.unwrap(), 100.0 - 25.0);
         assert_eq!(layout.child.constraints().max_height, 200.0 - 45.0);
+    }
+
+    #[test]
+    fn fixed_max_constraints() {
+        let layout = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(20.25, 0.5));
+
+        let mut layout = BlockLayout::new(layout);
+        layout.solve_max_constraints(Size::new(100.0, 200.0));
+        assert_eq!(layout.child.constraints().max_width.unwrap(), 20.25);
+        assert_eq!(layout.child.constraints().max_height, 0.5);
     }
 
     #[test]
@@ -512,5 +521,18 @@ mod test {
         assert_eq!(root.size(), window);
         assert_eq!(root.child.size(), child_size);
         assert_eq!(root.child.size(), root.child.children()[0].size());
+    }
+
+    #[test]
+    fn respect_child_max_width() {
+        let window = Size::new(800.0, 800.0);
+        let child = EmptyLayout::new()
+            .max_width(20.0)
+            .intrinsic_size(IntrinsicSize::fill());
+
+        let mut root = BlockLayout::new(child);
+        root.solve_max_constraints(window);
+
+        assert_eq!(root.child.constraints().max_width.unwrap(), 20.0);
     }
 }
