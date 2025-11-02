@@ -498,6 +498,15 @@ impl Layout for VerticalLayout {
     }
 }
 
+impl<I> From<I> for VerticalLayout
+where
+    I: IntoIterator<Item: Layout + 'static>,
+{
+    fn from(iter: I) -> Self {
+        Self::new().add_children(iter)
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;

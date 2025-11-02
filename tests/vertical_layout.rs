@@ -33,3 +33,11 @@ fn subtract_fixed_height_from_available_space() {
 
     assert_eq!(root.children()[2].size().height, flex_child_height)
 }
+
+#[test]
+fn from_iter() {
+    let layouts = [EmptyLayout::new(), EmptyLayout::new()];
+
+    let layout = VerticalLayout::from(layouts);
+    assert_eq!(layout.children().len(), 2);
+}
