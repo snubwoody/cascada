@@ -320,7 +320,6 @@ impl Layout for VerticalLayout {
     fn solve_min_constraints(&mut self) -> (f32, f32) {
         let child_constraint_sum = self.compute_children_min_size();
 
-        // TODO: check
         match self.intrinsic_size.width {
             BoxSizing::Fixed(width) => {
                 self.constraints.min_width = Some(width);
@@ -511,6 +510,30 @@ where
 mod test {
     use super::*;
     use crate::{BlockLayout, EmptyLayout, Padding, solve_layout};
+
+    #[test]
+    fn min_width_larger_than_content_width(){
+        let child = EmptyLayout::default()
+            .intrinsic_size(IntrinsicSize::fixed(20.0,20.0));
+
+        let mut layout = VerticalLayout::from([child])
+            .min_width(200.0);
+
+        let (width,_) = layout.solve_min_constraints();
+        assert_eq!(width, 200.0);
+    }
+
+    #[test]
+    fn min_width_smaller_than_content_width(){
+        let child = EmptyLayout::default()
+            .intrinsic_size(IntrinsicSize::fixed(20.0,20.0));
+
+        let mut layout = VerticalLayout::from([child])
+            .min_width(5.0);
+
+        let (width,_) = layout.solve_min_constraints();
+        assert_eq!(width, 20.0);
+    }
 
     #[test]
     fn calculate_min_width() {

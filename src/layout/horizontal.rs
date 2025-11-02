@@ -318,14 +318,17 @@ impl Layout for HorizontalLayout {
     }
 
     fn solve_min_constraints(&mut self) -> (f32, f32) {
-        // TODO: check
         let child_constraint_sum = self.compute_children_min_size();
         match self.intrinsic_size.width {
             BoxSizing::Fixed(width) => {
                 self.constraints.min_width = Some(width);
             }
             BoxSizing::Flex(_) | BoxSizing::Shrink => {
-                self.constraints.min_width = Some(child_constraint_sum.width);
+                let min_width = self.constraints
+                    .min_width
+                    .unwrap_or_default()
+                    .max(child_constraint_sum.width);
+                self.constraints.min_width = Some(min_width);
             }
         }
 
@@ -476,7 +479,32 @@ where
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::{EmptyLayout, solve_layout};
+    use crate::{EmptyLayout, solve_layout, VerticalLayout};
+
+
+    #[test]
+    fn min_width_larger_than_content_width(){
+        let child = EmptyLayout::default()
+            .intrinsic_size(IntrinsicSize::fixed(20.0,20.0));
+
+        let mut layout = HorizontalLayout::from([child])
+            .min_width(200.0);
+
+        let (width,_) = layout.solve_min_constraints();
+        assert_eq!(width, 200.0);
+    }
+
+    #[test]
+    fn min_width_smaller_than_content_width(){
+        let child = EmptyLayout::default()
+            .intrinsic_size(IntrinsicSize::fixed(20.0,20.0));
+
+        let mut layout = HorizontalLayout::from([child])
+            .min_width(5.0);
+
+        let (width,_) = layout.solve_min_constraints();
+        assert_eq!(width, 20.0);
+    }
 
     #[test]
     fn fixed_min_constraints() {
