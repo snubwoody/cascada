@@ -1,5 +1,8 @@
 use crate::constraints::impl_constraints;
-use crate::{AxisAlignment, BoxConstraints, BoxSizing, GlobalId, IntrinsicSize, Layout, LayoutError, LayoutIter, Padding, Position, Size, error::OverflowAxis};
+use crate::{
+    AxisAlignment, BoxConstraints, BoxSizing, GlobalId, IntrinsicSize, Layout, LayoutError,
+    LayoutIter, Padding, Position, Size, error::OverflowAxis,
+};
 
 /// A [`Layout`] node that arranges it's children vertically.
 ///
@@ -484,11 +487,12 @@ impl Layout for VerticalLayout {
     }
 }
 
-impl<I,> From<I> for VerticalLayout
-where I: IntoIterator<Item: Layout + 'static>{
+impl<I> From<I> for VerticalLayout
+where
+    I: IntoIterator<Item: Layout + 'static>,
+{
     fn from(iter: I) -> Self {
-        Self::new()
-            .add_children(iter)
+        Self::new().add_children(iter)
     }
 }
 

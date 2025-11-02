@@ -196,12 +196,9 @@ fn redistribute_max_width() {
 }
 
 #[test]
-fn from_iter(){
-    let layouts = [
-        EmptyLayout::new(),
-        EmptyLayout::new(),
-    ];
+fn from_iter() {
+    let layouts = [EmptyLayout::new(), EmptyLayout::new()];
 
     let layout = HorizontalLayout::from(layouts);
-    assert_eq!(layout.children().len(),2);
+    assert_eq!(layout.children().len(), 2);
 }
