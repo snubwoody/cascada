@@ -194,3 +194,14 @@ fn redistribute_max_width() {
     assert_eq!(node.children()[0].size().width, 20.0);
     assert_eq!(node.children()[1].size().width, width);
 }
+
+#[test]
+fn from_iter(){
+    let layouts = [
+        EmptyLayout::new(),
+        EmptyLayout::new(),
+    ];
+
+    let layout = HorizontalLayout::from(layouts);
+    assert_eq!(layout.children().len(),2);
+}

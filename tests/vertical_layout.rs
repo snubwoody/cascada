@@ -1,6 +1,4 @@
-use cascada::{
-    BoxSizing, EmptyLayout, IntrinsicSize, Layout, Padding, Size, VerticalLayout, solve_layout,
-};
+use cascada::{BoxSizing, EmptyLayout, IntrinsicSize, Layout, Padding, Size, VerticalLayout, solve_layout};
 
 #[test]
 fn subtract_fixed_height_from_available_space() {
@@ -32,4 +30,15 @@ fn subtract_fixed_height_from_available_space() {
     flex_child_height -= padding.vertical_sum();
 
     assert_eq!(root.children()[2].size().height, flex_child_height)
+}
+
+#[test]
+fn from_iter(){
+    let layouts = [
+        EmptyLayout::new(),
+        EmptyLayout::new(),
+    ];
+
+    let layout = VerticalLayout::from(layouts);
+    assert_eq!(layout.children().len(),2);
 }
