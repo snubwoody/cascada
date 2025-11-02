@@ -208,7 +208,6 @@ impl Layout for BlockLayout {
         // If intrinsic size is fixed then set min constraints to fixed
         // width and/or height.
         match self.intrinsic_size.width {
-            // TODO: check
             BoxSizing::Flex(_) | BoxSizing::Shrink => {
                 let min_width = content_width.max(
                     self.constraints.min_width.unwrap_or_default()

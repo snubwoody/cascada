@@ -1,10 +1,10 @@
 use crate::{Bounds, BoxConstraints, GlobalId, IntrinsicSize, LayoutError, Position, Size};
 use std::fmt::Debug;
 
-pub mod block;
-pub mod empty;
-pub mod horizontal;
-pub mod vertical;
+mod block;
+mod empty;
+mod horizontal;
+mod vertical;
 
 pub use block::BlockLayout;
 pub use empty::EmptyLayout;
@@ -14,8 +14,7 @@ pub use vertical::VerticalLayout;
 /// Solve the final size and position of all the layout nodes. The
 /// `window_size` is the maximum available space for the root node.
 ///
-/// This functions
-/// returns any layout errors such as overflow or out of bounds.
+/// This function returns any layout errors such as overflow or out of bounds.
 ///
 /// # Example
 ///

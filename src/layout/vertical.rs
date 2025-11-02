@@ -6,6 +6,9 @@ use crate::{
 
 /// A [`Layout`] node that arranges it's children vertically.
 ///
+/// This layout's main axis is the y-axis, and it's cross axis
+/// is the x-axis.
+///
 /// # Example
 /// ```
 /// use cascada::{solve_layout, AxisAlignment, EmptyLayout, IntrinsicSize, Padding, Size, VerticalLayout};
@@ -22,6 +25,9 @@ use crate::{
 ///
 /// solve_layout(&mut layout, Size::unit(500.0));
 /// ```
+///
+/// If the intrinsic height is [`BoxSizing::Shrink`] then the final height
+/// will be the sum of the all child node heights + vertical padding + spacing.
 #[derive(Default, Debug)]
 pub struct VerticalLayout {
     id: GlobalId,
@@ -320,7 +326,11 @@ impl Layout for VerticalLayout {
                 self.constraints.min_width = Some(width);
             }
             BoxSizing::Flex(_) | BoxSizing::Shrink => {
-                self.constraints.min_width = Some(child_constraint_sum.width);
+                let min_width = self.constraints
+                    .min_width
+                    .unwrap_or_default()
+                    .max(child_constraint_sum.width);
+                self.constraints.min_width = Some(min_width);
             }
         }
 
@@ -516,7 +526,6 @@ mod test {
             .max_by(|x, y| x.partial_cmp(y).unwrap())
             .unwrap();
         max_width += padding.horizontal_sum();
-        dbg!(layout.constraints);
         assert_eq!(layout.constraints.min_width.unwrap(), max_width);
     }
 
@@ -672,9 +681,7 @@ mod test {
         solve_layout(&mut root, window);
 
         assert_eq!(root.size(), Size::new(500.0, 550.0));
-
         assert_eq!(root.children()[0].size(), Size::new(400.0, 200.0));
-
         assert_eq!(root.children()[1].size(), Size::new(500.0, 350.0));
     }
 
@@ -684,19 +691,16 @@ mod test {
             padding: Padding::all(23.0),
             ..Default::default()
         };
-        solve_layout(&mut empty, Size::new(200.0, 200.0));
 
+        solve_layout(&mut empty, Size::new(200.0, 200.0));
         assert_eq!(empty.size, Size::new(23.0 * 2.0, 23.0 * 2.0));
     }
 
     #[test]
     fn spacing_not_applied_when_empty() {
-        let mut empty = VerticalLayout {
-            spacing: 50,
-            ..Default::default()
-        };
-        solve_layout(&mut empty, Size::new(200.0, 200.0));
+        let mut empty = VerticalLayout::new().spacing(20);
 
+        solve_layout(&mut empty, Size::new(200.0, 200.0));
         assert_eq!(empty.size, Size::default());
     }
 

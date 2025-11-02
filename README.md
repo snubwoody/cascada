@@ -59,10 +59,6 @@ assert_eq!(children[1].size().width,1000.0);
 assert_eq!(children[2].size().width,1000.0);
 ```
 
-## Implementation details
-Cascada was originally [agape_layout](https://crates.io/crates/agape_layout) which I made for 
-[agape](https://crates.io/crates/agape), but I forked it because over time it started to feel 
-like more of a standalone crate.
 
 ## License
 
