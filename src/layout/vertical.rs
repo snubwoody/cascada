@@ -6,6 +6,9 @@ use crate::{
 
 /// A [`Layout`] node that arranges it's children vertically.
 ///
+/// This layout's main axis is the y-axis, and it's cross axis
+/// is the x-axis.
+///
 /// # Example
 /// ```
 /// use cascada::{solve_layout, AxisAlignment, EmptyLayout, IntrinsicSize, Padding, Size, VerticalLayout};
@@ -22,6 +25,9 @@ use crate::{
 ///
 /// solve_layout(&mut layout, Size::unit(500.0));
 /// ```
+///
+/// If the intrinsic height is [`BoxSizing::Shrink`] then the final height
+/// will be the sum of the all child node heights + vertical padding + spacing.
 #[derive(Default, Debug)]
 pub struct VerticalLayout {
     id: GlobalId,
@@ -293,7 +299,7 @@ impl Layout for VerticalLayout {
     }
 
     fn set_min_width(&mut self, width: f32) {
-        self.constraints.min_width = width;
+        self.constraints.min_width = Some(width);
     }
 
     fn collect_errors(&mut self) -> Vec<LayoutError> {
@@ -316,10 +322,15 @@ impl Layout for VerticalLayout {
 
         match self.intrinsic_size.width {
             BoxSizing::Fixed(width) => {
-                self.constraints.min_width = width;
+                self.constraints.min_width = Some(width);
             }
             BoxSizing::Flex(_) | BoxSizing::Shrink => {
-                self.constraints.min_width = child_constraint_sum.width;
+                let min_width = self
+                    .constraints
+                    .min_width
+                    .unwrap_or_default()
+                    .max(child_constraint_sum.width);
+                self.constraints.min_width = Some(min_width);
             }
         }
 
@@ -332,7 +343,10 @@ impl Layout for VerticalLayout {
             }
         }
 
-        (self.constraints.min_width, self.constraints.min_height)
+        (
+            self.constraints.min_width.unwrap_or_default(),
+            self.constraints.min_height,
+        )
     }
 
     fn solve_max_constraints(&mut self, _space: Size) {
@@ -364,7 +378,7 @@ impl Layout for VerticalLayout {
 
         let mut available_width;
         match self.intrinsic_size.width {
-            BoxSizing::Shrink => available_width = self.constraints.min_width,
+            BoxSizing::Shrink => available_width = self.constraints.min_width.unwrap_or_default(),
             BoxSizing::Fixed(_) | BoxSizing::Flex(_) => {
                 available_width = self.constraints.max_width.unwrap_or_default();
                 available_width -= self.padding.horizontal_sum();
@@ -385,7 +399,7 @@ impl Layout for VerticalLayout {
                         child.set_max_width(available_width);
                     }
                     BoxSizing::Shrink => {
-                        child.set_max_width(child.constraints().min_width);
+                        child.set_max_width(child.constraints().min_width.unwrap_or_default());
                     }
                     BoxSizing::Fixed(width) => {
                         child.set_max_width(width);
@@ -414,7 +428,7 @@ impl Layout for VerticalLayout {
                 self.size.width = self.constraints.max_width.unwrap_or_default();
             }
             BoxSizing::Shrink => {
-                self.size.width = self.constraints.min_width;
+                self.size.width = self.constraints.min_width.unwrap_or_default();
             }
             BoxSizing::Fixed(width) => {
                 self.size.width = width;
@@ -502,6 +516,26 @@ mod test {
     use crate::{BlockLayout, EmptyLayout, Padding, solve_layout};
 
     #[test]
+    fn min_width_larger_than_content_width() {
+        let child = EmptyLayout::default().intrinsic_size(IntrinsicSize::fixed(20.0, 20.0));
+
+        let mut layout = VerticalLayout::from([child]).min_width(200.0);
+
+        let (width, _) = layout.solve_min_constraints();
+        assert_eq!(width, 200.0);
+    }
+
+    #[test]
+    fn min_width_smaller_than_content_width() {
+        let child = EmptyLayout::default().intrinsic_size(IntrinsicSize::fixed(20.0, 20.0));
+
+        let mut layout = VerticalLayout::from([child]).min_width(5.0);
+
+        let (width, _) = layout.solve_min_constraints();
+        assert_eq!(width, 20.0);
+    }
+
+    #[test]
     fn calculate_min_width() {
         let widths: [f32; 5] = [500.0, 200.0, 10.2, 20.2, 45.0];
         let children: Vec<Box<dyn Layout>> = widths
@@ -524,8 +558,7 @@ mod test {
             .max_by(|x, y| x.partial_cmp(y).unwrap())
             .unwrap();
         max_width += padding.horizontal_sum();
-        dbg!(layout.constraints);
-        assert_eq!(layout.constraints.min_width, max_width);
+        assert_eq!(layout.constraints.min_width.unwrap(), max_width);
     }
 
     #[test]
@@ -680,9 +713,7 @@ mod test {
         solve_layout(&mut root, window);
 
         assert_eq!(root.size(), Size::new(500.0, 550.0));
-
         assert_eq!(root.children()[0].size(), Size::new(400.0, 200.0));
-
         assert_eq!(root.children()[1].size(), Size::new(500.0, 350.0));
     }
 
@@ -692,19 +723,16 @@ mod test {
             padding: Padding::all(23.0),
             ..Default::default()
         };
-        solve_layout(&mut empty, Size::new(200.0, 200.0));
 
+        solve_layout(&mut empty, Size::new(200.0, 200.0));
         assert_eq!(empty.size, Size::new(23.0 * 2.0, 23.0 * 2.0));
     }
 
     #[test]
     fn spacing_not_applied_when_empty() {
-        let mut empty = VerticalLayout {
-            spacing: 50,
-            ..Default::default()
-        };
-        solve_layout(&mut empty, Size::new(200.0, 200.0));
+        let mut empty = VerticalLayout::new().spacing(20);
 
+        solve_layout(&mut empty, Size::new(200.0, 200.0));
         assert_eq!(empty.size, Size::default());
     }
 
