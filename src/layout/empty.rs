@@ -4,7 +4,7 @@ use crate::{
 };
 
 /// An empty [`Layout`] with no child notes.
-#[derive(Debug, Default, Clone, PartialEq)]
+#[derive(Debug, Default, Clone, PartialEq,PartialOrd)]
 pub struct EmptyLayout {
     id: GlobalId,
     pub(crate) size: Size,
@@ -39,7 +39,6 @@ impl Layout for EmptyLayout {
     }
 
     fn solve_min_constraints(&mut self) -> (f32, f32) {
-        // TODO: check
         if let BoxSizing::Fixed(width) = self.intrinsic_size.width {
             self.constraints.min_width = Some(width);
         }
@@ -149,7 +148,7 @@ mod test {
     use crate::solve_layout;
 
     #[test]
-    fn test_flex_sizing() {
+    fn flex_sizing() {
         let window = Size::new(800.0, 800.0);
         let mut root = EmptyLayout::new();
 
@@ -162,7 +161,24 @@ mod test {
     }
 
     #[test]
-    fn test_fixed_sizing() {
+    fn fixed_min_width_precedence() {
+        let mut root = EmptyLayout::new()
+            .intrinsic_size(IntrinsicSize::fixed(30.0,50.0))
+            .min_width(20.0);
+        let (width,_ ) = root.solve_min_constraints();
+        assert_eq!(width, 30.0);
+    }
+
+    #[test]
+    fn min_width() {
+        let mut root = EmptyLayout::new()
+            .min_width(20.0);
+        let (width,_ ) = root.solve_min_constraints();
+        assert_eq!(width, 20.0);
+    }
+
+    #[test]
+    fn fixed_sizing() {
         let window = Size::new(800.0, 800.0);
         let mut root = EmptyLayout::new();
 
@@ -175,7 +191,7 @@ mod test {
     }
 
     #[test]
-    fn test_shrink_sizing() {
+    fn shrink_sizing() {
         let window = Size::new(800.0, 800.0);
         let mut root = EmptyLayout::new();
 
