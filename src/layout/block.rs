@@ -202,8 +202,7 @@ impl Layout for BlockLayout {
     }
 
     fn solve_min_constraints(&mut self) -> (f32, f32) {
-        let (min_width, min_height) = self.child.solve_min_constraints();
-
+        let (content_width, min_height) = self.child.solve_min_constraints();
         // Set our min constraints to child + padding if intrinsic size
         // is not fixed.
         // If intrinsic size is fixed then set min constraints to fixed
@@ -211,7 +210,10 @@ impl Layout for BlockLayout {
         match self.intrinsic_size.width {
             // TODO: check
             BoxSizing::Flex(_) | BoxSizing::Shrink => {
-                self.constraints.min_width = Some(self.padding.left + self.padding.right + min_width);
+                let min_width = content_width.max(
+                    self.constraints.min_width.unwrap_or_default()
+                );
+                self.constraints.min_width = Some(self.padding.horizontal_sum() + min_width);
             }
             BoxSizing::Fixed(width) => self.constraints.min_width = Some(width),
         }
@@ -314,6 +316,37 @@ impl Layout for BlockLayout {
 mod test {
     use super::*;
     use crate::{EmptyLayout, solve_layout};
+
+    #[test]
+    fn min_width(){
+        let mut layout = BlockLayout::default()
+            .min_width(200.0);
+
+        let (width,_) = layout.solve_min_constraints();
+        assert_eq!(width,200.0);
+    }
+
+    #[test]
+    fn min_width_smaller_than_content_width(){
+        let child = EmptyLayout::default()
+            .intrinsic_size(IntrinsicSize::fixed(500.0,500.0));
+        let mut layout = BlockLayout::new(child)
+            .min_width(200.0);
+
+        let (width,_) = layout.solve_min_constraints();
+        assert_eq!(width,500.0);
+    }
+
+    #[test]
+    fn min_width_larger_than_content_width(){
+        let child = EmptyLayout::default()
+            .intrinsic_size(IntrinsicSize::fixed(500.0,500.0));
+        let mut layout = BlockLayout::new(child)
+            .min_width(800.0);
+
+        let (width,_) = layout.solve_min_constraints();
+        assert_eq!(width,800.0);
+    }
 
     #[test]
     fn flex_max_constraints() {
