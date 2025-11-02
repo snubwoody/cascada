@@ -1,8 +1,8 @@
+use crate::constraints::impl_constraints;
 use crate::{
     AxisAlignment, BoxConstraints, BoxSizing, EmptyLayout, GlobalId, IntrinsicSize, Layout,
     LayoutError, LayoutIter, Padding, Position, Size,
 };
-use crate::constraints::impl_constraints;
 
 /// A [`Layout`] that only has one child node.
 ///
@@ -78,7 +78,6 @@ impl BlockLayout {
         self
     }
 
-
     /// Set the [`Padding`].
     pub fn padding(mut self, padding: Padding) -> Self {
         self.padding = padding;
@@ -136,8 +135,7 @@ impl BlockLayout {
 
 impl Layout for BlockLayout {
     fn label(&self) -> String {
-        self.label.clone()
-            .unwrap_or("BlockLayout".to_string())
+        self.label.clone().unwrap_or("BlockLayout".to_string())
     }
 
     fn id(&self) -> GlobalId {
@@ -235,7 +233,7 @@ impl Layout for BlockLayout {
         // TODO: should layout set max constraints when shrink?
         match self.child.get_intrinsic_size().width {
             BoxSizing::Flex(_) => {
-                if self.child.constraints().max_width.is_none(){
+                if self.child.constraints().max_width.is_none() {
                     self.child.set_max_width(available_space.width)
                 }
             }
@@ -339,8 +337,7 @@ mod test {
 
     #[test]
     fn fixed_max_constraints() {
-        let layout = EmptyLayout::new()
-            .intrinsic_size(IntrinsicSize::fixed(20.25,0.5));
+        let layout = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(20.25, 0.5));
 
         let mut layout = BlockLayout::new(layout);
         layout.solve_max_constraints(Size::new(100.0, 200.0));
@@ -536,6 +533,6 @@ mod test {
         let mut root = BlockLayout::new(child);
         root.solve_max_constraints(window);
 
-        assert_eq!(root.child.constraints().max_width.unwrap(),20.0);
+        assert_eq!(root.child.constraints().max_width.unwrap(), 20.0);
     }
 }

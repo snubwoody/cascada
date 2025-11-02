@@ -1,7 +1,7 @@
+use crate::constraints::impl_constraints;
 use crate::{
     BoxConstraints, BoxSizing, GlobalId, IntrinsicSize, Layout, LayoutIter, Position, Size,
 };
-use crate::constraints::impl_constraints;
 
 /// An empty [`Layout`] with no child notes.
 #[derive(Debug, Default, Clone, PartialEq)]

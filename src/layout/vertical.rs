@@ -1,8 +1,8 @@
+use crate::constraints::impl_constraints;
 use crate::{
     AxisAlignment, BoxConstraints, BoxSizing, GlobalId, IntrinsicSize, Layout, LayoutError,
     LayoutIter, Padding, Position, Size, error::OverflowAxis,
 };
-use crate::constraints::impl_constraints;
 
 /// A [`Layout`] node that arranges it's children vertically.
 ///
@@ -157,10 +157,6 @@ impl VerticalLayout {
         sum
     }
 
-    pub(crate) fn scroll(&mut self, offset: f32) {
-        self.scroll_offset += offset;
-    }
-
     /// Align the children on the main axis at the start
     fn align_main_axis_start(&mut self) {
         let mut y = self.position.y;
@@ -306,7 +302,7 @@ impl Layout for VerticalLayout {
             .chain(
                 self.children
                     .iter_mut()
-                    .flat_map(|child| child.collect_errors())
+                    .flat_map(|child| child.collect_errors()),
             )
             .collect::<Vec<_>>()
     }
@@ -383,15 +379,17 @@ impl Layout for VerticalLayout {
         }
 
         for child in self.children.iter_mut() {
-            match child.get_intrinsic_size().width {
-                BoxSizing::Flex(_) => {
-                    child.set_max_width(available_width);
-                }
-                BoxSizing::Shrink => {
-                    child.set_max_width(child.constraints().min_width);
-                }
-                BoxSizing::Fixed(width) => {
-                    child.set_max_width(width);
+            if child.constraints().max_width.is_none() {
+                match child.get_intrinsic_size().width {
+                    BoxSizing::Flex(_) => {
+                        child.set_max_width(available_width);
+                    }
+                    BoxSizing::Shrink => {
+                        child.set_max_width(child.constraints().min_width);
+                    }
+                    BoxSizing::Fixed(width) => {
+                        child.set_max_width(width);
+                    }
                 }
             }
 

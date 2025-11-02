@@ -87,17 +87,17 @@
 #![warn(clippy::suboptimal_flops)]
 #![warn(clippy::suspicious_operation_groupings)]
 #![warn(clippy::imprecise_flops)]
+mod constraints;
 #[cfg(feature = "debug-tools")]
 pub mod debug;
 mod error;
+mod layout;
 mod position;
 mod size;
-mod layout;
-mod constraints;
 
-pub use layout::*;
 pub use constraints::*;
 pub use error::LayoutError;
+pub use layout::*;
 pub use position::Bounds;
 pub use position::Position;
 pub use size::Size;

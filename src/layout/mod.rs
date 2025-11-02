@@ -1,5 +1,5 @@
-use std::fmt::Debug;
 use crate::{Bounds, BoxConstraints, GlobalId, IntrinsicSize, LayoutError, Position, Size};
+use std::fmt::Debug;
 
 pub mod block;
 pub mod empty;
@@ -31,7 +31,7 @@ pub use vertical::VerticalLayout;
 /// assert!(errors.is_empty());
 /// ```
 pub fn solve_layout(root: &mut dyn Layout, window_size: Size) -> Vec<LayoutError> {
-    if root.constraints().max_width.is_none(){
+    if root.constraints().max_width.is_none() {
         root.set_max_width(window_size.width);
     }
     root.set_max_height(window_size.height);
@@ -139,11 +139,11 @@ impl<'a> Iterator for LayoutIter<'a> {
 }
 
 #[cfg(test)]
-mod test{
+mod test {
     use super::*;
 
     #[test]
-    fn root_max_width(){
+    fn root_max_width() {
         let mut layout = EmptyLayout::new()
             .max_width(20.0)
             .intrinsic_size(IntrinsicSize::fill());

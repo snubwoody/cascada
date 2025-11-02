@@ -166,8 +166,14 @@ fn flex_factor() {
         node.children()[0].size().height,
         node.children()[1].size().height,
     );
-    assert_eq!(node.children()[1].size().width, 3.0 * node.children()[0].size().width);
-    assert_ne!(node.children()[1].size().height, 3.0 * node.children()[0].size().height);
+    assert_eq!(
+        node.children()[1].size().width,
+        3.0 * node.children()[0].size().width
+    );
+    assert_ne!(
+        node.children()[1].size().height,
+        3.0 * node.children()[0].size().height
+    );
 }
 
 #[test]
@@ -176,12 +182,11 @@ fn redistribute_max_width() {
     let child_node_1 = HorizontalLayout::new()
         .max_width(20.0)
         .intrinsic_size(IntrinsicSize::flex(1));
-    let child_node_2 = HorizontalLayout::new()
-        .intrinsic_size(IntrinsicSize::flex(3));
+    let child_node_2 = HorizontalLayout::new().intrinsic_size(IntrinsicSize::flex(3));
 
     let mut node = HorizontalLayout::new()
         .intrinsic_size(IntrinsicSize::fill())
-        .add_children([child_node_1,child_node_2]);
+        .add_children([child_node_1, child_node_2]);
 
     solve_layout(&mut node, window);
 

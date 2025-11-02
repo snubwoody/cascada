@@ -1,8 +1,8 @@
+use crate::constraints::impl_constraints;
 use crate::{
     AxisAlignment, BoxConstraints, BoxSizing, GlobalId, IntrinsicSize, Layout, LayoutError,
     LayoutIter, Padding, Position, Size,
 };
-use crate::constraints::impl_constraints;
 
 /// A [`Layout`] that arranges it's child nodes horizontally.
 ///
@@ -87,7 +87,6 @@ impl HorizontalLayout {
         }
         self
     }
-
 
     /// Sets this layout's [`Padding`].
     pub fn padding(mut self, padding: Padding) -> Self {
@@ -230,12 +229,11 @@ impl HorizontalLayout {
     }
 
     /// Sum up all the flex factors
-    fn flex_total(&self) -> u8{
+    fn flex_total(&self) -> u8 {
         // TODO: if max width is set should we exclude
         // from flex factor?
 
-        self
-            .children
+        self.children
             .iter()
             .filter_map(|child| {
                 if let BoxSizing::Flex(factor) = child.get_intrinsic_size().width {
@@ -309,7 +307,7 @@ impl Layout for HorizontalLayout {
             .chain(
                 self.children
                     .iter_mut()
-                    .flat_map(|child| child.collect_errors())
+                    .flat_map(|child| child.collect_errors()),
             )
             .collect::<Vec<_>>()
     }
@@ -370,7 +368,7 @@ impl Layout for HorizontalLayout {
         }
 
         for child in &mut self.children {
-            if child.constraints().max_width.is_none(){
+            if child.constraints().max_width.is_none() {
                 match child.get_intrinsic_size().width {
                     BoxSizing::Flex(factor) => {
                         let grow_factor = factor as f32 / flex_total as f32;
@@ -486,8 +484,7 @@ mod test {
             .max_width(200.0)
             .intrinsic_size(IntrinsicSize::fill());
 
-        let mut layout = HorizontalLayout::new()
-            .add_child(child);
+        let mut layout = HorizontalLayout::new().add_child(child);
 
         layout.solve_max_constraints(Size::unit(1000.0));
         assert_eq!(layout.children[0].constraints().max_width.unwrap(), 200.0);

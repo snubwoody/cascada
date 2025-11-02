@@ -1,4 +1,4 @@
-use crate::{Layout, Size};
+use crate::Size;
 
 /// Describes the size a [`Layout`] will try to be.
 #[derive(Debug, Clone, Copy, Default, PartialEq, PartialOrd)]
@@ -13,7 +13,6 @@ pub enum BoxSizing {
     /// dependent on the type of layout.
     Flex(u8),
 }
-
 
 /// Describes the maximum and minimum size of a [`Layout`].
 #[derive(Debug, Clone, Copy, Default, PartialEq, PartialOrd)]
@@ -134,7 +133,6 @@ impl From<Size> for IntrinsicSize {
     }
 }
 
-
 macro_rules! impl_constraints {
     () => {
         /// Sets the maximum width of the given layout.
@@ -151,6 +149,4 @@ macro_rules! impl_constraints {
     };
 }
 
-pub (crate) use impl_constraints;
-
-
+pub(crate) use impl_constraints;

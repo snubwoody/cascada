@@ -1,3 +1,17 @@
+[package]
+name = "cascada"
+description = "A general purpose UI layout engine"
+version = "0.3.0"
+authors = ["Wakunguma Kalimukwa <wakunguma13@gmail.com>"]
+license = "Apache-2.0 OR MIT"
+edition.workspace = true
+readme = "README.md"
+documentation = "https://docs.rs/cascada"
+repository = "https://github.com/snubwoody/cascada"
+categories = ["gui"]
+keywords = ["gui", "graphics","ui","layout","engine"]
+exclude = ["benches/*","examples/*"]
+
 [workspace]
 members = ["examples/*"]
 resolver = "3"
@@ -8,20 +22,7 @@ edition = "2024"
 [workspace.dependencies]
 cascada = {path = ".",features = ["debug-tools"]}
 
-[package]
-name = "cascada"
-description = "A general purpose UI layout engine"
-version = "0.2.0"
-authors = ["Wakunguma Kalimukwa <wakunguma13@gmail.com>"]
-license = "Apache-2.0 OR MIT"
-edition.workspace = true
-readme = "README.md"
-documentation = "https://docs.rs/cascada"
-repository = "https://github.com/snubwoody/cascada"
-categories = ["gui"]
-keywords = ["gui", "graphics","ui","layout","engine"]
 
-exclude = ["benches/*","examples/*"]
 
 [features]
 debug-tools = []
