@@ -39,15 +39,16 @@ impl Layout for EmptyLayout {
     }
 
     fn solve_min_constraints(&mut self) -> (f32, f32) {
+        // TODO: check
         if let BoxSizing::Fixed(width) = self.intrinsic_size.width {
-            self.constraints.min_width = width;
+            self.constraints.min_width = Some(width);
         }
 
         if let BoxSizing::Fixed(height) = self.intrinsic_size.height {
             self.constraints.min_height = height;
         }
 
-        (self.constraints.min_width, self.constraints.min_height)
+        (self.constraints.min_width.unwrap_or_default(), self.constraints.min_height)
     }
 
     // No children to solve for
@@ -61,7 +62,7 @@ impl Layout for EmptyLayout {
                 self.size.width = self.constraints.max_width.unwrap_or_default();
             }
             BoxSizing::Shrink => {
-                self.size.width = self.constraints.min_width;
+                self.size.width = self.constraints.min_width.unwrap_or_default();
             }
             BoxSizing::Fixed(width) => {
                 self.size.width = width;
@@ -118,7 +119,7 @@ impl Layout for EmptyLayout {
     }
 
     fn set_min_width(&mut self, width: f32) {
-        self.constraints.min_width = width;
+        self.constraints.min_width = Some(width);
     }
 
     fn set_min_height(&mut self, height: f32) {

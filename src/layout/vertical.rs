@@ -293,7 +293,7 @@ impl Layout for VerticalLayout {
     }
 
     fn set_min_width(&mut self, width: f32) {
-        self.constraints.min_width = width;
+        self.constraints.min_width = Some(width);
     }
 
     fn collect_errors(&mut self) -> Vec<LayoutError> {
@@ -314,12 +314,13 @@ impl Layout for VerticalLayout {
     fn solve_min_constraints(&mut self) -> (f32, f32) {
         let child_constraint_sum = self.compute_children_min_size();
 
+        // TODO: check
         match self.intrinsic_size.width {
             BoxSizing::Fixed(width) => {
-                self.constraints.min_width = width;
+                self.constraints.min_width = Some(width);
             }
             BoxSizing::Flex(_) | BoxSizing::Shrink => {
-                self.constraints.min_width = child_constraint_sum.width;
+                self.constraints.min_width = Some(child_constraint_sum.width);
             }
         }
 
@@ -332,7 +333,7 @@ impl Layout for VerticalLayout {
             }
         }
 
-        (self.constraints.min_width, self.constraints.min_height)
+        (self.constraints.min_width.unwrap_or_default(), self.constraints.min_height)
     }
 
     fn solve_max_constraints(&mut self, _space: Size) {
@@ -364,7 +365,7 @@ impl Layout for VerticalLayout {
 
         let mut available_width;
         match self.intrinsic_size.width {
-            BoxSizing::Shrink => available_width = self.constraints.min_width,
+            BoxSizing::Shrink => available_width = self.constraints.min_width.unwrap_or_default(),
             BoxSizing::Fixed(_) | BoxSizing::Flex(_) => {
                 available_width = self.constraints.max_width.unwrap_or_default();
                 available_width -= self.padding.horizontal_sum();
@@ -385,7 +386,7 @@ impl Layout for VerticalLayout {
                         child.set_max_width(available_width);
                     }
                     BoxSizing::Shrink => {
-                        child.set_max_width(child.constraints().min_width);
+                        child.set_max_width(child.constraints().min_width.unwrap_or_default());
                     }
                     BoxSizing::Fixed(width) => {
                         child.set_max_width(width);
@@ -414,7 +415,7 @@ impl Layout for VerticalLayout {
                 self.size.width = self.constraints.max_width.unwrap_or_default();
             }
             BoxSizing::Shrink => {
-                self.size.width = self.constraints.min_width;
+                self.size.width = self.constraints.min_width.unwrap_or_default();
             }
             BoxSizing::Fixed(width) => {
                 self.size.width = width;
@@ -516,7 +517,7 @@ mod test {
             .unwrap();
         max_width += padding.horizontal_sum();
         dbg!(layout.constraints);
-        assert_eq!(layout.constraints.min_width, max_width);
+        assert_eq!(layout.constraints.min_width.unwrap(), max_width);
     }
 
     #[test]

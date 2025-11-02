@@ -178,6 +178,7 @@ fn flex_factor() {
 
 #[test]
 fn redistribute_max_width() {
+    // FIXME: broken
     let window = Size::new(800.0, 400.0);
     let child_node_1 = HorizontalLayout::new()
         .max_width(20.0)

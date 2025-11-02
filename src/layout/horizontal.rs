@@ -145,7 +145,8 @@ impl HorizontalLayout {
                     sum.width += width;
                 }
                 BoxSizing::Shrink => {
-                    sum.width += child.constraints().min_width;
+                    // TODO: check
+                    sum.width += child.constraints().min_width.unwrap_or_default();
                 }
                 _ => {}
             }
@@ -298,7 +299,7 @@ impl Layout for HorizontalLayout {
     }
 
     fn set_min_width(&mut self, width: f32) {
-        self.constraints.min_width = width;
+        self.constraints.min_width = Some(width);
     }
 
     fn collect_errors(&mut self) -> Vec<LayoutError> {
@@ -317,13 +318,14 @@ impl Layout for HorizontalLayout {
     }
 
     fn solve_min_constraints(&mut self) -> (f32, f32) {
+        // TODO: check
         let child_constraint_sum = self.compute_children_min_size();
         match self.intrinsic_size.width {
             BoxSizing::Fixed(width) => {
-                self.constraints.min_width = width;
+                self.constraints.min_width = Some(width);
             }
             BoxSizing::Flex(_) | BoxSizing::Shrink => {
-                self.constraints.min_width = child_constraint_sum.width;
+                self.constraints.min_width = Some(child_constraint_sum.width);
             }
         }
 
@@ -336,7 +338,7 @@ impl Layout for HorizontalLayout {
             }
         }
 
-        (self.constraints.min_width, self.constraints.min_height)
+        (self.constraints.min_width.unwrap_or_default(), self.constraints.min_height)
     }
 
     fn solve_max_constraints(&mut self, _space: Size) {
@@ -357,7 +359,7 @@ impl Layout for HorizontalLayout {
         let mut available_width;
         match self.intrinsic_size.width {
             BoxSizing::Shrink => {
-                available_width = self.constraints.min_width;
+                available_width = self.constraints.min_width.unwrap_or_default();
                 available_width -= self.fixed_size_sum().width;
             }
             BoxSizing::Fixed(_) | BoxSizing::Flex(_) => {
@@ -379,7 +381,8 @@ impl Layout for HorizontalLayout {
                     }
                     BoxSizing::Shrink => {
                         // FIXME: Not sure about this
-                        child.set_max_width(child.constraints().min_width);
+                        // TODO: check
+                        child.set_max_width(child.constraints().min_width.unwrap_or_default());
                     }
                 }
             }
@@ -412,7 +415,7 @@ impl Layout for HorizontalLayout {
                 self.size.width = self.constraints.max_width.unwrap_or_default();
             }
             BoxSizing::Shrink => {
-                self.size.width = self.constraints.min_width;
+                self.size.width = self.constraints.min_width.unwrap_or_default();
             }
             BoxSizing::Fixed(width) => {
                 self.size.width = width;
@@ -474,7 +477,7 @@ mod test {
         };
 
         layout.solve_min_constraints();
-        assert_eq!(layout.constraints.min_width, 20.0);
+        assert_eq!(layout.constraints.min_width.unwrap_or_default(), 20.0);
         assert_eq!(layout.constraints.min_height, 24.0);
     }
 
@@ -519,7 +522,7 @@ mod test {
         let mut min_width = widths.iter().sum::<f32>();
         min_width += space_between;
         min_width += padding.horizontal_sum();
-        assert_eq!(layout.constraints.min_width, min_width);
+        assert_eq!(layout.constraints.min_width.unwrap_or_default(), min_width);
     }
 
     #[test]
