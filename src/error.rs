@@ -12,7 +12,7 @@ impl std::fmt::Display for OverflowAxis {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq,PartialOrd,Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum LayoutError {
     OutOfBounds {
         parent_id: GlobalId,

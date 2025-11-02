@@ -324,7 +324,8 @@ impl Layout for HorizontalLayout {
                 self.constraints.min_width = Some(width);
             }
             BoxSizing::Flex(_) | BoxSizing::Shrink => {
-                let min_width = self.constraints
+                let min_width = self
+                    .constraints
                     .min_width
                     .unwrap_or_default()
                     .max(child_constraint_sum.width);
@@ -341,7 +342,10 @@ impl Layout for HorizontalLayout {
             }
         }
 
-        (self.constraints.min_width.unwrap_or_default(), self.constraints.min_height)
+        (
+            self.constraints.min_width.unwrap_or_default(),
+            self.constraints.min_height,
+        )
     }
 
     fn solve_max_constraints(&mut self, _space: Size) {
@@ -479,30 +483,25 @@ where
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::{EmptyLayout, solve_layout, VerticalLayout};
-
+    use crate::{EmptyLayout, solve_layout};
 
     #[test]
-    fn min_width_larger_than_content_width(){
-        let child = EmptyLayout::default()
-            .intrinsic_size(IntrinsicSize::fixed(20.0,20.0));
+    fn min_width_larger_than_content_width() {
+        let child = EmptyLayout::default().intrinsic_size(IntrinsicSize::fixed(20.0, 20.0));
 
-        let mut layout = HorizontalLayout::from([child])
-            .min_width(200.0);
+        let mut layout = HorizontalLayout::from([child]).min_width(200.0);
 
-        let (width,_) = layout.solve_min_constraints();
+        let (width, _) = layout.solve_min_constraints();
         assert_eq!(width, 200.0);
     }
 
     #[test]
-    fn min_width_smaller_than_content_width(){
-        let child = EmptyLayout::default()
-            .intrinsic_size(IntrinsicSize::fixed(20.0,20.0));
+    fn min_width_smaller_than_content_width() {
+        let child = EmptyLayout::default().intrinsic_size(IntrinsicSize::fixed(20.0, 20.0));
 
-        let mut layout = HorizontalLayout::from([child])
-            .min_width(5.0);
+        let mut layout = HorizontalLayout::from([child]).min_width(5.0);
 
-        let (width,_) = layout.solve_min_constraints();
+        let (width, _) = layout.solve_min_constraints();
         assert_eq!(width, 20.0);
     }
 

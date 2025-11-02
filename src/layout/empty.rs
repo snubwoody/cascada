@@ -4,7 +4,7 @@ use crate::{
 };
 
 /// An empty [`Layout`] with no child notes.
-#[derive(Debug, Default, Clone, PartialEq,PartialOrd)]
+#[derive(Debug, Default, Clone, PartialEq, PartialOrd)]
 pub struct EmptyLayout {
     id: GlobalId,
     pub(crate) size: Size,
@@ -47,7 +47,10 @@ impl Layout for EmptyLayout {
             self.constraints.min_height = height;
         }
 
-        (self.constraints.min_width.unwrap_or_default(), self.constraints.min_height)
+        (
+            self.constraints.min_width.unwrap_or_default(),
+            self.constraints.min_height,
+        )
     }
 
     // No children to solve for
@@ -163,17 +166,16 @@ mod test {
     #[test]
     fn fixed_min_width_precedence() {
         let mut root = EmptyLayout::new()
-            .intrinsic_size(IntrinsicSize::fixed(30.0,50.0))
+            .intrinsic_size(IntrinsicSize::fixed(30.0, 50.0))
             .min_width(20.0);
-        let (width,_ ) = root.solve_min_constraints();
+        let (width, _) = root.solve_min_constraints();
         assert_eq!(width, 30.0);
     }
 
     #[test]
     fn min_width() {
-        let mut root = EmptyLayout::new()
-            .min_width(20.0);
-        let (width,_ ) = root.solve_min_constraints();
+        let mut root = EmptyLayout::new().min_width(20.0);
+        let (width, _) = root.solve_min_constraints();
         assert_eq!(width, 20.0);
     }
 

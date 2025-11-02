@@ -209,9 +209,7 @@ impl Layout for BlockLayout {
         // width and/or height.
         match self.intrinsic_size.width {
             BoxSizing::Flex(_) | BoxSizing::Shrink => {
-                let min_width = content_width.max(
-                    self.constraints.min_width.unwrap_or_default()
-                );
+                let min_width = content_width.max(self.constraints.min_width.unwrap_or_default());
                 self.constraints.min_width = Some(self.padding.horizontal_sum() + min_width);
             }
             BoxSizing::Fixed(width) => self.constraints.min_width = Some(width),
@@ -224,7 +222,10 @@ impl Layout for BlockLayout {
             BoxSizing::Fixed(height) => self.constraints.min_height = height,
         }
 
-        (self.constraints.min_width.unwrap_or_default(), self.constraints.min_height)
+        (
+            self.constraints.min_width.unwrap_or_default(),
+            self.constraints.min_height,
+        )
     }
 
     fn solve_max_constraints(&mut self, space: Size) {
@@ -317,34 +318,29 @@ mod test {
     use crate::{EmptyLayout, solve_layout};
 
     #[test]
-    fn min_width(){
-        let mut layout = BlockLayout::default()
-            .min_width(200.0);
+    fn min_width() {
+        let mut layout = BlockLayout::default().min_width(200.0);
 
-        let (width,_) = layout.solve_min_constraints();
-        assert_eq!(width,200.0);
+        let (width, _) = layout.solve_min_constraints();
+        assert_eq!(width, 200.0);
     }
 
     #[test]
-    fn min_width_smaller_than_content_width(){
-        let child = EmptyLayout::default()
-            .intrinsic_size(IntrinsicSize::fixed(500.0,500.0));
-        let mut layout = BlockLayout::new(child)
-            .min_width(200.0);
+    fn min_width_smaller_than_content_width() {
+        let child = EmptyLayout::default().intrinsic_size(IntrinsicSize::fixed(500.0, 500.0));
+        let mut layout = BlockLayout::new(child).min_width(200.0);
 
-        let (width,_) = layout.solve_min_constraints();
-        assert_eq!(width,500.0);
+        let (width, _) = layout.solve_min_constraints();
+        assert_eq!(width, 500.0);
     }
 
     #[test]
-    fn min_width_larger_than_content_width(){
-        let child = EmptyLayout::default()
-            .intrinsic_size(IntrinsicSize::fixed(500.0,500.0));
-        let mut layout = BlockLayout::new(child)
-            .min_width(800.0);
+    fn min_width_larger_than_content_width() {
+        let child = EmptyLayout::default().intrinsic_size(IntrinsicSize::fixed(500.0, 500.0));
+        let mut layout = BlockLayout::new(child).min_width(800.0);
 
-        let (width,_) = layout.solve_min_constraints();
-        assert_eq!(width,800.0);
+        let (width, _) = layout.solve_min_constraints();
+        assert_eq!(width, 800.0);
     }
 
     #[test]
@@ -421,7 +417,10 @@ mod test {
         layout.padding = Padding::new(10.0, 15.0, 93.0, 53.0);
         layout.solve_min_constraints();
 
-        assert_eq!(layout.constraints.min_width.unwrap_or_default(), 20.0 + 10.0 + 15.0);
+        assert_eq!(
+            layout.constraints.min_width.unwrap_or_default(),
+            20.0 + 10.0 + 15.0
+        );
         assert_eq!(layout.constraints.min_height, 20.0 + 93.0 + 53.0);
     }
 
