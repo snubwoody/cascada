@@ -461,6 +461,15 @@ impl Layout for HorizontalLayout {
     }
 }
 
+impl<I> From<I> for HorizontalLayout
+where
+    I: IntoIterator<Item: Layout + 'static>,
+{
+    fn from(iter: I) -> Self {
+        HorizontalLayout::new().add_children(iter)
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
