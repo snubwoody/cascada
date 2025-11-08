@@ -2,8 +2,6 @@ name: Upload libraries
 on:
   push:
     branches: ["main"]
-  pull_request:
-    branches: ["main"]
 concurrency:
   group: upload-libraries
   cancel-in-progress: true
