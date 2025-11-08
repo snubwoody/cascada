@@ -127,14 +127,14 @@ impl VerticalLayout {
         self
     }
 
-    /// Returns `true` if a [`VerticalLayout`]'s children are overflowing it's main-axis
+    /// Returns `true` if a [`VerticalLayout`]'s children are overflowing its main-axis
     /// (y-axis).
     pub fn main_axis_overflow(&self) -> bool {
         self.errors
             .contains(&LayoutError::overflow(self.id, OverflowAxis::MainAxis))
     }
 
-    /// Returns `true` if a [`VerticalLayout`]'s children are overflowing it's cross-axis
+    /// Returns `true` if a [`VerticalLayout`]'s children are overflowing its cross-axis
     /// (x-axis).
     pub fn cross_axis_overflow(&self) -> bool {
         self.errors
@@ -351,7 +351,7 @@ impl Layout for VerticalLayout {
 
     fn solve_max_constraints(&mut self, _space: Size) {
         // Sum up all the flex factors
-        let flex_total: u8 = self
+        let flex_total: u32 = self
             .children
             .iter()
             .filter_map(|child| {
