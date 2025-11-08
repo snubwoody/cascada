@@ -91,9 +91,14 @@ mod constraints;
 #[cfg(feature = "debug-tools")]
 pub mod debug;
 mod error;
+#[cfg(feature = "ffi")]
+mod ffi;
 mod layout;
 mod position;
 mod size;
+
+#[cfg(feature = "ffi")]
+pub use ffi::*;
 
 pub use constraints::*;
 pub use error::LayoutError;
@@ -106,11 +111,13 @@ use std::sync::atomic::{AtomicU32, Ordering};
 
 static COUNTER: AtomicU32 = AtomicU32::new(0);
 
-/// A global unique identifier
+/// A global unique identifier.
 #[derive(Copy, Clone, PartialOrd, PartialEq, Eq, Debug, Ord, Hash)]
+#[cfg_attr(feature = "ffi", repr(C))]
 pub struct GlobalId(u32);
 
 impl GlobalId {
+    /// Creates a new [`GlobalId`].
     pub fn new() -> Self {
         Self(COUNTER.fetch_add(1, Ordering::Relaxed))
     }

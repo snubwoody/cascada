@@ -53,7 +53,7 @@ jobs:
           restore-keys: cargo-${{runner.os}}-
       - uses: taiki-e/install-action@cargo-nextest
       - name: Run tests
-        run: cargo nextest run
+        run: cargo nextest run --all-targets --all-features
   doc-tests:
     strategy:
       fail-fast: false
@@ -70,7 +70,7 @@ jobs:
             target/
           restore-keys: cargo-${{runner.os}}-
       - name: Run doc tests
-        run: cargo test --doc
+        run: cargo test --doc --all-features
   wasm:
     runs-on: ubuntu-latest
     steps:
@@ -84,6 +84,23 @@ jobs:
           restore-keys: cargo-${{runner.os}}-
       - run: rustup target add wasm32-unknown-unknown
       - run: cargo check --target wasm32-unknown-unknown
+  build:
+    strategy:
+      matrix:
+        os: ["windows-latest","macos-latest","ubuntu-latest"]
+        features: ["--all-features","--no-default-features"]
+    runs-on: ${{matrix.os}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          key: cargo-${{runner.os}}-${{hashFiles('**/Cargo.toml')}}
+          path: |
+            ~/.cargo
+            target/
+          restore-keys: cargo-${{runner.os}}-
+      - run: rustup target add wasm32-unknown-unknown
+      - run: cargo build ${{matrix.features}}
   all-systems-pass:
     runs-on: ubuntu-latest
     needs:
@@ -93,6 +110,7 @@ jobs:
       - semver
       - format
       - wasm
+      - build
     steps:
       - uses: actions/checkout@v4
       - run: echo All good
