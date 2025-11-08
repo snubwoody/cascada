@@ -23,6 +23,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: |
-            target/release/libcascada.so
-            target/release/libcascada.dylib
-            target/release/cascada.dll
+            target/release/*.so
+            target/release/*.dylib
+            target/release/*.dll
