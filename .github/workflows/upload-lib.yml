@@ -6,7 +6,7 @@ on:
     branches: ["main"]
 concurrency:
   group: upload-libraries
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   build:
     strategy:
