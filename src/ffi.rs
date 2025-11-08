@@ -1,4 +1,4 @@
-use crate::EmptyLayout;
+use crate::{solve_layout, BoxSizing, EmptyLayout, GlobalId, IntrinsicSize, Layout, Position, Size};
 
 #[derive(Debug,Clone,Copy,PartialEq,Eq,PartialOrd,Ord)]
 #[repr(u8)]
@@ -28,18 +28,53 @@ pub struct IntrinsicValue{
 #[derive(Debug, Clone, Copy)]
 #[repr(C)]
 pub struct LayoutDesc{
-    id: u32,
+    id: GlobalId,
     kind: LayoutKind,
     intrinsic_width: IntrinsicValue,
     intrinsic_height: IntrinsicValue,
 }
 
-#[unsafe(no_mangle)]
-pub unsafe extern "C" fn solve_layout_from_desc(desc: LayoutDesc){
-    dbg!(desc);
+#[derive(Debug, Clone, Copy)]
+#[repr(C)]
+pub struct LayoutNode{
+    pub id: GlobalId,
+    pub size: Size,
+    pub position: Position,
 }
 
-fn to_empty_layout(desc: LayoutDesc){
-    dbg!(desc);
-    let a = EmptyLayout::new();
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn create_global_id() -> GlobalId{
+    GlobalId::new()
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn solve_layout_from_desc(desc: LayoutDesc,size: Size) -> LayoutNode{
+    let intrinsic_size = IntrinsicSize::from_ffi(desc.intrinsic_width, desc.intrinsic_height);
+    let mut layout = EmptyLayout::new()
+        .set_id(desc.id)
+        .intrinsic_size(intrinsic_size);
+
+    solve_layout(&mut layout,size);
+    layout.as_layout_node()
+}
+
+impl IntrinsicSize{
+    fn from_ffi(width: IntrinsicValue, height: IntrinsicValue) -> Self{
+        let width = match width.kind {
+            BoxSizingKind::Fixed => BoxSizing::Fixed(width.value),
+            BoxSizingKind::Shrink => BoxSizing::Shrink,
+            BoxSizingKind::Flex => BoxSizing::Flex(width.value as u32),
+        };
+
+        let height = match height.kind {
+            BoxSizingKind::Fixed => BoxSizing::Fixed(height.value),
+            BoxSizingKind::Shrink => BoxSizing::Shrink,
+            BoxSizingKind::Flex => BoxSizing::Flex(height.value as u32),
+        };
+
+        Self{
+            width,
+            height,
+        }
+    }
 }
