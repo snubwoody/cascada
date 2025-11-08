@@ -42,6 +42,7 @@ pub struct LayoutNode{
     pub position: Position,
 }
 
+/// Create a new [`GlobalId`].
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn create_global_id() -> GlobalId{
     GlobalId::new()
