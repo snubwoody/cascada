@@ -4,6 +4,7 @@ use std::ops::{Add, AddAssign, Sub, SubAssign};
 
 /// The x and y position of a layout node.
 #[derive(Default, Copy, Clone, PartialEq, PartialOrd, Debug)]
+#[repr(C)]
 pub struct Position {
     pub x: f32,
     pub y: f32,

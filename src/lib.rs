@@ -94,6 +94,10 @@ mod error;
 mod layout;
 mod position;
 mod size;
+mod ffi;
+
+#[cfg(feature = "ffi")]
+pub use ffi::*;
 
 pub use constraints::*;
 pub use error::LayoutError;
