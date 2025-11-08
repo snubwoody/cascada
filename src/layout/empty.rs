@@ -38,7 +38,6 @@ impl Layout for EmptyLayout {
         self.label.clone().unwrap_or("EmptyLayout".to_string())
     }
 
-
     fn solve_min_constraints(&mut self) -> (f32, f32) {
         if let BoxSizing::Fixed(width) = self.intrinsic_size.width {
             self.constraints.min_width = Some(width);

@@ -48,7 +48,6 @@ pub fn solve_layout(root: &mut dyn Layout, window_size: Size) -> Vec<LayoutError
     root.collect_errors()
 }
 
-
 /// A layout node.
 pub trait Layout: Debug + private::Sealed {
     fn label(&self) -> String;
@@ -112,8 +111,8 @@ pub trait Layout: Debug + private::Sealed {
     }
 
     #[cfg(feature = "ffi")]
-    fn as_layout_node(&self) -> LayoutNode{
-        LayoutNode{
+    fn as_layout_node(&self) -> LayoutNode {
+        LayoutNode {
             id: self.id(),
             position: self.position(),
             size: self.size(),

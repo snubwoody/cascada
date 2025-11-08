@@ -3,7 +3,7 @@ use std::ops::{Add, AddAssign, Sub, SubAssign};
 
 /// The width and height of a layout node.
 #[derive(Clone, Copy, PartialEq, Debug, PartialOrd, Default)]
-#[cfg_attr(feature = "ffi",repr(C))]
+#[cfg_attr(feature = "ffi", repr(C))]
 pub struct Size {
     pub width: f32,
     pub height: f32,
