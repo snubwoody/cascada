@@ -91,6 +91,7 @@ mod constraints;
 #[cfg(feature = "debug-tools")]
 pub mod debug;
 mod error;
+#[cfg(feature = "ffi")]
 mod ffi;
 mod layout;
 mod position;
