@@ -11,7 +11,7 @@ pub enum BoxSizing {
     Shrink,
     /// Tries to be as big as possible, the behaviour of the flex factor is
     /// dependent on the type of layout.
-    Flex(u8),
+    Flex(u32),
 }
 
 /// Describes the maximum and minimum size of a [`Layout`].
@@ -79,7 +79,7 @@ impl IntrinsicSize {
     /// assert_eq!(intrinsic_size.width,BoxSizing::Flex(8));
     /// assert_eq!(intrinsic_size.height,BoxSizing::Flex(8));
     /// ```
-    pub const fn flex(factor: u8) -> Self {
+    pub const fn flex(factor: u32) -> Self {
         Self {
             width: BoxSizing::Flex(factor),
             height: BoxSizing::Flex(factor),
