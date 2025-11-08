@@ -1,0 +1,27 @@
+name: Upload libraries
+on:
+  push:
+    branches: ["main"]
+concurrency:
+  group: upload-libraries
+  cancel-in-progress: true
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+        name: Checkout repository
+      - name: Build library
+        run: cargo build --release --features ffi
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: lib-${{runner.os}}
+          path: |
+            target/release/libcascada.so
+            target/release/libcascada.dylib
+            target/release/cascada.dll
