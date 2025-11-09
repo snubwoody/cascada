@@ -1,4 +1,5 @@
-use crate::{BoxSizing, EmptyLayout, GlobalId, IntrinsicSize, Layout, Position, Size, solve_layout, BlockLayout, layout};
+use crate::{BoxSizing, EmptyLayout, GlobalId, IntrinsicSize, Layout, Position, Size, solve_layout, BlockLayout, layout, HorizontalLayout, VerticalLayout};
+use crate::ffi::LayoutKind::Vertical;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord,Default)]
 #[repr(u8)]
@@ -106,7 +107,36 @@ fn build_tree(descs: &[LayoutDesc],index: usize) -> Box<dyn Layout> {
                 .intrinsic_size(intrinsic_size);
             Box::new(layout)
         }
-        _ => panic!()
+        LayoutKind::Horizontal => {
+            // TODO: add spacing and padding.
+            let mut i = index;
+            let mut children = vec![];
+            for _ in 0..desc.child_count{
+                i+=1;
+                let child = build_tree(descs,i);
+                children.push(child);
+            }
+            let layout = HorizontalLayout::new()
+                .set_id(desc.id)
+                .add_boxed_children(children)
+                .intrinsic_size(intrinsic_size);
+            Box::new(layout)
+        }
+        LayoutKind::Vertical => {
+            // TODO: add spacing and padding.
+            let mut i = index;
+            let mut children = vec![];
+            for _ in 0..desc.child_count{
+                i+=1;
+                let child = build_tree(descs,i);
+                children.push(child);
+            }
+            let layout = VerticalLayout::new()
+                .set_id(desc.id)
+                .add_boxed_children(children)
+                .intrinsic_size(intrinsic_size);
+            Box::new(layout)
+        }
     };
     layout
 }
@@ -198,4 +228,31 @@ mod test{
         assert_eq!(nested_block.children().len(),1);
         assert_eq!(nested_empty.id(),id3);
     }
+
+    #[test]
+    fn build_horizontal_layout(){
+        let horizontal = LayoutDesc{
+            kind: LayoutKind::Horizontal,
+            child_count: 10,
+            ..LayoutDesc::default()
+        };
+        let mut layouts = vec![horizontal];
+        layouts.extend((0..10).map(|_|LayoutDesc::default()));
+        let layout = build_tree(&layouts,0);
+        assert_eq!(layout.children().len(),10);
+    }
+
+    #[test]
+    fn build_vertical_layout(){
+        let horizontal = LayoutDesc{
+            kind: LayoutKind::Vertical,
+            child_count: 10,
+            ..LayoutDesc::default()
+        };
+        let mut layouts = vec![horizontal];
+        layouts.extend((0..10).map(|_|LayoutDesc::default()));
+        let layout = build_tree(&layouts,0);
+        assert_eq!(layout.children().len(),10);
+    }
+
 }
