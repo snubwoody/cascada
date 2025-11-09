@@ -12,7 +12,7 @@ pub use horizontal::HorizontalLayout;
 pub use vertical::VerticalLayout;
 
 #[cfg(feature = "ffi")]
-use crate::LayoutNode;
+use crate::ffi::LayoutNode;
 
 /// Solve the final size and position of all the layout nodes. The
 /// `window_size` is the maximum available space for the root node.
@@ -109,6 +109,7 @@ pub trait Layout: Debug + private::Sealed {
     fn get(&self, id: GlobalId) -> Option<&dyn Layout> {
         self.iter().find(|&layout| layout.id() == id)
     }
+
 
     #[cfg(feature = "ffi")]
     fn as_layout_node(&self) -> LayoutNode {

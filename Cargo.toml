@@ -40,3 +40,6 @@ branches_sharing_code = "warn"
 name = "horizontal"
 path = "benches/horizontal.rs"
 harness = false
+
+[package.metadata.docs.rs]
+all-features = true

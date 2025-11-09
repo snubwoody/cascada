@@ -92,13 +92,11 @@ mod constraints;
 pub mod debug;
 mod error;
 #[cfg(feature = "ffi")]
-mod ffi;
+pub mod ffi;
 mod layout;
 mod position;
 mod size;
 
-#[cfg(feature = "ffi")]
-pub use ffi::*;
 
 pub use constraints::*;
 pub use error::LayoutError;
