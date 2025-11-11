@@ -14,7 +14,7 @@ pub use horizontal::HorizontalLayout;
 pub use vertical::VerticalLayout;
 
 #[cfg(feature = "ffi")]
-use crate::LayoutNode;
+use crate::ffi::LayoutNode;
 
 /// Solve the final size and position of all the layout nodes. The
 /// `window_size` is the maximum available space for the root node.

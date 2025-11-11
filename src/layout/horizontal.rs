@@ -88,6 +88,16 @@ impl HorizontalLayout {
         self
     }
 
+    pub fn add_boxed_children<I>(mut self, children: I) -> Self
+    where
+        I: IntoIterator<Item = Box<dyn Layout + 'static>>,
+    {
+        for child in children {
+            self.children.push(child);
+        }
+        self
+    }
+
     /// Sets this layout's [`Padding`].
     pub fn padding(mut self, padding: Padding) -> Self {
         self.padding = padding;

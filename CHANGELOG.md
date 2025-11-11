@@ -5,6 +5,7 @@ All notable changes to agape will be documented in this file.
 ## (unreleased)
 - Added `debug_tree` method.
 - Added max width constraint.
+- Added `BlockLayout::from_boxed`.
 
 ## 0.2.0 - 27-10-2025
 

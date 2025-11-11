@@ -64,6 +64,14 @@ impl BlockLayout {
         }
     }
 
+    /// Creates a [`BlockLayout`] from a boxed layout node.
+    pub fn from_boxed(child: Box<dyn Layout>) -> Self {
+        Self {
+            child,
+            ..Default::default()
+        }
+    }
+
     pub fn child(&self) -> &dyn Layout {
         self.child.as_ref()
     }

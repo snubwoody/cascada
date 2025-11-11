@@ -103,6 +103,16 @@ impl VerticalLayout {
         self
     }
 
+    pub fn add_boxed_children<I>(mut self, children: I) -> Self
+    where
+        I: IntoIterator<Item = Box<dyn Layout + 'static>>,
+    {
+        for child in children {
+            self.children.push(child);
+        }
+        self
+    }
+
     /// Set the main axis alignment
     pub fn main_axis_alignment(mut self, main_axis_alignment: AxisAlignment) -> Self {
         self.main_axis_alignment = main_axis_alignment;
