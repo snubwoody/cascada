@@ -97,7 +97,6 @@ mod layout;
 mod position;
 mod size;
 
-
 pub use constraints::*;
 pub use error::LayoutError;
 pub use layout::*;
@@ -192,7 +191,7 @@ impl Padding {
     /// assert_eq!(padding.left,padding.right);
     /// assert_eq!(padding.bottom,padding.top);
     /// ```
-    /// 
+    ///
     /// # Panics
     /// Panics if either of the values is negative.
     pub const fn symmetric(vertical: f32, horizontal: f32) -> Self {

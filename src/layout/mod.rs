@@ -1,4 +1,6 @@
-use crate::{Bounds, BoxConstraints, BoxSizing, GlobalId, IntrinsicSize, LayoutError, Position, Size};
+use crate::{
+    Bounds, BoxConstraints, BoxSizing, GlobalId, IntrinsicSize, LayoutError, Position, Size,
+};
 use std::fmt::Debug;
 
 mod block;
@@ -44,7 +46,7 @@ pub fn solve_layout(root: &mut dyn Layout, window_size: Size) -> Vec<LayoutError
 
     match root.get_intrinsic_size().height {
         BoxSizing::Fixed(height) => root.set_max_height(height),
-        _ => root.set_max_height(window_size.height)
+        _ => root.set_max_height(window_size.height),
     }
 
     // It's important that the min constraints are solved before the max constraints
@@ -118,7 +120,6 @@ pub trait Layout: Debug + private::Sealed {
     fn get(&self, id: GlobalId) -> Option<&dyn Layout> {
         self.iter().find(|&layout| layout.id() == id)
     }
-
 
     #[cfg(feature = "ffi")]
     fn as_layout_node(&self) -> LayoutNode {
