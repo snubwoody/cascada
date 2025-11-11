@@ -1,5 +1,4 @@
-use crate::{BoxSizing, EmptyLayout, GlobalId, IntrinsicSize, Layout, Position, Size, solve_layout, BlockLayout, layout, HorizontalLayout, VerticalLayout};
-use crate::ffi::LayoutKind::Vertical;
+use crate::{BoxSizing, EmptyLayout, GlobalId, IntrinsicSize, Layout, Position, Size, solve_layout, BlockLayout, layout, HorizontalLayout, VerticalLayout, Padding, AxisAlignment};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord,Default)]
 #[repr(u8)]
@@ -37,10 +36,15 @@ pub struct IntrinsicValue {
 #[derive(Debug, Clone, Copy,Default)]
 #[repr(C)]
 pub struct LayoutDesc {
+    // TODO: add padding and spacing
     id: GlobalId,
     kind: LayoutKind,
     intrinsic_width: IntrinsicValue,
     intrinsic_height: IntrinsicValue,
+    padding: Padding,
+    spacing: u32,
+    main_axis_alignment: AxisAlignment,
+    cross_axis_alignment: AxisAlignment,
     child_count: usize,
 }
 
@@ -71,18 +75,22 @@ pub unsafe extern "C" fn create_global_id() -> GlobalId {
 ///
 /// [layout description]: LayoutDesc
 #[unsafe(no_mangle)]
-pub unsafe extern "C" fn solve_layout_from_desc(descs: *const LayoutDesc,len: usize, size: Size) -> LayoutNode {
+pub unsafe extern "C" fn solve_layout_from_desc(
+    descs: *const LayoutDesc,
+    len: usize,
+    out_buffer: *mut LayoutNode,
+    size: Size
+) {
     let descs = unsafe {
         std::slice::from_raw_parts(descs,len)
     };
-    let desc = descs[0];
-    dbg!(descs);
-    let intrinsic_size = IntrinsicSize::from_ffi(desc.intrinsic_width, desc.intrinsic_height);
-    let mut layout = EmptyLayout::new()
-        .set_id(desc.id)
-        .intrinsic_size(intrinsic_size);
-    solve_layout(&mut layout, size);
-    layout.as_layout_node()
+    let out = unsafe { std::slice::from_raw_parts_mut(out_buffer, len) };
+
+    let mut layout = build_tree(descs,0);
+    solve_layout(layout.as_mut(), size);
+    for (i,l) in layout.iter().enumerate() {
+        out[i] = l.as_layout_node();
+    }
 }
 
 
@@ -104,11 +112,13 @@ fn build_tree(descs: &[LayoutDesc],index: usize) -> Box<dyn Layout> {
             let l = build_tree(descs,index+1);
             let layout = BlockLayout::from_boxed(l)
                 .set_id(desc.id)
+                .main_axis_alignment(desc.main_axis_alignment)
+                .cross_axis_alignment(desc.cross_axis_alignment)
+                .padding(desc.padding)
                 .intrinsic_size(intrinsic_size);
             Box::new(layout)
         }
         LayoutKind::Horizontal => {
-            // TODO: add spacing and padding.
             let mut i = index;
             let mut children = vec![];
             for _ in 0..desc.child_count{
@@ -119,11 +129,14 @@ fn build_tree(descs: &[LayoutDesc],index: usize) -> Box<dyn Layout> {
             let layout = HorizontalLayout::new()
                 .set_id(desc.id)
                 .add_boxed_children(children)
+                .main_axis_alignment(desc.main_axis_alignment)
+                .cross_axis_alignment(desc.cross_axis_alignment)
+                .padding(desc.padding)
+                .spacing(desc.spacing)
                 .intrinsic_size(intrinsic_size);
             Box::new(layout)
         }
         LayoutKind::Vertical => {
-            // TODO: add spacing and padding.
             let mut i = index;
             let mut children = vec![];
             for _ in 0..desc.child_count{
@@ -134,10 +147,16 @@ fn build_tree(descs: &[LayoutDesc],index: usize) -> Box<dyn Layout> {
             let layout = VerticalLayout::new()
                 .set_id(desc.id)
                 .add_boxed_children(children)
+                .main_axis_alignment(desc.main_axis_alignment)
+                .cross_axis_alignment(desc.cross_axis_alignment)
+                .padding(desc.padding)
+                .spacing(desc.spacing)
                 .intrinsic_size(intrinsic_size);
             Box::new(layout)
         }
     };
+    dbg!(&layout);
+    dbg!(&desc);
     layout
 }
 

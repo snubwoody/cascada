@@ -135,18 +135,20 @@ impl std::fmt::Display for GlobalId {
 
 /// Describes how a [`Layout`] should align its children.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, PartialOrd, Ord)]
+#[repr(u8)]
 pub enum AxisAlignment {
     /// Place content at the start.
     #[default]
-    Start,
+    Start = 0,
     /// Place content in the center.
-    Center,
+    Center = 1,
     /// Place content at the end.
-    End,
+    End = 2,
 }
 
 /// The space between the edges of a [`Layout`] node and its content.
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug)]
+#[repr(C)]
 pub struct Padding {
     /// The left padding.
     pub left: f32,
@@ -176,7 +178,7 @@ impl Padding {
         }
     }
 
-    /// Create padding with symmetric vertical and horizontal sides.
+    /// Creates a [`Padding`] with symmetric vertical and horizontal sides.
     ///
     /// # Example
     ///
@@ -190,11 +192,14 @@ impl Padding {
     /// assert_eq!(padding.left,padding.right);
     /// assert_eq!(padding.bottom,padding.top);
     /// ```
+    /// 
+    /// # Panics
+    /// Panics if either of the values is negative.
     pub const fn symmetric(vertical: f32, horizontal: f32) -> Self {
         Self::new(horizontal, horizontal, vertical, vertical)
     }
 
-    /// Create a [`Padding`] with equal sides.
+    /// Creates a [`Padding`] with equal sides.
     ///
     /// # Example
     /// ```
@@ -206,11 +211,14 @@ impl Padding {
     /// assert_eq!(padding.left,padding.right);
     /// assert_eq!(padding.bottom,padding.top);
     /// ```
+    ///
+    /// # Panics
+    /// Panics if `padding` is negative.
     pub const fn all(padding: f32) -> Self {
         Self::new(padding, padding, padding, padding)
     }
 
-    /// The sum of the top and bottom padding.
+    /// Returns the sum of the top and bottom padding.
     ///
     /// # Example
     ///
@@ -225,7 +233,7 @@ impl Padding {
         self.bottom + self.top
     }
 
-    /// The sum of the left and right padding.
+    /// Returns the sum of the left and right padding.
     ///
     /// # Example
     ///
@@ -240,7 +248,7 @@ impl Padding {
         self.left + self.right
     }
 
-    /// The sum of all the padding sides.
+    /// Returns the sum of all the padding sides.
     ///
     /// # Example
     /// ```
