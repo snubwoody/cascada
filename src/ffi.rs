@@ -155,8 +155,6 @@ fn build_tree(descs: &[LayoutDesc], index: usize) -> Box<dyn Layout> {
             Box::new(layout)
         }
     };
-    dbg!(&layout);
-    dbg!(&desc);
     layout
 }
 
