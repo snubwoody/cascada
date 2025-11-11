@@ -228,8 +228,11 @@ impl Layout for BlockLayout {
         )
     }
 
-    fn solve_max_constraints(&mut self, space: Size) {
-        let mut available_space = space;
+    fn solve_max_constraints(&mut self, _: Size) {
+        let mut available_space = Size::new(
+            self.constraints.max_width.unwrap_or_default(),
+            self.constraints.max_height,
+        );
         available_space.width -= self.padding.horizontal_sum();
         available_space.height -= self.padding.vertical_sum();
 
@@ -348,7 +351,7 @@ mod test {
         let layout = EmptyLayout::new().intrinsic_size(IntrinsicSize::fill());
 
         let mut layout = BlockLayout::new(layout);
-        layout.solve_max_constraints(Size::new(100.0, 200.0));
+        solve_layout(&mut layout, Size::new(100.0, 200.0));
         assert_eq!(layout.child.constraints().max_width.unwrap(), 100.0);
         assert_eq!(layout.child.constraints().max_height, 200.0);
     }
@@ -359,7 +362,7 @@ mod test {
 
         let mut layout = BlockLayout::new(layout);
         layout.padding = Padding::new(10.0, 15.0, 20.0, 25.0);
-        layout.solve_max_constraints(Size::new(100.0, 200.0));
+        solve_layout(&mut layout, Size::new(100.0, 200.0));
         assert_eq!(layout.child.constraints().max_width.unwrap(), 100.0 - 25.0);
         assert_eq!(layout.child.constraints().max_height, 200.0 - 45.0);
     }
