@@ -16,11 +16,9 @@ fn respect_child_max_width() {
 #[test]
 fn fill_fixed_parent() {
     let window = Size::new(800.0, 800.0);
-    let child = EmptyLayout::new()
-        .intrinsic_size(IntrinsicSize::fill());
+    let child = EmptyLayout::new().intrinsic_size(IntrinsicSize::fill());
 
-    let mut root = BlockLayout::new(child)
-        .intrinsic_size(IntrinsicSize::fixed(100.0,50.0));
+    let mut root = BlockLayout::new(child).intrinsic_size(IntrinsicSize::fixed(100.0, 50.0));
 
     solve_layout(&mut root, window);
     dbg!(&root);
