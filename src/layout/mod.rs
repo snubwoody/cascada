@@ -1,4 +1,4 @@
-use crate::{Bounds, BoxConstraints, GlobalId, IntrinsicSize, LayoutError, Position, Size};
+use crate::{Bounds, BoxConstraints, BoxSizing, GlobalId, IntrinsicSize, LayoutError, Position, Size};
 use std::fmt::Debug;
 
 mod block;
@@ -33,10 +33,19 @@ use crate::LayoutNode;
 /// assert!(errors.is_empty());
 /// ```
 pub fn solve_layout(root: &mut dyn Layout, window_size: Size) -> Vec<LayoutError> {
-    if root.constraints().max_width.is_none() {
-        root.set_max_width(window_size.width);
+    match root.get_intrinsic_size().width {
+        BoxSizing::Fixed(width) => root.set_max_width(width),
+        _ => {
+            if root.constraints().max_width.is_none() {
+                root.set_max_width(window_size.width);
+            }
+        }
     }
-    root.set_max_height(window_size.height);
+
+    match root.get_intrinsic_size().height {
+        BoxSizing::Fixed(height) => root.set_max_height(height),
+        _ => root.set_max_height(window_size.height)
+    }
 
     // It's important that the min constraints are solved before the max constraints
     // because the min constraints are used in calculating max constraints.
