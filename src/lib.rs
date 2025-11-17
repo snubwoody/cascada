@@ -93,7 +93,7 @@ pub mod debug;
 mod error;
 #[cfg(feature = "ffi")]
 pub mod ffi;
-mod layout;
+pub mod layout;
 mod position;
 mod size;
 

@@ -22,7 +22,7 @@ pub struct BoxConstraints {
     /// The maximum possible height.
     pub max_height: f32,
     /// The minimum possible height.
-    pub min_height: f32,
+    pub min_height: Option<f32>,
     /// The minimum possible width.
     pub min_width: Option<f32>,
 }
@@ -33,7 +33,7 @@ impl BoxConstraints {
         Self {
             max_height: 0.0,
             max_width: None,
-            min_height: 0.0,
+            min_height: None,
             min_width: None,
         }
     }
@@ -141,9 +141,15 @@ macro_rules! impl_constraints {
             self
         }
 
-        /// Sets the maximum width of the layout node.
+        /// Sets the minimum width of the layout node.
         pub fn min_width(mut self, width: f32) -> Self {
             self.constraints.min_width = Some(width);
+            self
+        }
+
+        /// Sets the minimum height of the layout node.
+        pub fn min_height(mut self, height: f32) -> Self {
+            self.constraints.min_height = Some(height);
             self
         }
 

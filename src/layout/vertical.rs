@@ -26,6 +26,13 @@ use crate::{
 /// solve_layout(&mut layout, Size::unit(500.0));
 /// ```
 ///
+/// ## Algorithm
+///
+/// - [BoxSizing::Shrink]: The minimum width is set to the sum of the minimum widths
+///   of all the children + spacing + horizontal padding.
+/// - [BoxSizing::Fixed]: The minimum width is set to the fixed width regardless of all
+///   other properties.
+///
 /// If the intrinsic height is [`BoxSizing::Shrink`] then the final height
 /// will be the sum of the all child node heights + vertical padding + spacing.
 #[derive(Default, Debug)]
@@ -164,7 +171,7 @@ impl VerticalLayout {
                     sum.height += height;
                 }
                 BoxSizing::Shrink => {
-                    sum.height += child.constraints().min_height;
+                    sum.height += child.constraints().min_height.unwrap_or_default();
                 }
                 _ => {}
             }
@@ -305,7 +312,7 @@ impl Layout for VerticalLayout {
     }
 
     fn set_min_height(&mut self, height: f32) {
-        self.constraints.min_height = height;
+        self.constraints.min_height = Some(height);
     }
 
     fn set_min_width(&mut self, width: f32) {
@@ -346,16 +353,21 @@ impl Layout for VerticalLayout {
 
         match self.intrinsic_size.height {
             BoxSizing::Fixed(height) => {
-                self.constraints.min_height = height;
+                self.constraints.min_height = Some(height);
             }
             BoxSizing::Flex(_) | BoxSizing::Shrink => {
-                self.constraints.min_height = child_constraint_sum.height;
+                let min_height = self
+                    .constraints
+                    .min_height
+                    .unwrap_or_default()
+                    .max(child_constraint_sum.height);
+                self.constraints.min_height = Some(min_height);
             }
         }
 
         (
             self.constraints.min_width.unwrap_or_default(),
-            self.constraints.min_height,
+            self.constraints.min_height.unwrap_or_default(),
         )
     }
 
@@ -376,7 +388,7 @@ impl Layout for VerticalLayout {
         let mut available_height;
         match self.intrinsic_size.height {
             BoxSizing::Shrink => {
-                available_height = self.constraints.min_height;
+                available_height = self.constraints.min_height.unwrap_or_default();
                 available_height -= self.fixed_size_sum().height;
             }
             BoxSizing::Fixed(_) | BoxSizing::Flex(_) => {
@@ -450,7 +462,7 @@ impl Layout for VerticalLayout {
                 self.size.height = self.constraints.max_height;
             }
             BoxSizing::Shrink => {
-                self.size.height = self.constraints.min_height;
+                self.size.height = self.constraints.min_height.unwrap_or_default();
             }
             BoxSizing::Fixed(height) => {
                 self.size.height = height;
@@ -536,6 +548,14 @@ mod test {
     }
 
     #[test]
+    fn min_height_larger_than_content_width() {
+        let child = EmptyLayout::default().intrinsic_size(IntrinsicSize::fixed(20.0, 20.0));
+        let mut layout = VerticalLayout::from([child]).min_height(200.0);
+        let (_, height) = layout.solve_min_constraints();
+        assert_eq!(height, 200.0);
+    }
+
+    #[test]
     fn min_width_smaller_than_content_width() {
         let child = EmptyLayout::default().intrinsic_size(IntrinsicSize::fixed(20.0, 20.0));
 
@@ -543,6 +563,14 @@ mod test {
 
         let (width, _) = layout.solve_min_constraints();
         assert_eq!(width, 20.0);
+    }
+
+    #[test]
+    fn min_height_smaller_than_content_width() {
+        let child = EmptyLayout::default().intrinsic_size(IntrinsicSize::fixed(20.0, 20.0));
+        let mut layout = VerticalLayout::from([child]).min_height(5.0);
+        let (_, height) = layout.solve_min_constraints();
+        assert_eq!(height, 20.0);
     }
 
     #[test]
@@ -593,7 +621,10 @@ mod test {
         let mut min_height = heights.iter().sum::<f32>();
         min_height += space_between;
         min_height += padding.vertical_sum();
-        assert_eq!(layout.constraints.min_height, min_height);
+        assert_eq!(
+            layout.constraints.min_height.unwrap_or_default(),
+            min_height
+        );
     }
 
     #[test]

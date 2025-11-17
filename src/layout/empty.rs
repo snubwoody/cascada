@@ -44,12 +44,12 @@ impl Layout for EmptyLayout {
         }
 
         if let BoxSizing::Fixed(height) = self.intrinsic_size.height {
-            self.constraints.min_height = height;
+            self.constraints.min_height = Some(height);
         }
 
         (
             self.constraints.min_width.unwrap_or_default(),
-            self.constraints.min_height,
+            self.constraints.min_height.unwrap_or_default(),
         )
     }
 
@@ -76,7 +76,7 @@ impl Layout for EmptyLayout {
                 self.size.height = self.constraints.max_height;
             }
             BoxSizing::Shrink => {
-                self.size.height = self.constraints.min_height;
+                self.size.height = self.constraints.min_height.unwrap_or_default();
             }
             BoxSizing::Fixed(height) => {
                 self.size.height = height;
@@ -125,7 +125,7 @@ impl Layout for EmptyLayout {
     }
 
     fn set_min_height(&mut self, height: f32) {
-        self.constraints.min_height = height;
+        self.constraints.min_height = Some(height);
     }
 
     fn set_position(&mut self, position: Position) {
@@ -177,6 +177,13 @@ mod test {
         let mut root = EmptyLayout::new().min_width(20.0);
         let (width, _) = root.solve_min_constraints();
         assert_eq!(width, 20.0);
+    }
+
+    #[test]
+    fn min_height() {
+        let mut root = EmptyLayout::new().min_height(20.0);
+        let (_, height) = root.solve_min_constraints();
+        assert_eq!(height, 20.0);
     }
 
     #[test]

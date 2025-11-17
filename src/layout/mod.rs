@@ -1,3 +1,14 @@
+//! The layout engine using [`IntrinsicSize`] and [`BoxConstraints`] to calculate the final
+//! size and position of the layout nodes.
+//!
+//! If the intrinsic width is set to [`BoxSizing::Shrink`] then the final width will be
+//! the minimum width.
+//!
+//! If the intrinsic width is set to [`BoxSizing::Shrink`] then the final width will be
+//! the maximum width.
+//!
+//! If the intrinsic width is set to [`BoxSizing::Fixed`] then the final width will be
+//! that value regardless of any other factors.
 use crate::{
     Bounds, BoxConstraints, BoxSizing, GlobalId, IntrinsicSize, LayoutError, Position, Size,
 };
