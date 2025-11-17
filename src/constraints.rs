@@ -22,7 +22,7 @@ pub struct BoxConstraints {
     /// The maximum possible height.
     pub max_height: f32,
     /// The minimum possible height.
-    pub min_height: f32,
+    pub min_height: Option<f32>,
     /// The minimum possible width.
     pub min_width: Option<f32>,
 }
@@ -33,7 +33,7 @@ impl BoxConstraints {
         Self {
             max_height: 0.0,
             max_width: None,
-            min_height: 0.0,
+            min_height: None,
             min_width: None,
         }
     }

@@ -191,7 +191,7 @@ impl Layout for BlockLayout {
     }
 
     fn set_min_height(&mut self, height: f32) {
-        self.constraints.min_height = height;
+        self.constraints.min_height = Some(height);
     }
 
     fn set_min_width(&mut self, width: f32) {
@@ -210,7 +210,7 @@ impl Layout for BlockLayout {
     }
 
     fn solve_min_constraints(&mut self) -> (f32, f32) {
-        let (content_width, min_height) = self.child.solve_min_constraints();
+        let (content_width, content_height) = self.child.solve_min_constraints();
         // Set our min constraints to child + padding if intrinsic size
         // is not fixed.
         // If intrinsic size is fixed then set min constraints to fixed
@@ -225,14 +225,15 @@ impl Layout for BlockLayout {
 
         match self.intrinsic_size.height {
             BoxSizing::Flex(_) | BoxSizing::Shrink => {
-                self.constraints.min_height = self.padding.top + self.padding.bottom + min_height;
+                let min_height = content_height.max(self.constraints.min_height.unwrap_or_default());
+                self.constraints.min_height = Some(self.padding.top + self.padding.bottom + min_height);
             }
-            BoxSizing::Fixed(height) => self.constraints.min_height = height,
+            BoxSizing::Fixed(height) => self.constraints.min_height = Some(height),
         }
 
         (
             self.constraints.min_width.unwrap_or_default(),
-            self.constraints.min_height,
+            self.constraints.min_height.unwrap_or_default(),
         )
     }
 
@@ -288,7 +289,7 @@ impl Layout for BlockLayout {
                 self.size.height = self.constraints.max_height;
             }
             BoxSizing::Shrink => {
-                self.size.height = self.constraints.min_height;
+                self.size.height = self.constraints.min_height.unwrap_or_default();
             }
             BoxSizing::Fixed(height) => {
                 self.size.height = height;
@@ -393,7 +394,7 @@ mod test {
         layout.solve_min_constraints();
 
         assert_eq!(layout.constraints.min_width.unwrap_or_default(), 20.0);
-        assert_eq!(layout.constraints.min_height, 500.0);
+        assert_eq!(layout.constraints.min_height.unwrap_or_default(), 500.0);
     }
 
     #[test]
@@ -406,7 +407,7 @@ mod test {
         layout.padding = Padding::all(24.0);
 
         assert_eq!(layout.constraints.min_width.unwrap_or_default(), 20.0);
-        assert_eq!(layout.constraints.min_height, 500.0);
+        assert_eq!(layout.constraints.min_height.unwrap_or_default(), 500.0);
     }
 
     #[test]
@@ -417,7 +418,7 @@ mod test {
         layout.solve_min_constraints();
 
         assert_eq!(layout.constraints.min_width.unwrap_or_default(), 20.0);
-        assert_eq!(layout.constraints.min_height, 20.0);
+        assert_eq!(layout.constraints.min_height.unwrap_or_default(), 20.0);
     }
 
     #[test]
@@ -432,7 +433,7 @@ mod test {
             layout.constraints.min_width.unwrap_or_default(),
             20.0 + 10.0 + 15.0
         );
-        assert_eq!(layout.constraints.min_height, 20.0 + 93.0 + 53.0);
+        assert_eq!(layout.constraints.min_height.unwrap_or_default(), 20.0 + 93.0 + 53.0);
     }
 
     #[test]
