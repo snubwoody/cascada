@@ -239,7 +239,7 @@ impl Layout for BlockLayout {
         )
     }
 
-    fn solve_max_constraints(&mut self, _: Size) {
+    fn solve_max_constraints(&mut self) {
         let mut available_space = Size::new(
             self.constraints.max_width.unwrap_or_default(),
             self.constraints.max_height,
@@ -270,7 +270,7 @@ impl Layout for BlockLayout {
             BoxSizing::Shrink => {}
         }
 
-        self.child.solve_max_constraints(available_space);
+        self.child.solve_max_constraints();
     }
 
     fn update_size(&mut self) {
@@ -407,7 +407,7 @@ mod test {
         let layout = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(20.25, 0.5));
 
         let mut layout = BlockLayout::new(layout);
-        layout.solve_max_constraints(Size::new(100.0, 200.0));
+        layout.solve_max_constraints();
         assert_eq!(layout.child.constraints().max_width.unwrap(), 20.25);
         assert_eq!(layout.child.constraints().max_height, 0.5);
     }
@@ -598,13 +598,12 @@ mod test {
 
     #[test]
     fn respect_child_max_width() {
-        let window = Size::new(800.0, 800.0);
         let child = EmptyLayout::new()
             .max_width(20.0)
             .intrinsic_size(IntrinsicSize::fill());
 
         let mut root = BlockLayout::new(child);
-        root.solve_max_constraints(window);
+        root.solve_max_constraints();
 
         assert_eq!(root.child.constraints().max_width.unwrap(), 20.0);
     }

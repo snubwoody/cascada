@@ -363,7 +363,7 @@ impl Layout for HorizontalLayout {
         )
     }
 
-    fn solve_max_constraints(&mut self, _space: Size) {
+    fn solve_max_constraints(&mut self) {
         // Sum up all the flex factors
         // TODO: subtract max size from available width?
 
@@ -427,7 +427,7 @@ impl Layout for HorizontalLayout {
                 height: child.constraints().max_height,
             };
 
-            child.solve_max_constraints(space);
+            child.solve_max_constraints();
         }
     }
 
@@ -556,7 +556,7 @@ mod test {
 
         let mut layout = HorizontalLayout::new().add_child(child);
 
-        layout.solve_max_constraints(Size::unit(1000.0));
+        layout.solve_max_constraints();
         assert_eq!(layout.children[0].constraints().max_width.unwrap(), 200.0);
     }
 
