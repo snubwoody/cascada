@@ -421,12 +421,6 @@ impl Layout for HorizontalLayout {
                 }
             }
 
-            // Pass the max size to the children to solve their max constraints
-            let space = Size {
-                width: child.constraints().max_width.unwrap_or_default(),
-                height: child.constraints().max_height,
-            };
-
             child.solve_max_constraints();
         }
     }
