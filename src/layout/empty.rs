@@ -178,7 +178,7 @@ mod test {
         let (width, _) = root.solve_min_constraints();
         assert_eq!(width, 20.0);
     }
-    
+
     #[test]
     fn min_height() {
         let mut root = EmptyLayout::new().min_height(20.0);

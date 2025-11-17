@@ -511,13 +511,29 @@ mod test {
     }
 
     #[test]
-    fn min_width_smaller_than_content_width() {
+    fn min_height_larger_than_content_width() {
         let child = EmptyLayout::default().intrinsic_size(IntrinsicSize::fixed(20.0, 20.0));
 
-        let mut layout = HorizontalLayout::from([child]).min_width(5.0);
+        let mut layout = HorizontalLayout::from([child]).min_height(200.0);
 
+        let (_, height) = layout.solve_min_constraints();
+        assert_eq!(height, 200.0);
+    }
+
+    #[test]
+    fn min_width_smaller_than_content_width() {
+        let child = EmptyLayout::default().intrinsic_size(IntrinsicSize::fixed(20.0, 20.0));
+        let mut layout = HorizontalLayout::from([child]).min_width(5.0);
         let (width, _) = layout.solve_min_constraints();
         assert_eq!(width, 20.0);
+    }
+
+    #[test]
+    fn min_height_smaller_than_content_width() {
+        let child = EmptyLayout::default().intrinsic_size(IntrinsicSize::fixed(20.0, 20.0));
+        let mut layout = HorizontalLayout::from([child]).min_height(5.0);
+        let (_, height) = layout.solve_min_constraints();
+        assert_eq!(height, 20.0);
     }
 
     #[test]
@@ -599,7 +615,10 @@ mod test {
             .max_by(|x, y| x.partial_cmp(y).unwrap())
             .unwrap();
         max_height += padding.vertical_sum();
-        assert_eq!(layout.constraints.min_height.unwrap_or_default(), max_height);
+        assert_eq!(
+            layout.constraints.min_height.unwrap_or_default(),
+            max_height
+        );
     }
 
     #[test]

@@ -225,8 +225,10 @@ impl Layout for BlockLayout {
 
         match self.intrinsic_size.height {
             BoxSizing::Flex(_) | BoxSizing::Shrink => {
-                let min_height = content_height.max(self.constraints.min_height.unwrap_or_default());
-                self.constraints.min_height = Some(self.padding.top + self.padding.bottom + min_height);
+                let min_height =
+                    content_height.max(self.constraints.min_height.unwrap_or_default());
+                self.constraints.min_height =
+                    Some(self.padding.top + self.padding.bottom + min_height);
             }
             BoxSizing::Fixed(height) => self.constraints.min_height = Some(height),
         }
@@ -457,7 +459,10 @@ mod test {
             layout.constraints.min_width.unwrap_or_default(),
             20.0 + 10.0 + 15.0
         );
-        assert_eq!(layout.constraints.min_height.unwrap_or_default(), 20.0 + 93.0 + 53.0);
+        assert_eq!(
+            layout.constraints.min_height.unwrap_or_default(),
+            20.0 + 93.0 + 53.0
+        );
     }
 
     #[test]
