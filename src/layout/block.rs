@@ -72,6 +72,7 @@ impl BlockLayout {
         }
     }
 
+    /// Returns a reference to the child layout.
     pub fn child(&self) -> &dyn Layout {
         self.child.as_ref()
     }
@@ -183,7 +184,7 @@ impl Layout for BlockLayout {
     }
 
     fn set_max_height(&mut self, height: f32) {
-        self.constraints.max_height = height;
+        self.constraints.max_height = Some(height);
     }
 
     fn set_max_width(&mut self, width: f32) {
@@ -242,7 +243,7 @@ impl Layout for BlockLayout {
     fn solve_max_constraints(&mut self, _: Size) {
         let mut available_space = Size::new(
             self.constraints.max_width.unwrap_or_default(),
-            self.constraints.max_height,
+            self.constraints.max_height.unwrap_or_default(),
         );
         available_space.width -= self.padding.horizontal_sum();
         available_space.height -= self.padding.vertical_sum();
@@ -288,7 +289,7 @@ impl Layout for BlockLayout {
 
         match self.intrinsic_size.height {
             BoxSizing::Flex(_) => {
-                self.size.height = self.constraints.max_height;
+                self.size.height = self.constraints.max_height.unwrap_or_default();
             }
             BoxSizing::Shrink => {
                 self.size.height = self.constraints.min_height.unwrap_or_default();
@@ -388,7 +389,7 @@ mod test {
         let mut layout = BlockLayout::new(layout);
         solve_layout(&mut layout, Size::new(100.0, 200.0));
         assert_eq!(layout.child.constraints().max_width.unwrap(), 100.0);
-        assert_eq!(layout.child.constraints().max_height, 200.0);
+        assert_eq!(layout.child.constraints().max_height.unwrap_or_default(), 200.0);
     }
 
     #[test]
@@ -399,7 +400,7 @@ mod test {
         layout.padding = Padding::new(10.0, 15.0, 20.0, 25.0);
         solve_layout(&mut layout, Size::new(100.0, 200.0));
         assert_eq!(layout.child.constraints().max_width.unwrap(), 100.0 - 25.0);
-        assert_eq!(layout.child.constraints().max_height, 200.0 - 45.0);
+        assert_eq!(layout.child.constraints().max_height.unwrap_or_default(), 200.0 - 45.0);
     }
 
     #[test]
@@ -409,7 +410,7 @@ mod test {
         let mut layout = BlockLayout::new(layout);
         layout.solve_max_constraints(Size::new(100.0, 200.0));
         assert_eq!(layout.child.constraints().max_width.unwrap(), 20.25);
-        assert_eq!(layout.child.constraints().max_height, 0.5);
+        assert_eq!(layout.child.constraints().max_height.unwrap_or_default(), 0.5);
     }
 
     #[test]
