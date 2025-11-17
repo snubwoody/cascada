@@ -332,9 +332,15 @@ mod test {
     #[test]
     fn min_width() {
         let mut layout = BlockLayout::default().min_width(200.0);
-
         let (width, _) = layout.solve_min_constraints();
         assert_eq!(width, 200.0);
+    }
+
+    #[test]
+    fn min_height() {
+        let mut layout = BlockLayout::default().min_height(200.0);
+        let (_, height) = layout.solve_min_constraints();
+        assert_eq!(height, 200.0);
     }
 
     #[test]
@@ -347,12 +353,30 @@ mod test {
     }
 
     #[test]
+    fn min_height_smaller_than_content_width() {
+        let child = EmptyLayout::default().intrinsic_size(IntrinsicSize::fixed(500.0, 500.0));
+        let mut layout = BlockLayout::new(child).min_height(200.0);
+
+        let (_, height) = layout.solve_min_constraints();
+        assert_eq!(height, 500.0);
+    }
+
+    #[test]
     fn min_width_larger_than_content_width() {
         let child = EmptyLayout::default().intrinsic_size(IntrinsicSize::fixed(500.0, 500.0));
         let mut layout = BlockLayout::new(child).min_width(800.0);
 
         let (width, _) = layout.solve_min_constraints();
         assert_eq!(width, 800.0);
+    }
+
+    #[test]
+    fn min_height_larger_than_content_width() {
+        let child = EmptyLayout::default().intrinsic_size(IntrinsicSize::fixed(500.0, 500.0));
+        let mut layout = BlockLayout::new(child).min_height(800.0);
+
+        let (_, height) = layout.solve_min_constraints();
+        assert_eq!(height, 800.0);
     }
 
     #[test]

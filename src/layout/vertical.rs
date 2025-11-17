@@ -26,6 +26,13 @@ use crate::{
 /// solve_layout(&mut layout, Size::unit(500.0));
 /// ```
 ///
+/// ## Algorithm
+///
+/// - [BoxSizing::Shrink]: The minimum width is set to the sum of the minimum widths 
+/// of all the children + spacing + horizontal padding.
+/// - [BoxSizing::Fixed]: The minimum width is set to the fixed width regardless of all 
+/// other properties.
+/// 
 /// If the intrinsic height is [`BoxSizing::Shrink`] then the final height
 /// will be the sum of the all child node heights + vertical padding + spacing.
 #[derive(Default, Debug)]

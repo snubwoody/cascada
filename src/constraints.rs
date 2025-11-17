@@ -141,9 +141,15 @@ macro_rules! impl_constraints {
             self
         }
 
-        /// Sets the maximum width of the layout node.
+        /// Sets the minimum width of the layout node.
         pub fn min_width(mut self, width: f32) -> Self {
             self.constraints.min_width = Some(width);
+            self
+        }
+
+        /// Sets the minimum height of the layout node.
+        pub fn min_height(mut self, height: f32) -> Self {
+            self.constraints.min_height = Some(height);
             self
         }
 
