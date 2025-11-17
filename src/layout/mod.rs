@@ -63,7 +63,7 @@ pub fn solve_layout(root: &mut dyn Layout, window_size: Size) -> Vec<LayoutError
     // It's important that the min constraints are solved before the max constraints
     // because the min constraints are used in calculating max constraints.
     let _ = root.solve_min_constraints();
-    root.solve_max_constraints(window_size);
+    root.solve_max_constraints();
     root.update_size();
     root.position_children();
 
@@ -78,7 +78,7 @@ pub trait Layout: Debug + private::Sealed {
     fn solve_min_constraints(&mut self) -> (f32, f32);
 
     /// Solve the max constraints for the children and pass them down the tree
-    fn solve_max_constraints(&mut self, space: Size);
+    fn solve_max_constraints(&mut self);
 
     /// Position the layout nodes after size calculations.
     fn position_children(&mut self);

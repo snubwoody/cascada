@@ -54,7 +54,7 @@ impl Layout for EmptyLayout {
     }
 
     // No children to solve for
-    fn solve_max_constraints(&mut self, _: Size) {}
+    fn solve_max_constraints(&mut self) {}
 
     fn position_children(&mut self) {}
 

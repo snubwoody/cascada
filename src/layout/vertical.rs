@@ -371,7 +371,7 @@ impl Layout for VerticalLayout {
         )
     }
 
-    fn solve_max_constraints(&mut self, _space: Size) {
+    fn solve_max_constraints(&mut self) {
         // Sum up all the flex factors
         let flex_total: u32 = self
             .children
@@ -440,7 +440,7 @@ impl Layout for VerticalLayout {
                 BoxSizing::Shrink => {}
             }
 
-            child.solve_max_constraints(Size::default());
+            child.solve_max_constraints();
         }
     }
 
