@@ -108,7 +108,11 @@ use std::sync::atomic::{AtomicU32, Ordering};
 
 static COUNTER: AtomicU32 = AtomicU32::new(0);
 
+// TODO: feature gate repr(C)?
+
 /// A global unique identifier.
+///
+/// This uses an atomic counter so it thread safe.
 #[derive(Copy, Clone, PartialOrd, PartialEq, Eq, Debug, Ord, Hash)]
 #[cfg_attr(feature = "ffi", repr(C))]
 pub struct GlobalId(u32);
@@ -117,6 +121,11 @@ impl GlobalId {
     /// Creates a new [`GlobalId`].
     pub fn new() -> Self {
         Self(COUNTER.fetch_add(1, Ordering::Relaxed))
+    }
+
+    /// Get the inner value.
+    pub fn inner(&self) -> u32 {
+        self.0
     }
 }
 
@@ -145,6 +154,7 @@ pub enum AxisAlignment {
     End = 2,
 }
 
+// TODO: add diagram?
 /// The space between the edges of a [`Layout`] node and its content.
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug)]
 #[repr(C)]
@@ -163,7 +173,7 @@ impl Padding {
     /// Creates a new [`Padding`].
     ///
     /// # Panics
-    /// Panics if sides are negative.
+    /// Panics if any of the sides are negative.
     pub const fn new(left: f32, right: f32, top: f32, bottom: f32) -> Self {
         assert!(
             left >= 0.0 && right >= 0.0 && top >= 0.0 && bottom >= 0.0,
@@ -198,7 +208,7 @@ impl Padding {
         Self::new(horizontal, horizontal, vertical, vertical)
     }
 
-    /// Creates a [`Padding`] with equal sides.
+    /// Creates a [`Padding`] where all the sides are the same value.
     ///
     /// # Example
     /// ```
@@ -207,8 +217,9 @@ impl Padding {
     /// let padding = Padding::all(20.0);
     ///
     /// assert_eq!(padding.left,20.0);
-    /// assert_eq!(padding.left,padding.right);
-    /// assert_eq!(padding.bottom,padding.top);
+    /// assert_eq!(padding.right,20.0);
+    /// assert_eq!(padding.bottom,20.0);
+    /// assert_eq!(padding.top,20.0);
     /// ```
     ///
     /// # Panics

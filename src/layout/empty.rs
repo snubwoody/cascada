@@ -73,7 +73,7 @@ impl Layout for EmptyLayout {
 
         match self.intrinsic_size.height {
             BoxSizing::Flex(_) => {
-                self.size.height = self.constraints.max_height;
+                self.size.height = self.constraints.max_height.unwrap_or_default();
             }
             BoxSizing::Shrink => {
                 self.size.height = self.constraints.min_height.unwrap_or_default();
@@ -117,7 +117,7 @@ impl Layout for EmptyLayout {
     }
 
     fn set_max_height(&mut self, height: f32) {
-        self.constraints.max_height = height;
+        self.constraints.max_height = Some(height);
     }
 
     fn set_min_width(&mut self, width: f32) {

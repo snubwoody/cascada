@@ -20,7 +20,7 @@ pub struct BoxConstraints {
     /// The maximum possible width.
     pub max_width: Option<f32>,
     /// The maximum possible height.
-    pub max_height: f32,
+    pub max_height: Option<f32>,
     /// The minimum possible height.
     pub min_height: Option<f32>,
     /// The minimum possible width.
@@ -31,7 +31,7 @@ impl BoxConstraints {
     /// Create new [`BoxConstraints`].
     pub const fn new() -> Self {
         Self {
-            max_height: 0.0,
+            max_height: None,
             max_width: None,
             min_height: None,
             min_width: None,

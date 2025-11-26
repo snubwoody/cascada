@@ -297,7 +297,7 @@ impl Layout for HorizontalLayout {
     }
 
     fn set_max_height(&mut self, height: f32) {
-        self.constraints.max_height = height;
+        self.constraints.max_height = Some(height);
     }
 
     fn set_max_width(&mut self, width: f32) {
@@ -373,7 +373,7 @@ impl Layout for HorizontalLayout {
         match self.intrinsic_size.height {
             BoxSizing::Shrink => available_height = self.constraints.min_height.unwrap_or_default(),
             BoxSizing::Fixed(_) | BoxSizing::Flex(_) => {
-                available_height = self.constraints.max_height;
+                available_height = self.constraints.max_height.unwrap_or_default();
                 available_height -= self.padding.vertical_sum();
             }
         }
@@ -440,7 +440,7 @@ impl Layout for HorizontalLayout {
 
         match self.intrinsic_size.height {
             BoxSizing::Flex(_) => {
-                self.size.height = self.constraints.max_height;
+                self.size.height = self.constraints.max_height.unwrap_or_default();
             }
             BoxSizing::Shrink => {
                 self.size.height = self.constraints.min_height.unwrap_or_default();
