@@ -389,7 +389,10 @@ mod test {
         let mut layout = BlockLayout::new(layout);
         solve_layout(&mut layout, Size::new(100.0, 200.0));
         assert_eq!(layout.child.constraints().max_width.unwrap(), 100.0);
-        assert_eq!(layout.child.constraints().max_height.unwrap_or_default(), 200.0);
+        assert_eq!(
+            layout.child.constraints().max_height.unwrap_or_default(),
+            200.0
+        );
     }
 
     #[test]
@@ -400,7 +403,10 @@ mod test {
         layout.padding = Padding::new(10.0, 15.0, 20.0, 25.0);
         solve_layout(&mut layout, Size::new(100.0, 200.0));
         assert_eq!(layout.child.constraints().max_width.unwrap(), 100.0 - 25.0);
-        assert_eq!(layout.child.constraints().max_height.unwrap_or_default(), 200.0 - 45.0);
+        assert_eq!(
+            layout.child.constraints().max_height.unwrap_or_default(),
+            200.0 - 45.0
+        );
     }
 
     #[test]
@@ -410,7 +416,10 @@ mod test {
         let mut layout = BlockLayout::new(layout);
         layout.solve_max_constraints();
         assert_eq!(layout.child.constraints().max_width.unwrap(), 20.25);
-        assert_eq!(layout.child.constraints().max_height.unwrap_or_default(), 0.5);
+        assert_eq!(
+            layout.child.constraints().max_height.unwrap_or_default(),
+            0.5
+        );
     }
 
     #[test]

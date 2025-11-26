@@ -111,7 +111,7 @@ static COUNTER: AtomicU32 = AtomicU32::new(0);
 // TODO: feature gate repr(C)?
 
 /// A global unique identifier.
-/// 
+///
 /// This uses an atomic counter so it thread safe.
 #[derive(Copy, Clone, PartialOrd, PartialEq, Eq, Debug, Ord, Hash)]
 #[cfg_attr(feature = "ffi", repr(C))]
@@ -122,7 +122,7 @@ impl GlobalId {
     pub fn new() -> Self {
         Self(COUNTER.fetch_add(1, Ordering::Relaxed))
     }
-    
+
     /// Get the inner value.
     pub fn inner(&self) -> u32 {
         self.0
