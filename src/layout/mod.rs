@@ -1,14 +1,52 @@
 //! The layout engine uses [`IntrinsicSize`] and [`BoxConstraints`] to calculate the final
-//! size and position of the layout nodes.
+//! size and position of the layout nodes. The core idea of the layout engine is that there are
+//! only three different sizes that a
+//! [`Layout`] node will want to be:
 //!
-//! If the intrinsic width is set to [`BoxSizing::Shrink`] then the final width will be
-//! the minimum width.
+//! - A fixed size e.g. `500px`.
+//! - As large as possible (usually this means filling the parent).
+//! - As small as possible (usually this means fitting the children).
 //!
-//! If the intrinsic width is set to [`BoxSizing::Shrink`] then the final width will be
-//! the maximum width.
+//! These are represented by [`BoxSizing`]:
 //!
-//! If the intrinsic width is set to [`BoxSizing::Fixed`] then the final width will be
-//! that value regardless of any other factors.
+//! - [`BoxSizing::Fixed`]: Fixed width or height.
+//! - [`BoxSizing::Flex`]: Fill the available space.
+//! - [`BoxSizing::Shrink`]: Be as small as possible.
+//!
+//! Thus [`IntrinsicSize`] size describes the preferred width and height of a layout
+//! node.
+//!
+//! ```
+//! use cascada::{IntrinsicSize,BoxSizing};
+//!
+//! let intrinsic_size = IntrinsicSize{
+//!     width: BoxSizing::Shrink,
+//!     height: BoxSizing::Flex(1),
+//! };
+//! ```
+//!
+//! The final width and height are dependent on the all the other factors in the layout tree.
+//! For example, if two nodes in a [`HorizontalLayout`] both want to fill the parents width
+//! then they will each have half the available width.
+//!
+//!```
+//! use cascada::{HorizontalLayout, EmptyLayout, IntrinsicSize, solve_layout, Size, Layout};
+//!
+//! let child = EmptyLayout::new()
+//!    .intrinsic_size(IntrinsicSize::fill());
+//!
+//! let mut layout = HorizontalLayout::from([child.clone(),child])
+//!    .intrinsic_size(IntrinsicSize::fill());
+//!
+//! solve_layout(&mut layout,Size::unit(200.0));
+//!
+//! assert_eq!(layout.children()[0].size().width,100.0);
+//! assert_eq!(layout.children()[1].size().width,100.0);
+//!```
+//!
+//! ## Padding
+//!
+//! Padding is the space between the edges of a layout node and its contents. 
 use crate::{
     Bounds, BoxConstraints, BoxSizing, GlobalId, IntrinsicSize, LayoutError, Position, Size,
 };

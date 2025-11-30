@@ -2,7 +2,7 @@
 
 All notable changes to agape will be documented in this file.
 
-## (unreleased)
+## 0.3.0 (unreleased)
 - Added `debug_tree` method.
 - Added max width constraint.
 - Added max height constraint.

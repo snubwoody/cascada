@@ -3,6 +3,8 @@ use crate::{
     BoxConstraints, BoxSizing, GlobalId, IntrinsicSize, Layout, LayoutIter, Position, Size,
 };
 
+use super::HorizontalLayout;
+
 /// An empty [`Layout`] with no child notes.
 #[derive(Debug, Default, Clone, PartialEq, PartialOrd)]
 pub struct EmptyLayout {

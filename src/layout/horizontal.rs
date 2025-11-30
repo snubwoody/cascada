@@ -492,21 +492,6 @@ mod test {
     use crate::{EmptyLayout, solve_layout};
 
     #[test]
-    fn flex_take_up_rest_space() {
-        let child = EmptyLayout::default().intrinsic_size(IntrinsicSize::fill());
-        let child2 = EmptyLayout::default()
-            .max_width(250.0)
-            .intrinsic_size(IntrinsicSize::fill());
-
-        // TODO: should be 50
-        let mut layout = HorizontalLayout::from([child, child2])
-            .min_width(600.0);
-        layout.solve_max_constraints();
-
-        // dbg!(&layout.children);
-    }
-
-    #[test]
     fn min_width_larger_than_content_width() {
         let child = EmptyLayout::default().intrinsic_size(IntrinsicSize::fixed(20.0, 20.0));
 
