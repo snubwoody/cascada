@@ -65,7 +65,7 @@ impl HorizontalLayout {
         self
     }
 
-    /// Add multiple child nodes to the list of children.
+    /// Appends multiple child nodes to the list of children.
     ///
     /// # Example
     /// ```
@@ -366,30 +366,25 @@ impl Layout for HorizontalLayout {
     fn solve_max_constraints(&mut self) {
         // Sum up all the flex factors
         // TODO: subtract max size from available width?
-
         let flex_total = self.flex_total();
 
-        let mut available_height;
-        match self.intrinsic_size.height {
-            BoxSizing::Shrink => available_height = self.constraints.min_height.unwrap_or_default(),
+        let available_height = match self.intrinsic_size.height {
+            BoxSizing::Shrink => self.constraints.min_height.unwrap_or_default(),
             BoxSizing::Fixed(_) | BoxSizing::Flex(_) => {
-                available_height = self.constraints.max_height.unwrap_or_default();
-                available_height -= self.padding.vertical_sum();
+                self.constraints.max_height.unwrap_or_default() - self.padding.vertical_sum()
             }
-        }
+        };
 
-        let mut available_width;
-        match self.intrinsic_size.width {
+        let available_width = match self.intrinsic_size.width {
             BoxSizing::Shrink => {
-                available_width = self.constraints.min_width.unwrap_or_default();
-                available_width -= self.fixed_size_sum().width;
+                self.constraints.min_width.unwrap_or_default() - self.fixed_size_sum().width
             }
             BoxSizing::Fixed(_) | BoxSizing::Flex(_) => {
-                available_width = self.constraints.max_width.unwrap_or_default();
-                available_width -= self.padding.horizontal_sum();
-                available_width -= self.fixed_size_sum().width;
+                self.constraints.max_width.unwrap_or_default()
+                    - self.padding.horizontal_sum() // Subtract the left and right padding
+                    - self.fixed_size_sum().width // Subtract the width of the fixed nodes
             }
-        }
+        };
 
         for child in &mut self.children {
             if child.constraints().max_width.is_none() {
@@ -409,6 +404,7 @@ impl Layout for HorizontalLayout {
                 }
             }
 
+            // FIXME: Check if max height exists
             match child.get_intrinsic_size().height {
                 BoxSizing::Flex(_) => {
                     child.set_max_height(available_height);
@@ -493,6 +489,20 @@ where
 mod test {
     use super::*;
     use crate::{EmptyLayout, solve_layout};
+
+    #[test]
+    fn flex_take_up_rest_space() {
+        let child = EmptyLayout::default().intrinsic_size(IntrinsicSize::fill());
+        let child2 = EmptyLayout::default()
+            .max_width(250.0)
+            .intrinsic_size(IntrinsicSize::fill());
+
+        // TODO: should be 50
+        let mut layout = HorizontalLayout::from([child, child2]).min_width(300.0);
+        layout.solve_max_constraints();
+
+        dbg!(&layout);
+    }
 
     #[test]
     fn min_width_larger_than_content_width() {

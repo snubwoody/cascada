@@ -5,9 +5,10 @@ All notable changes to agape will be documented in this file.
 ## (unreleased)
 - Added `debug_tree` method.
 - Added max width constraint.
+- Added max height constraint.
 - Added min width constraint.
 - Added min height constraint.
-- Added `BlockLayout::from_boxed`.
+- Added `BlockLayout::from_boxed` constructor.
 - Make `layout` module public.
 
 ## 0.2.0 - 27-10-2025

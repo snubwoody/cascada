@@ -194,6 +194,7 @@ fn redistribute_max_width() {
     let width = 3.0 / 4.0 * window.width;
     assert_eq!(node.children()[0].size().width, 20.0);
     assert_eq!(node.children()[1].size().width, width);
+    panic!()
 }
 
 #[test]

@@ -12,9 +12,6 @@ categories = ["gui"]
 keywords = ["gui", "graphics","ui","layout","engine"]
 exclude = ["benches/*","examples/*"]
 
-[lib]
-crate-type = ["rlib","cdylib"]
-
 [workspace]
 members = ["examples/*"]
 resolver = "3"
