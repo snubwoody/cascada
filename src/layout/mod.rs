@@ -1,4 +1,4 @@
-//! The layout engine using [`IntrinsicSize`] and [`BoxConstraints`] to calculate the final
+//! The layout engine uses [`IntrinsicSize`] and [`BoxConstraints`] to calculate the final
 //! size and position of the layout nodes.
 //!
 //! If the intrinsic width is set to [`BoxSizing::Shrink`] then the final width will be
@@ -27,7 +27,7 @@ pub use vertical::VerticalLayout;
 #[cfg(feature = "ffi")]
 use crate::ffi::LayoutNode;
 
-/// Solve the final size and position of all the layout nodes. The
+/// Calculates the final size and position of all the layout nodes. The
 /// `window_size` is the maximum available space for the root node.
 ///
 /// This function returns any layout errors such as overflow or out of bounds.
@@ -92,19 +92,19 @@ pub trait Layout: Debug + private::Sealed {
     /// Get the `id` of the [`Layout`]
     fn id(&self) -> GlobalId;
 
-    /// Get the [`BoxConstraints`] of the [`Layout`]
+    /// Returns the [`BoxConstraints`] of the [`Layout`].
     fn constraints(&self) -> BoxConstraints;
 
-    /// Get the [`IntrinsicSize`] of the [`Layout`]
+    /// Returns the [`IntrinsicSize`] of the [`Layout`]
     fn get_intrinsic_size(&self) -> IntrinsicSize;
 
-    /// Get the `Size` of the [`Layout`]
+    /// Returns the [`Size`] of the [`Layout`]
     fn size(&self) -> Size;
 
-    /// Get the `Position` of the [`Layout`]
+    /// Returns the [`Position`] of the [`Layout`]
     fn position(&self) -> Position;
 
-    /// Get the `Bounds` of the [`Layout`]
+    /// Returns the [`Bounds`] of the [`Layout`]
     fn bounds(&self) -> Bounds {
         Bounds::new(self.position(), self.size())
     }
@@ -124,10 +124,10 @@ pub trait Layout: Debug + private::Sealed {
     fn set_x(&mut self, x: f32);
     fn set_y(&mut self, y: f32);
 
-    /// Iterate over the layout tree.
+    /// Returns an iterator over the layout tree.
     fn iter(&self) -> LayoutIter<'_>;
 
-    /// Get a [`Layout`] by it's `id`.
+    /// Searches for a [`Layout`] node with a matching [`GlobalId`].
     fn get(&self, id: GlobalId) -> Option<&dyn Layout> {
         self.iter().find(|&layout| layout.id() == id)
     }

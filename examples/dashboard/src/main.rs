@@ -63,6 +63,12 @@ fn section() -> VerticalLayout {
 }
 
 fn main() {
+    // An example of a typical UI dashboard
+    // Page
+    // |-- Navbar
+    // |-- Body
+    //     |-- Sidebar
+    //     |-- Section
     let window_size = Size::unit(1920.0);
 
     let body = HorizontalLayout::new()
