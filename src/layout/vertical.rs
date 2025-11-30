@@ -193,10 +193,10 @@ impl VerticalLayout {
 
     /// Align the children on the main axis in the center
     fn align_main_axis_center(&mut self) {
-        if self.children.is_empty(){
+        if self.children.is_empty() {
             return;
         }
-        
+
         let mut height_sum = self
             .children
             .iter()
