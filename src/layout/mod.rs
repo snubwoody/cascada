@@ -46,7 +46,10 @@
 //!
 //! ## Padding
 //!
-//! Padding is the space between the edges of a layout node and its contents. 
+//! [`Padding`] is the space between the edges of a layout node and its contents. It is
+//! functionally the same as the [`padding`] property in CSS.
+//!
+//! [`padding`]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/padding
 use crate::{
     Bounds, BoxConstraints, BoxSizing, GlobalId, IntrinsicSize, LayoutError, Position, Size,
 };

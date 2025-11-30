@@ -8,10 +8,10 @@
 //! The core of this library is the [`Layout`] trait, which is implemented for different
 //! use cases. There are currently four types of layout nodes:
 //!
-//! - [`EmptyLayout`]
-//! - [`BlockLayout`]
-//! - [`HorizontalLayout`]
-//! - [`VerticalLayout`]
+//! - [`EmptyLayout`]: A layout node with no children.
+//! - [`BlockLayout`]: A layout node with one child.
+//! - [`HorizontalLayout`]: A layout node that arranges its children horizontally.
+//! - [`VerticalLayout`]: A layout node that arranges its children vertically.
 //!
 //! Create a root layout node and pass it into the [`solve_layout`] function with the total
 //! available space.

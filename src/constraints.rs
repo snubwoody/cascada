@@ -14,7 +14,7 @@ pub enum BoxSizing {
     Flex(u32),
 }
 
-/// Describes the maximum and minimum size of a [`Layout`].
+/// Describes the maximum and minimum size of a layout node.
 #[derive(Debug, Clone, Copy, Default, PartialEq, PartialOrd)]
 pub struct BoxConstraints {
     /// The maximum possible width.
