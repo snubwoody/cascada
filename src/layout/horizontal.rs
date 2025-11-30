@@ -241,9 +241,6 @@ impl HorizontalLayout {
 
     /// Sum up all the flex factors
     fn flex_total(&self) -> u32 {
-        // TODO: if max width is set should we exclude
-        // from flex factor?
-
         self.children
             .iter()
             .filter_map(|child| {
