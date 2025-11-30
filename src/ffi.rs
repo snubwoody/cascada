@@ -40,7 +40,6 @@ pub struct IntrinsicValue {
 #[derive(Debug, Clone, Copy, Default)]
 #[repr(C)]
 pub struct LayoutDesc {
-    // TODO: add padding and spacing
     id: GlobalId,
     kind: LayoutKind,
     intrinsic_width: IntrinsicValue,

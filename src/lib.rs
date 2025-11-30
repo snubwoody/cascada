@@ -108,8 +108,6 @@ use std::sync::atomic::{AtomicU32, Ordering};
 
 static COUNTER: AtomicU32 = AtomicU32::new(0);
 
-// TODO: feature gate repr(C)?
-
 /// A global unique identifier.
 ///
 /// This uses an atomic counter so it thread safe.
@@ -154,7 +152,6 @@ pub enum AxisAlignment {
     End = 2,
 }
 
-// TODO: add diagram?
 /// The space between the edges of a [`Layout`] node and its content.
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug)]
 #[repr(C)]

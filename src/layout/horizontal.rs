@@ -498,7 +498,8 @@ mod test {
             .intrinsic_size(IntrinsicSize::fill());
 
         // TODO: should be 50
-        let mut layout = HorizontalLayout::from([child, child2]).min_width(300.0);
+        let mut layout = HorizontalLayout::from([child, child2])
+            .min_width(600.0);
         layout.solve_max_constraints();
 
         dbg!(&layout);
