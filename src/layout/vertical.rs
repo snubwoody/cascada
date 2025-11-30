@@ -193,13 +193,16 @@ impl VerticalLayout {
 
     /// Align the children on the main axis in the center
     fn align_main_axis_center(&mut self) {
+        if self.children.is_empty(){
+            return;
+        }
+        
         let mut height_sum = self
             .children
             .iter()
             .map(|child| child.size().height)
             .sum::<f32>();
 
-        // FIXME: panics with 0 children
         height_sum += (self.spacing * (self.children.len() as u32 - 1)) as f32;
         let mut center_start = self.position.y + (self.size.height - height_sum) / 2.0;
 
@@ -545,6 +548,12 @@ mod test {
 
         let (width, _) = layout.solve_min_constraints();
         assert_eq!(width, 200.0);
+    }
+
+    #[test]
+    fn align_main_axis_center_no_children() {
+        let mut layout = VerticalLayout::new();
+        layout.align_main_axis_center();
     }
 
     #[test]
