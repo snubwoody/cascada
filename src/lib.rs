@@ -4,14 +4,14 @@
 //! want a fast, predictable layout system without the complexity of
 //! implementing their own.
 //!
-//! # Usage
+//! ## Usage
 //! The core of this library is the [`Layout`] trait, which is implemented for different
 //! use cases. There are currently four types of layout nodes:
 //!
-//! - [`EmptyLayout`]
-//! - [`BlockLayout`]
-//! - [`HorizontalLayout`]
-//! - [`VerticalLayout`]
+//! - [`EmptyLayout`]: A layout node with no children.
+//! - [`BlockLayout`]: A layout node with one child.
+//! - [`HorizontalLayout`]: A layout node that arranges its children horizontally.
+//! - [`VerticalLayout`]: A layout node that arranges its children vertically.
 //!
 //! Create a root layout node and pass it into the [`solve_layout`] function with the total
 //! available space.
@@ -64,8 +64,8 @@
 //!
 //! ```
 //! use cascada::{HorizontalLayout, EmptyLayout, solve_layout, IntrinsicSize, Size, Layout, GlobalId};
-//! let id = GlobalId::new();
 //!
+//! let id = GlobalId::new();
 //! let child = EmptyLayout::new()
 //!     .set_id(id)
 //!     .intrinsic_size(IntrinsicSize::fixed(20.0,50.0));
@@ -84,6 +84,13 @@
 //! let child = layout.get(id).unwrap();
 //! assert_eq!(child.size().width,20.0);
 //! ```
+//!
+//! See the [layout] module documentation for more details.
+//!
+//! ## Features flags
+//! - `debug-tools`: Enables the `debug_tree` method.
+//!
+//! [layout]: crate::layout
 #![warn(clippy::suboptimal_flops)]
 #![warn(clippy::suspicious_operation_groupings)]
 #![warn(clippy::imprecise_flops)]
@@ -107,8 +114,6 @@ use std::fmt::Debug;
 use std::sync::atomic::{AtomicU32, Ordering};
 
 static COUNTER: AtomicU32 = AtomicU32::new(0);
-
-// TODO: feature gate repr(C)?
 
 /// A global unique identifier.
 ///
@@ -154,7 +159,6 @@ pub enum AxisAlignment {
     End = 2,
 }
 
-// TODO: add diagram?
 /// The space between the edges of a [`Layout`] node and its content.
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug)]
 #[repr(C)]

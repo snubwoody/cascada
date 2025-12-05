@@ -388,27 +388,23 @@ impl Layout for VerticalLayout {
             })
             .sum();
 
-        let mut available_height;
-        match self.intrinsic_size.height {
+        let mut available_height = match self.intrinsic_size.height {
             BoxSizing::Shrink => {
-                available_height = self.constraints.min_height.unwrap_or_default();
-                available_height -= self.fixed_size_sum().height;
+                self.constraints.min_height.unwrap_or_default() - self.fixed_size_sum().height
             }
             BoxSizing::Fixed(_) | BoxSizing::Flex(_) => {
-                available_height = self.constraints.max_height.unwrap_or_default();
-                available_height -= self.padding.horizontal_sum();
-                available_height -= self.fixed_size_sum().height;
+                self.constraints.max_height.unwrap_or_default()
+                    - self.padding.horizontal_sum()
+                    - self.fixed_size_sum().height
             }
-        }
+        };
 
-        let mut available_width;
-        match self.intrinsic_size.width {
-            BoxSizing::Shrink => available_width = self.constraints.min_width.unwrap_or_default(),
+        let available_width = match self.intrinsic_size.width {
+            BoxSizing::Shrink => self.constraints.min_width.unwrap_or_default(),
             BoxSizing::Fixed(_) | BoxSizing::Flex(_) => {
-                available_width = self.constraints.max_width.unwrap_or_default();
-                available_width -= self.padding.horizontal_sum();
+                self.constraints.max_width.unwrap_or_default() - self.padding.horizontal_sum()
             }
-        }
+        };
 
         if !self.children.is_empty() {
             // Add the spacing between layouts

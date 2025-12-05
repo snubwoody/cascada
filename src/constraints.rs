@@ -14,7 +14,7 @@ pub enum BoxSizing {
     Flex(u32),
 }
 
-/// Describes the maximum and minimum size of a [`Layout`].
+/// Describes the maximum and minimum size of a layout node.
 #[derive(Debug, Clone, Copy, Default, PartialEq, PartialOrd)]
 pub struct BoxConstraints {
     /// The maximum possible width.
@@ -105,7 +105,7 @@ impl IntrinsicSize {
         }
     }
 
-    /// Creates an [`IntrinsicSize`] with a fixed size.
+    /// Creates an [`IntrinsicSize`] with a fixed width and height.
     ///
     /// # Example
     /// ```
@@ -125,6 +125,18 @@ impl IntrinsicSize {
 }
 
 impl From<Size> for IntrinsicSize {
+    /// Converts a [`Size`] into an [`IntrinsicSize`].
+    ///
+    /// # Example
+    /// ```
+    /// use cascada::{Size, IntrinsicSize, BoxSizing};
+    ///
+    /// let size = Size::new(200.0,50.0);
+    /// let intrinsic_size = IntrinsicSize::from(size);
+    ///
+    /// assert_eq!(intrinsic_size.width,BoxSizing::Fixed(200.0));
+    /// assert_eq!(intrinsic_size.height,BoxSizing::Fixed(50.0));
+    /// ```
     fn from(size: Size) -> Self {
         IntrinsicSize {
             width: BoxSizing::Fixed(size.width),
@@ -138,6 +150,12 @@ macro_rules! impl_constraints {
         /// Sets the maximum width of the layout node.
         pub fn max_width(mut self, width: f32) -> Self {
             self.constraints.max_width = Some(width);
+            self
+        }
+
+        /// Sets the maximum height of the layout node.
+        pub fn maximum_height(mut self, height: f32) -> Self {
+            self.constraints.max_height = Some(height);
             self
         }
 
