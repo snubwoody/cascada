@@ -1,17 +1,23 @@
 # Changelog
 
-All notable changes to agape will be documented in this file.
+All notable changes to `cascada` will be documented in this file.
 
 ## 0.3.0 - 04-12-2025
 
+## BREAKING CHANGES!
+
+- The inner type of `BoxSizing::Flex` has changed to `u32` from `u8` [(#32)](https://github.com/snubwoody/cascada/pull/32).
+
 ## New features
 
-- Added `debug_tree` method.
-- Added custom layout constraints.
+- Added `debug_tree` method to `Layout` trait, used for debugging the current state of the layout tree.
+- Added support for setting custom layout constraints.
   - Added max width constraint [(#29)](https://github.com/snubwoody/cascada/pull/29).
   - Added max height constraint [(#43)](https://github.com/snubwoody/cascada/pull/43).
   - Added min width constraint [(#31)](https://github.com/snubwoody/cascada/pull/31).
   - Added min height constraint [(#41)](https://github.com/snubwoody/cascada/pull/41).
+- `HorizontalLayout` and `VerticalLayout` now have constructors for `IntoIterator`
+- Added `IntoIterator` constructors to `HorizontalLayout` and `VerticalLayout` [(#30)](https://github.com/snubwoody/cascada/pull/30)
 
 ## Improvements
 
