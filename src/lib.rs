@@ -118,7 +118,7 @@ static COUNTER: AtomicU32 = AtomicU32::new(0);
 ///
 /// This uses an atomic counter so it thread safe.
 #[derive(Copy, Clone, PartialOrd, PartialEq, Eq, Debug, Ord, Hash)]
-#[cfg_attr(feature = "ffi",repr(C))]
+#[cfg_attr(feature = "ffi", repr(C))]
 pub struct GlobalId(u32);
 
 impl GlobalId {
@@ -160,7 +160,7 @@ pub enum AxisAlignment {
 
 /// The space between the edges of a [`Layout`] node and its content.
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug)]
-#[cfg_attr(feature = "ffi",repr(C))]
+#[cfg_attr(feature = "ffi", repr(C))]
 pub struct Padding {
     /// The left padding.
     pub left: f32,
