@@ -20,10 +20,9 @@ resolver = "3"
 edition = "2024"
 
 [workspace.dependencies]
-cascada = {path = ".",features = ["debug-tools"]}
+cascada = {path = "." }
 
 [features]
-debug-tools = []
 ffi = []
 
 [dev-dependencies]
