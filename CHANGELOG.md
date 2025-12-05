@@ -6,30 +6,22 @@ All notable changes to `cascada` will be documented in this file.
 
 ## BREAKING CHANGES!
 
-- The inner type of `BoxSizing::Flex` has changed to `u32` from `u8` [(#32)](https://github.com/snubwoody/cascada/pull/32).
+- The inner type of `BoxSizing::Flex` has changed to `u32` from `u8` ([#32](https://github.com/snubwoody/cascada/pull/32)).
 
 ## New features
 
-- Added `debug_tree` method to `Layout` trait, used for debugging the current state of the layout tree.
+- Added `debug_tree` method to `Layout` trait, used for debugging the current state of the layout tree ([#25](https://github.com/snubwoody/cascada/pull/25)).
 - Added support for setting custom layout constraints.
-  - Added max width constraint [(#29)](https://github.com/snubwoody/cascada/pull/29).
-  - Added max height constraint [(#43)](https://github.com/snubwoody/cascada/pull/43).
-  - Added min width constraint [(#31)](https://github.com/snubwoody/cascada/pull/31).
-  - Added min height constraint [(#41)](https://github.com/snubwoody/cascada/pull/41).
-- `HorizontalLayout` and `VerticalLayout` now have constructors for `IntoIterator`
-- Added `IntoIterator` constructors to `HorizontalLayout` and `VerticalLayout` [(#30)](https://github.com/snubwoody/cascada/pull/30)
-
-## Improvements
-
+  - Added max width constraint ([#29](https://github.com/snubwoody/cascada/pull/29)).
+  - Added max height constraint ([#43](https://github.com/snubwoody/cascada/pull/43)).
+  - Added min width constraint ([#31](https://github.com/snubwoody/cascada/pull/31)).
+  - Added min height constraint ([#41](https://github.com/snubwoody/cascada/pull/41)).
+- Added `IntoIterator` constructors to `HorizontalLayout` and `VerticalLayout` ([#30](https://github.com/snubwoody/cascada/pull/30)).
 - Added `BlockLayout::from_boxed` constructor.
 
 ## Bug fixes
 
-- `VerticalLayout` no longer panics when aligning (center alignment) with no children [(#44)](https://github.com/snubwoody/cascada/pull/44).
-
-## Miscellaneous
-
-- `layout` module is now public.
+- `VerticalLayout` no longer panics when aligning (center alignment) with no children ([#44](https://github.com/snubwoody/cascada/pull/44)).
 
 ## 0.2.0 - 27-10-2025
 
