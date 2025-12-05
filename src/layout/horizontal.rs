@@ -399,7 +399,7 @@ impl Layout for HorizontalLayout {
                         child.set_max_width(child.constraints().min_width.unwrap_or_default());
                     }
                 }
-            } else{
+            } else {
                 width -= child.constraints().max_width.unwrap_or_default()
             }
 
