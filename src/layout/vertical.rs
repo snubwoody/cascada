@@ -47,9 +47,9 @@ pub struct VerticalLayout {
     scroll_offset: f32,
     intrinsic_size: IntrinsicSize,
     children: Vec<Box<dyn Layout>>,
-    /// The main axis is the `y-axis`
+    /// Controls the positioning of the children on the main axis (y-axis).
     main_axis_alignment: AxisAlignment,
-    /// The cross axis is the `x-axis`
+    /// Controls the positioning of the children on the cross axis (x-axis).
     cross_axis_alignment: AxisAlignment,
     constraints: BoxConstraints,
     label: Option<String>,
@@ -62,6 +62,7 @@ impl VerticalLayout {
         Self::default()
     }
 
+    /// Sets the layout id.
     pub fn set_id(mut self, id: GlobalId) -> Self {
         self.id = id;
         self
@@ -217,8 +218,9 @@ impl VerticalLayout {
         y -= self.padding.right;
 
         for child in self.children.iter_mut().rev() {
+            y -= child.size().height;
             child.set_y(y);
-            y -= child.size().height - self.spacing as f32;
+            y -= self.spacing as f32;
         }
     }
 
@@ -917,41 +919,40 @@ mod test {
     }
 
     #[test]
-    fn end_alignment() {
-        let window = Size::new(200.0, 200.0);
+    fn main_axis_align_end_subtract_child_height() {
+        let window = Size::new(500.0, 500.0);
+        let child = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(240.0, 40.0));
 
-        let padding = Padding::all(32.0);
-        let spacing = 10;
-
-        let child_1 = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(240.0, 40.0));
-
-        let child_2 = EmptyLayout::new().intrinsic_size(IntrinsicSize {
-            width: BoxSizing::Fixed(20.0),
-            ..Default::default()
-        });
-
-        let mut root = VerticalLayout {
-            position: Position { x: 250.0, y: 10.0 },
-            spacing,
-            padding,
-            children: vec![Box::new(child_1), Box::new(child_2)],
-            main_axis_alignment: AxisAlignment::End,
-            cross_axis_alignment: AxisAlignment::End,
-            ..Default::default()
-        };
+        let mut root = VerticalLayout::new()
+            .add_child(child)
+            .main_axis_alignment(AxisAlignment::End)
+            .intrinsic_size(IntrinsicSize::fill());
 
         solve_layout(&mut root, window);
 
-        let mut child_2_pos = Position {
-            x: root.position.x + root.size.width,
-            y: root.position.y + root.size.height,
-        };
-        child_2_pos -= padding.right;
+        let child_pos = Position::new(0.0, window.height - 40.0);
+        assert_eq!(root.children[0].position(), child_pos);
+    }
 
-        let mut child_1_pos = child_2_pos;
-        child_1_pos.y -= root.children[1].size().height - spacing as f32;
+    #[test]
+    fn main_axis_align_end_subtract_spacing() {
+        let window = Size::new(500.0, 500.0);
+        let spacing = 20;
+        let child = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(240.0, 40.0));
+        let child_2 = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(240.0, 40.0));
 
-        assert_eq!(root.children[0].position(), child_1_pos);
-        assert_eq!(root.children[1].position(), child_2_pos);
+        let mut root = VerticalLayout::new()
+            .add_children([child, child_2])
+            .spacing(20)
+            .main_axis_alignment(AxisAlignment::End)
+            .intrinsic_size(IntrinsicSize::fill());
+
+        solve_layout(&mut root, window);
+
+        let child_2_y = window.height - 40.0;
+        let child_y = 40.0f32.mul_add(-2.0, window.height) - spacing as f32;
+
+        assert_eq!(root.children[0].position().y, child_y);
+        assert_eq!(root.children[1].position().y, child_2_y);
     }
 }
