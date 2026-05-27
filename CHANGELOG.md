@@ -2,6 +2,14 @@
 
 All notable changes to `cascada` will be documented in this file.
 
+## 0.3.1 - 27-05-2026
+
+- Removed `dbg!` statements ([#49](https://github.com/snubwoody/cascada/pull/49)).
+
+### Bug fixes
+
+- Layouts now subtract the child layout's height when aligning at the end of the y-axis ([#51](https://github.com/snubwoody/cascada/pull/51)).
+
 ## 0.3.0 - 04-12-2025
 
 ### BREAKING CHANGES!
@@ -10,7 +18,7 @@ All notable changes to `cascada` will be documented in this file.
 
 ### New features
 
-- Added `debug_tree` method to `Layout` trait ([#25](https://github.com/snubwoody/cascada/pull/25)).
+- Added the `debug_tree` method to `Layout` trait ([#25](https://github.com/snubwoody/cascada/pull/25)).
 - Added support for setting custom layout constraints.
   - Added max width constraint ([#29](https://github.com/snubwoody/cascada/pull/29)).
   - Added max height constraint ([#43](https://github.com/snubwoody/cascada/pull/43)).
