@@ -90,10 +90,12 @@
 //! ## Features flags
 //! - `debug-tools`: Enables the `debug_tree` method.
 //!
-//! [layout]: crate::layout
+//! [layout]: layout
 #![warn(clippy::suboptimal_flops)]
 #![warn(clippy::suspicious_operation_groupings)]
 #![warn(clippy::imprecise_flops)]
+#![warn(clippy::dbg_macro)]
+#![warn(clippy::todo)]
 mod constraints;
 pub mod debug;
 mod error;

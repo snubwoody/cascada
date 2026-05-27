@@ -496,6 +496,7 @@ mod test {
         root.align_main_axis_start();
         let pos = root.child.position();
         assert_eq!(pos.x, root.position().x);
+
         root.padding.left = 10.0;
         root.align_main_axis_start();
         assert_eq!(root.child.position().x, root.position().x + 10.0);
