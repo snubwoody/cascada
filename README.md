@@ -30,7 +30,7 @@ Add this to your `Cargo.toml`.
 
 ```toml
 [dependencies]
-cascada = "0.2.0"
+cascada = "0.3.0"
 ```
 
 ## Example
