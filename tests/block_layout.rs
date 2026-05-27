@@ -21,7 +21,6 @@ fn fill_fixed_parent() {
     let mut root = BlockLayout::new(child).intrinsic_size(IntrinsicSize::fixed(100.0, 50.0));
 
     solve_layout(&mut root, window);
-    dbg!(&root);
     assert_eq!(root.children()[0].size().width, 100.0);
     assert_eq!(root.children()[0].size().height, 50.0);
 }

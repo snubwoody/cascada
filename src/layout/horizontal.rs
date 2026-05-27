@@ -383,14 +383,12 @@ impl Layout for HorizontalLayout {
             }
         };
 
-        let mut width = available_width;
         for child in &mut self.children {
             if child.constraints().max_width.is_none() {
                 match child.get_intrinsic_size().width {
                     BoxSizing::Flex(factor) => {
                         let grow_factor = factor as f32 / flex_total as f32;
                         child.set_max_width(grow_factor * available_width);
-                        width -= child.constraints().max_width.unwrap_or_default();
                     }
                     BoxSizing::Fixed(width) => {
                         child.set_max_width(width);
@@ -399,11 +397,7 @@ impl Layout for HorizontalLayout {
                         child.set_max_width(child.constraints().min_width.unwrap_or_default());
                     }
                 }
-            } else {
-                width -= child.constraints().max_width.unwrap_or_default()
             }
-
-            dbg!(width);
 
             // FIXME: Check if max height exists
             match child.get_intrinsic_size().height {
