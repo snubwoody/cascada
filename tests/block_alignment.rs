@@ -60,8 +60,7 @@ fn test_end_alignment() {
         y: root.position().y + root.size().height,
     };
     child_1_pos -= padding as f32;
+    child_1_pos.y -= 40.0;
 
     assert_eq!(root.child().position(), child_1_pos);
 }
-
-// TODO test overflow

@@ -135,8 +135,11 @@ impl BlockLayout {
     }
 
     fn align_cross_axis_end(&mut self) {
-        self.child
-            .set_y(self.position.y + self.size.height - self.padding.bottom);
+        let mut y = self.position.y + self.size.height;
+        y -= self.padding.bottom;
+        y -= self.child.size().height;
+
+        self.child.set_y(y);
     }
 
     impl_constraints!();
@@ -500,6 +503,20 @@ mod test {
         root.padding.left = 10.0;
         root.align_main_axis_start();
         assert_eq!(root.child.position().x, root.position().x + 10.0);
+    }
+
+    #[test]
+    fn align_cross_axis_end_subtracts_child_height() {
+        let window = Size::unit(500.0);
+        let child = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(0.0, 20.0));
+
+        let mut root = BlockLayout::new(child)
+            .cross_axis_alignment(AxisAlignment::End)
+            .intrinsic_size(IntrinsicSize::fill());
+
+        solve_layout(&mut root, window);
+        let child_y = window.height - 20.0;
+        assert_eq!(root.child.position().y, child_y);
     }
 
     #[test]

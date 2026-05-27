@@ -162,7 +162,10 @@ pub trait Layout: Debug + private::Sealed {
         self.set_y(position.y);
     }
 
+    /// Sets the `x` position of a layout node.
+    ///
     fn set_x(&mut self, x: f32);
+    /// Sets the `y` position of a layout node.
     fn set_y(&mut self, y: f32);
 
     /// Returns an iterator over the layout tree.

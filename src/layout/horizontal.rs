@@ -234,8 +234,12 @@ impl HorizontalLayout {
     }
 
     fn align_cross_axis_end(&mut self) {
+        let mut y = self.position.y + self.size.height;
+        y -= self.padding.bottom;
+
         for child in &mut self.children {
-            child.set_y(self.position.y + self.size.height - self.padding.bottom);
+            y -= child.size().height;
+            child.set_y(y);
         }
     }
 
@@ -722,5 +726,21 @@ mod test {
 
         assert_eq!(root.children[0].position(), child_1_pos);
         assert_eq!(root.children[1].position(), child_2_pos);
+    }
+
+    #[test]
+    fn cross_axis_alignment_end_subtract_child_height() {
+        let window = Size::new(200.0, 200.0);
+
+        let child = EmptyLayout::new().intrinsic_size(IntrinsicSize::fixed(240.0, 40.0));
+        let mut root = HorizontalLayout::from([child])
+            .intrinsic_size(IntrinsicSize::fill())
+            .cross_axis_alignment(AxisAlignment::End);
+
+        solve_layout(&mut root, window);
+
+        let child_y = window.height - 40.0;
+
+        assert_eq!(root.children[0].position().y, child_y);
     }
 }
