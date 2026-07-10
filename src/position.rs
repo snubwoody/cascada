@@ -175,9 +175,9 @@ impl SubAssign<f32> for Position {
 impl Display for Position {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if let Some(prec) = f.precision() {
-            write!(f, "{:.prec$}x{:.prec$}", self.x, self.y)
+            write!(f, "({:.prec$}, {:.prec$})", self.x, self.y)
         } else {
-            write!(f, "{}x{}", self.x, self.y)
+            write!(f, "({}, {})", self.x, self.y)
         }
     }
 }
@@ -190,13 +190,13 @@ mod test {
     fn display() {
         let pos = Position::new(5.0, 35.35);
         let string = format!("{pos}");
-        assert_eq!(string, "5x35.35");
+        assert_eq!(string, "(5, 35.35)");
     }
 
     #[test]
     fn display_with_precision() {
         let pos = Position::new(50.0, 20.24242);
         let string = format!("{pos:.2}");
-        assert_eq!(string, "50.00x20.24");
+        assert_eq!(string, "(50.00, 20.24)");
     }
 }
